@@ -167,10 +167,11 @@ public class FunActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        ((TextView) findViewById(R.id.tv_sn)).setText("SN:" + SharePreferenceUtils.getInstance(this).getString("status_notif_sn" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), ""));
+       /* ((TextView) findViewById(R.id.tv_sn)).setText("SN:" + SharePreferenceUtils.getInstance(this).getString("status_notif_sn" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), ""));
         ((TextView) findViewById(R.id.tv_sw)).setText(SharePreferenceUtils.getInstance(this).getString("status_notif_ver" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), ""));
-        ((TextView) findViewById(R.id.tv_tech_band)).setText("Tech:" + SharePreferenceUtils.getInstance(this).getString("status_notif_tech" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0  ") +
+       ((TextView) findViewById(R.id.tv_tech_band)).setText("Tech:" + SharePreferenceUtils.getInstance(this).getString("status_notif_tech" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0  ") +
                     "        Band:" + SharePreferenceUtils.getInstance(this).getString("status_notif_band" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0"));
+        */
         connHintDialog = new OneBtnHintDialog(this, R.style.dialog_style);
     }
 

@@ -26,10 +26,10 @@
         android:layout_marginLeft="45dp"
         android:layout_marginTop="3dp"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sw_version"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_size_12" />
         <TextView
@@ -57,7 +57,7 @@
         android:layout_height="230dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:src="@drawable/femto_image" />
+        android:src="@mipmap/logo" />
 
     <RelativeLayout
         android:layout_width="match_parent"
