@@ -1,0 +1,95 @@
+<ex-status-notif>
+	<basic>
+		<sn>1234567890</sn>
+		<mac>7C:CD:11:11:1F:62</mac>
+		<rat>LTE</rat>
+		<band>3</band>
+		<antenna-gain>0987654321</antenna-gain>
+		<hw-ver>HW-1.0.0</hw-ver>
+		<sw-ver>
+			<build-ver>B-2.0.0</build-ver>
+			<pixcellagent-ver>P-3.0.0</pixcellagent-ver>
+			<epc-ver>E-4.0.0</epc-ver>
+			<stack-ver>S-5.0.0</stack-ver>
+			<oam-ver>O-6.0.0</oam-ver>
+			<rem-ver>R-7.0.0</rem-ver>
+			<kernel-ver>K-8.0.0</kernel-ver>
+			<uboot-ver>U-9.0.0</uboot-ver>
+		</sw-ver>
+		<mode>CNE</mode>
+		<up-time>1494018405</up-time>
+		<cell-sel-alg>688</cell-sel-alg>
+	</basic>
+	<wifi>
+		<mode>WIFI-CLIENT</mode>
+		<channel>1650</channel>
+		<ssid>liaominjie</ssid>
+		<security-mode>WPA-PSK</security-mode>
+		<encryption-algorithm>TKIP/AES AUTO</encryption-algorithm>
+		<passkey>Magnet123456</passkey>
+	</wifi>
+	<cell>
+		<mcc>460</mcc>
+		<mnc>01</mnc>
+		<cid>123</cid>
+		<tac>456</tac>
+		<lac>789</lac>
+		<channel>1650</channel>
+		<pci>321</pci>
+		<psc>654</psc>
+		<bsic>987</bsic>
+		<status>1</status>
+		<clients>192.168.100.100</clients>
+	</cell>
+	<hw>
+		<cpu>I7</cpu>
+		<mem>8G</mem>
+		<load>LOAD</load>
+		<flash>64m</flash>
+		<temperature>40</temperature>
+		<battery-level>99%</battery-level>
+		<battery-charging>TRUE</battery-charging>
+		<radio>
+			<tx-s>{INT:tx for scanner mode(CNE)}</tx-s>
+			<tx-f>{INT:tx for femto mode(CN)}</tx-f>
+		</radio>
+	</hw>
+	<kpi></kpi>
+	<sniff>
+		<channel>10663</channel>
+		<neighbor-list>
+			<cell>
+				<cid>123</cid>
+				<rncid>345</rncid>
+				<mcc>460</mcc>
+				<mnc>01</mnc>
+				<frequency-offset></frequency-offset>
+				<tech-specific>
+					<bsic>A</bsic>
+					<rssi>{INT: RSSI value in dBm}</rssi>
+					<lac>B</lac>
+					<psc>C</psc>
+					<rscp>{INT: RSCP value in dBm}</rscp>
+					<tac>D</tac>
+					<pci>E</pci>
+					<rsrp>{INT: RSRP value in dBm}</rsrp>
+				</tech-specific>
+				<sib-list>
+					<sib-cell>
+						<cid>G</cid>
+						<rncid>H</rncid>
+						<channel>I</channel>
+						<tech-specific>
+							<rscp>{INT: RSCP value in dBm}</rscp>
+							<lac>J</lac>
+							<psc>K</psc>
+							<rsrp>{INT: RSRP value in dBm}</rsrp>
+							<tac>L</tac>
+							<pci>M</pci>
+						</tech-specific>
+					</sib-cell>
+				</sib-list>
+			</cell>
+		</neighbor-list>
+	</sniff>
+</ex-status-notif>

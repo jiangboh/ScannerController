@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="@drawable/femto_list_activity_bg"
+    >
+    <include layout="@layout/normal_title_layout" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rotate_view"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="33dp"
+                    android:text="Searching..."
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/font_size_13"/>
+                <ImageView
+                    android:id="@+id/rotate_image"
+                    android:src="@mipmap/load_icon"
+                    android:layout_height="16dp"
+                    android:layout_width="16dp"/>
+            </LinearLayout>
+            <com.bravo.listview.UserDefineListView
+                android:id="@+id/pixcell_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="150dp"
+                android:divider="#00000000"
+                android:dividerHeight="5dp"
+                android:cacheColorHint="@android:color/transparent"
+                android:listSelector="@android:color/transparent">
+            </com.bravo.listview.UserDefineListView>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_up_arrows"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/up_arrows_anim"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="112dp"
+            />
+        <ImageButton
+            android:id="@+id/ib_up_ib"
+            android:layout_width="match_parent"
+            android:layout_height="108dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/femto_list_bottom_bg"
+            android:src="@drawable/femto_list_less"/>
+
+        <LinearLayout
+            android:id="@+id/ll_down_layout"
+            android:background="@mipmap/femtolist_bg_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="353dp"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/ib_down_arrows"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:paddingLeft="17dp"
+                android:paddingRight="17dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                android:src="@drawable/down_arrows_anim"
+                android:layout_gravity="center_horizontal"
+                />
+            <!--IP-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="63dp"
+                android:layout_marginTop="38dp"
+                android:text="@string/femto_list_ip_address"
+                android:textColor="@color/color16355F"
+                android:textSize="@dimen/font_size_16" />
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="273dp"
+                android:layout_height="53dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:background="@mipmap/femtolist_ip_bg">
+
+                <EditText
+                    android:id="@+id/femto_list_ip_address_first_et"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:maxLength="3"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:background="@null"
+                    android:textColor="@color/color16355F"
+                    android:textSize="@dimen/font_size_18"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/femto_list_point" />
+
+                <EditText
+                    android:id="@+id/femto_list_ip_address_second_et"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:maxLength="3"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textColor="@color/color16355F"
+                    android:textSize="@dimen/font_size_18"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/femto_list_point" />
+
+                <EditText
+                    android:id="@+id/femto_list_ip_address_third_et"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:maxLength="3"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textColor="@color/color16355F"
+                    android:textSize="@dimen/font_size_18" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/femto_list_point" />
+
+                <EditText
+                    android:id="@+id/femto_list_ip_address_fourth_et"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:maxLength="3"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textColor="@color/color16355F"
+                    android:textSize="@dimen/font_size_18" />
+
+            </LinearLayout>
+            <!--port-->
+            <TextView
+                android:layout_marginTop="9dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="63dp"
+                android:text="@string/femto_list_port"
+                android:textColor="@color/color16355F"
+                android:textSize="@dimen/font_size_16" />
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="273dp"
+                android:layout_height="53dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/femtolist_ip_bg">
+                <EditText
+                    android:textColor="@color/color16355F"
+                    android:textSize="@dimen/font_size_18"
+                    android:id="@+id/femto_list_port_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:maxLength="5"
+                    android:hint="1~65535"/>
+            </LinearLayout>
+            <!--add button-->
+            <Button
+                android:id="@+id/femto_list_connect_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_add_selector"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

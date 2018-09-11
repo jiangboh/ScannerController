@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    >
+    <!--title-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@mipmap/fragment_title_bg"
+        android:gravity="bottom"
+        >
+        <include layout="@layout/normal_title_layout"/>
+    </RelativeLayout>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!--config-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/font_size_18"
+                android:textStyle="bold"
+                android:textColor="#0000FF"
+                android:text="Set Config"/>
+            <ListView
+                android:id="@+id/list_config"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"></ListView>
+            <!--cell scan-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/font_size_18"
+                android:textStyle="bold"
+                android:textColor="#0000FF"
+                android:text="Cell Scan"/>
+            <ListView
+                android:id="@+id/list_scan"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"></ListView>
+            <!-- cell active-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/font_size_18"
+                android:textStyle="bold"
+                android:textColor="#0000FF"
+                android:text="Cell Active"/>
+            <ListView
+                android:id="@+id/list_active"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"></ListView>
+        </LinearLayout>
+
+        </ScrollView>
+
+</LinearLayout>

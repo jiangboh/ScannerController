@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">SmartController</string>
+    <string name="version">版本：</string>
+    <string name="sw_version">软件版本:</string>
+    <string name="hw_version">硬件版本:</string>
+    <string name="api_version">API版本:</string>
+    <string name="connect">连接</string>
+    <string name="reconnect">自动重连</string>
+    <string name="status">Status</string>
+    <string name="config">Config</string>
+    <string name="log">Log</string>
+    <string name="femto">Femto</string>
+    <string name="reboot">Reboot</string>
+    <string name="test">Test</string>
+    <string name="ip_address">IP:</string>
+    <string name="system">System</string>
+    <string name="error_notify">Error Notify</string>
+    <string name="i_know">I Know</string>
+    <string name="tech">制式:</string>
+    <string name="band">频段:</string>
+    <string name="channel">频点:</string>
+
+    <string name="add_values">Add values to the chart</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="add">Add</string>
+    <string name="new_series">New series</string>
+    <string name="Scan">Scan</string>
+    <string name="Broadcast">Start Broadcast</string>
+    <string name="title_activity_sib_list_">SibList_Activity</string>
+    <string name="title_activity_target_list">TargetListActivity</string>
+
+    <!-- 登录界面 -->
+    <string name="account_input_hint">account</string>
+    <string name="password_input_hint">password</string>
+    <string name="login">Login</string>
+
+    <!-- ToolBar -->
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <!-- FemtoList -->
+    <string name="femto_list">Femto List</string>
+    <string name="manual_connect_femto">Manual Connect Femto</string>
+    <string name="femto_list_ip_address">IP Address :</string>
+    <string name="femto_list_port">Port :</string>
+    <string name="femto_list_connect">Connect</string>
+    <string name="femto_list_point">•</string>
+    <string name="title_activity_automatic_test">AutomaticTestActivity</string>
+
+    <!-- ErrorMsg -->
+    <string name="error_msg">Error Message</string>
+    <string name="ignore">Ignore</string>
+    <string name="attention">Attention</string>
+    <string name="title_activity_ttsetting">TTSettingActivity</string>
+
+    <!--TUKTUK-->
+    <string name="mode">模式：</string>
+    <string name="tts_switch">语音开关:</string>
+    <string name="tt_signal">没信号</string>
+    <string name="serial_number">序列号:</string>
+    <string name="ex_sw_version">扩展软件版本:</string>
+</resources>

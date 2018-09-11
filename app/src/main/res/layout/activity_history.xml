@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/statusBarHeight"
+        android:background="@mipmap/fragment_title_bg"
+        android:gravity="bottom"
+        >
+        <include layout="@layout/normal_title_layout"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/user_total"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+        <TextView
+            android:background="@mipmap/bcast_checkbox_bg"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:gravity="center"
+            android:id="@+id/target_tab"
+            android:text="Uesr(0) / Target(0)" />
+
+    </LinearLayout>
+    <ListView
+        android:id="@+id/target_list"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#00000000"
+        android:dividerHeight="0dp"></ListView>
+</LinearLayout>

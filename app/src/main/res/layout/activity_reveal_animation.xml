@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".FemtoController.RevealAnimationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@mipmap/fragment_title_bg"
+        android:orientation="vertical"
+        >
+        <include layout="@layout/custom_statusbar_layout"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                >
+                <TextView
+                    android:id="@+id/reveal_animation_activity_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_20"
+                    android:ellipsize="end"
+                    android:maxEms="6"
+                    android:text="title"
+                    />
+                <TextView
+                    android:id="@+id/reveal_animation_activity_subhead_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_size_14"
+                    android:ellipsize="end"
+                    android:maxEms="6"
+                    android:text="title"
+                    />
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/reveal_animation_activity_setting_btn"
+                android:layout_width="94dp"
+                android:layout_height="36dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:foregroundGravity="center"
+                android:layout_gravity="right|center_vertical"
+                android:visibility="visible"/>
+
+        </android.support.v7.widget.Toolbar>
+    </LinearLayout>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <io.codetail.widget.RevealFrameLayout
+            android:id="@+id/container_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/content_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/content_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+
+        </io.codetail.widget.RevealFrameLayout>
+
+        <ListView
+            android:id="@+id/drawer_layout_lv"
+            android:layout_width="195dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:divider="#74c5f5"
+            android:dividerHeight="1dp"
+            android:layout_gravity="left|center_vertical"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:background="@drawable/menu_list_bg"
+            android:scrollbars="none">
+        </ListView>
+
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

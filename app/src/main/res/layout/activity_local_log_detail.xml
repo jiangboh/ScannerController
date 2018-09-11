@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bravo.log.LocalLogDetailActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/statusBarHeight"
+        android:background="@mipmap/fragment_title_bg"
+        android:gravity="bottom"
+        >
+        <include layout="@layout/normal_title_layout"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.bravo.pull_to_refresh.PullToRefreshScrollView
+            xmlns:ptr="http://schemas.android.com/apk/res_auto"
+            android:id="@+id/log_msg_scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/log_msg_tv"
+                android:layout_width="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_height="wrap_content" />
+
+        </com.bravo.pull_to_refresh.PullToRefreshScrollView>
+        <TextView
+            android:id="@+id/log_msg_page_hint_tv"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:background="@color/colorHalfDialogTitle"
+            android:text="1/10"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:textSize="@dimen/font_size_20"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

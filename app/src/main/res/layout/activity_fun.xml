@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/function_activity_bg"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.bravo.FemtoController.FunActivity">
+
+    <include layout="@layout/normal_title_layout"/>
+
+    <TextView
+        android:id="@+id/tv_sn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="-2dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_size_12" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sw_version"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_12" />
+        <TextView
+            android:id="@+id/tv_sw"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tech_band"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="3dp"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_size_12" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="230dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/femto_image" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/effect_one"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Effect One"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_10" />
+
+        <Button
+            android:id="@+id/effect_two"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/effect_one"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Effect Two"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_10" />
+
+        <Button
+            android:id="@+id/effect_three"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/effect_two"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Effect Three"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_10" />
+
+        <Button
+            android:id="@+id/effect_four"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/effect_three"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Effect Four"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_10" />
+
+        <com.bravo.custom_view.CircleMenuLayout
+            android:id="@+id/circleMenuLayout"
+            android:layout_width="254dp"
+            android:layout_height="254dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/circle_menu_bg">
+
+            <RelativeLayout
+                android:id="@id/id_circle_menu_item_center"
+                android:layout_width="127dp"
+                android:layout_height="127dp"
+                android:background="#00000000"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@id/id_circle_center_iv"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/circle_center_bg_selector"
+                    android:padding="30dp"
+                    android:src="@drawable/system_center" />
+
+                <ImageView
+                    android:id="@id/id_circle_center_point_iv"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/point_center"
+                    android:src="@drawable/status_center" />
+            </RelativeLayout>
+        </com.bravo.custom_view.CircleMenuLayout>
+
+        <ImageView
+            android:id="@+id/circle_menu_selected_iv"
+            android:layout_width="118dp"
+            android:layout_height="63dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/test_selected"
+            android:visibility="gone" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="#E9E9E9"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@mipmap/fragment_title_bg"
+        android:gravity="bottom"
+        >
+        <include layout="@layout/normal_title_layout"/>
+    </RelativeLayout>
+    <ExpandableListView
+        android:id="@+id/error_msg_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:childDivider="@color/colorHalfDialogTitle"
+        android:background="@android:color/white"
+        android:dividerHeight="0.5dp"
+        android:listSelector="@color/colorTransparent"
+        android:cacheColorHint="@color/colorTransparent">
+    </ExpandableListView>
+</LinearLayout>

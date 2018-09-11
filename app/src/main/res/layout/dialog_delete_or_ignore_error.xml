@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_round_corner_bg"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/delete_or_ignore_error_ignore"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Ignore"
+        android:background="@drawable/dialog_two_btn_up_bg_selector"
+        android:textAllCaps="false"
+        android:textColor="#00b4ff"
+        android:textSize="@dimen/font_size_20"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc"/>
+    <Button
+        android:id="@+id/delete_or_ignore_error_delete"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Delete"
+        android:background="@drawable/dialog_one_btn_bg_selector"
+        android:textAllCaps="false"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/font_size_20"/>
+
+</LinearLayout>

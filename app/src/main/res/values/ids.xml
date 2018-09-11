@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="id_circle_menu_item_center" type="id"/>
+    <item name="id_circle_center_iv" type="id"/>
+    <item name="id_circle_center_point_iv" type="id"/>
+
+    <item type="id" name="gridview" />
+    <item type="id" name="webview" />
+    <item type="id" name="scrollview" />
+
+    <item type="id" name="viewpager" />
+</resources>

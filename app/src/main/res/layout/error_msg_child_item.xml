@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/error_msg_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/error_msg_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/error_msg_ignore_or_attention_text_color_selector"
+        android:text="error code:5"
+        android:textSize="@dimen/font_size_14"/>
+    <TextView
+        android:id="@+id/error_msg_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/error_msg_ignore_or_attention_text_color_selector"
+        android:layout_marginTop="2dp"
+        android:text="error msg:温度告警"
+        android:textSize="@dimen/font_size_10"/>
+    <TextView
+        android:id="@+id/error_msg_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp"
+        android:textSize="@dimen/font_size_10"
+        android:textColor="@color/error_msg_ignore_or_attention_text_color_selector"
+        android:layout_gravity="right"
+        android:text="the last time : 2018-1-16 17:16"
+        />
+</LinearLayout>
