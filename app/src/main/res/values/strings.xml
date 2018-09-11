@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartController</string>
+    <string name="app_name">ScannerController</string>
     <string name="version">Version：</string>
     <string name="sw_version">Software Version:</string>
     <string name="hw_version">Hardware Version:</string>

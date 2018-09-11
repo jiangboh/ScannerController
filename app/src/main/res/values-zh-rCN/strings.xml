@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartController</string>
+    <string name="app_name">ScannerController</string>
     <string name="version">版本：</string>
     <string name="sw_version">软件版本:</string>
     <string name="hw_version">硬件版本:</string>
@@ -31,9 +31,9 @@
     <string name="title_activity_target_list">TargetListActivity</string>
 
     <!-- 登录界面 -->
-    <string name="account_input_hint">account</string>
-    <string name="password_input_hint">password</string>
-    <string name="login">Login</string>
+    <string name="account_input_hint">用户名</string>
+    <string name="password_input_hint">密码</string>
+    <string name="login">登录</string>
 
     <!-- ToolBar -->
     <string name="drawer_open">Open</string>

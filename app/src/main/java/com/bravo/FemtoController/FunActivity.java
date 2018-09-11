@@ -93,7 +93,9 @@ public class FunActivity extends BaseActivity {
                 super.recordOnClick(v, "Back Event " + TAG);
             }
         });
-        ((TextView) findViewById(R.id.tv_activity_title)).setText("Femto");
+        ((TextView) findViewById(R.id.tv_activity_title)).setText(
+                SharePreferenceUtils.getInstance(this).getString("app_name",""));
+        // ((TextView) findViewById(R.id.tv_activity_title)).setText("Femto");
         selectedIV = (ImageView) findViewById(R.id.circle_menu_selected_iv);
 
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.circleMenuLayout);
@@ -119,7 +121,7 @@ public class FunActivity extends BaseActivity {
     }
 
     private void skipActivity(int pos){
-        if (((ProxyApplication)mContext.getApplicationContext()).getCurSocket() == null && pos != 2 && pos != 5) {
+       /* if (((ProxyApplication)mContext.getApplicationContext()).getCurSocket() == null && pos != 2 && pos != 5) {
             connHintDialog.setListener(new OneBtnHintDialog.BtnClickListener() {
                 @Override
                 public void onBtnClick(View v) {
@@ -134,7 +136,7 @@ public class FunActivity extends BaseActivity {
             connHintDialog.setTitle("Warning");
             connHintDialog.setContent("Please Connect Femto");
             return;
-        }
+        }*/
         switch(pos){
             case 0:
                 onFemtoClicked();
