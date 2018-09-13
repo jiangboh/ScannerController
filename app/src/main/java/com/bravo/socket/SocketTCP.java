@@ -79,6 +79,7 @@ public class SocketTCP {
     private final String TAG = "SocketTCP";
     private final String EXCEPTION_FILE_NAME = "TcpSocketException";
     private Context context;
+    private int socketBufLen = 32 * 1024;
     private static HashMap<String, Socket> sockets = new HashMap<String, Socket>();
     private HashMap<Socket, SocketReceiverThread> threads = new HashMap<Socket, SocketReceiverThread>();
     private HashMap<String, String> lostModifyFilePaths = new HashMap<String, String>();
@@ -156,8 +157,8 @@ public class SocketTCP {
         try {
             Socket socket = new Socket(ipAddress, port);
             socket.setSoTimeout(20000);
-            socket.setReceiveBufferSize(32*1024);
-            socket.setSendBufferSize(32*1024);
+            socket.setReceiveBufferSize(socketBufLen);
+            socket.setSendBufferSize(socketBufLen);
             socket.setKeepAlive(true);
             sockets.put(ipAddress + port, socket);
 
@@ -247,7 +248,7 @@ public class SocketTCP {
         @Override
         public void run() {
             int length,count = 0;
-            byte[] buffer = new byte[32 * 1024];
+            byte[] buffer = new byte[socketBufLen];
             InputStream is = null;
             try {
                 is = socket.getInputStream();

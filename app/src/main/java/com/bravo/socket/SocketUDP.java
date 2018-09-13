@@ -1,7 +1,6 @@
 package com.bravo.socket;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bravo.parse_generate_xml.ex_config.ConfigRsp;
 import com.bravo.parse_generate_xml.ex_status.StatusNotif;
@@ -9,6 +8,7 @@ import com.bravo.parse_generate_xml.udp.ActionResponse;
 import com.bravo.parse_generate_xml.udp.BTSOnline;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
+import com.bravo.xml.Msg_Body_Struct;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,25 +18,27 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.Map;
+
+import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
+import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by lenovo on 2016/12/22.
  */
 
 public class SocketUDP {
-
+    private int port;
     private boolean stopReceive = false;
     private final String TAG = "SocketUDP";
     private DatagramSocket socket;
     private Context context;
 
-    public SocketUDP(Context context) {
+    public SocketUDP(Context context,int port) {
         this.context = context;
         try {
-            socket = new DatagramSocket(8001 + new Random().nextInt(1000));
+            //socket = new DatagramSocket(8001 + new Random().nextInt(1000));
+            socket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -52,12 +54,18 @@ public class SocketUDP {
             @Override
             public void run() {
                 try {
-//                    Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
-                    byte[] buf = msg.getBytes();
-                    InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
-                    //创建发送方的数据报信息(包的最大长度为64k)
-                    DatagramPacket dataGramPacket = new DatagramPacket(buf, buf.length, address, serverPort);
-                    socket.send(dataGramPacket);  //通过套接字发送数据
+                    if (!msg.isEmpty()) {
+//                      Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
+                        byte[] buf = msg.getBytes();
+                        InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
+                        //创建发送方的数据报信息(包的最大长度为64k)
+                        DatagramPacket dataGramPacket = new DatagramPacket(buf, buf.length, address, serverPort);
+                        socket.send(dataGramPacket);  //通过套接字发送数据
+                    }
+                    else
+                    {
+                        Logs.d(TAG,"发送UDP消息内容为空!");
+                    }
                 } catch (UnknownHostException e) {
                     Logs.d(TAG,"发送UDP消息异常：" + e.getMessage());
                     e.printStackTrace();
@@ -88,7 +96,8 @@ public class SocketUDP {
                         //把接收到的data转换为String字符串
                         String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
                         Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
-                        ProtocolStartAndEndTag startAndEndTag = new ProtocolStartAndEndTag();
+
+                        /*ProtocolStartAndEndTag startAndEndTag = new ProtocolStartAndEndTag();
                         ArrayList<String> headers = startAndEndTag.getUdpHeaders();
                         HashMap<String,String> correspondEnds = startAndEndTag.getCorrespondEnd();
                         for(String header : headers){
@@ -100,7 +109,15 @@ public class SocketUDP {
                             }else{
 //                                Log.d(TAG,"UDP数据不完整：" + result);
                             }
+                        }*/
+                        Msg_Body_Struct msg = DecodeApXmlMessage(result);
+                        Logs.d(TAG,"接收消息id：" + msg.msgId);
+                        Logs.d(TAG,"接收消息类型：" + msg.type);
+                        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
+                        {
+                            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
                         }
+                        send(packet.getAddress().getHostAddress(), packet.getPort(),EncodeApXmlMessage(msg.msgId+1,msg));
                     }
                     socket.close();
                     socket = null;

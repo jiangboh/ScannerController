@@ -11,16 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:orientation="vertical"
-        >
+        android:weightSum="1"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <!--pixcell icon-->
         <ImageView
-            android:layout_width="85dp"
-            android:layout_height="93dp"
+            android:layout_width="126dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
-            android:background="@mipmap/login_pixcell_icon"
-            />
+            android:background="@mipmap/login_pixcell_icon" />
         <!-- aacount-->
         <LinearLayout
             android:layout_marginTop="60dp"
@@ -59,7 +60,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="33dp"
+            android:layout_marginTop="10dp"
             android:layout_width="320dp"
             android:layout_height="51dp"
             android:orientation="horizontal"
@@ -97,7 +98,7 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_marginTop="53dp"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

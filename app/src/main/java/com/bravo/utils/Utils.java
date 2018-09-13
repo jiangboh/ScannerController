@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -562,5 +564,45 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    private static int getWifiIpByInt(Context context) {
+        WifiManager mWifiManager;
+        WifiInfo mWifiInfo;
+
+        //获取wifi服务
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        //判断wifi是否开启
+        if (!mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(true);
+        }
+        mWifiInfo = mWifiManager.getConnectionInfo();
+        int ipAddress = mWifiInfo.getIpAddress();
+
+        return ipAddress;
+    }
+    /*
+    获取wifi的ip地址
+     */
+    public static String getWifiIp(Context context)
+    {
+        int ipAddress = getWifiIpByInt(context);
+
+        return (ipAddress & 0xFF ) + "." +
+                ((ipAddress >> 8 ) & 0xFF) + "." +
+                ((ipAddress >> 16 ) & 0xFF) + "." +
+                ( ipAddress >> 24 & 0xFF) ;
+    }
+    /*
+    获取wifi的广播ip地址
+     */
+    public static String getWifiBroadcastIp(Context context)
+    {
+        int ipAddress = getWifiIpByInt(context)  | 0xFF000000;
+
+        return (ipAddress & 0xFF ) + "." +
+                ((ipAddress >> 8 ) & 0xFF) + "." +
+                ((ipAddress >> 16 ) & 0xFF) + "." +
+                ( ipAddress >> 24 & 0xFF) ;
     }
 }

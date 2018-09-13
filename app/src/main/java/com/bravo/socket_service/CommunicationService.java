@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.FemtoController.TranslucentActivity;
@@ -40,6 +41,10 @@ public class CommunicationService extends Service {
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
     private udpBroadCast udpBroadCast;
+    private int udpBroadCastPort = 14720;
+    private int udpPort = 14721;
+    private int lteServerPort = 14786;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,10 +53,12 @@ public class CommunicationService extends Service {
 
     @Override
     public void onCreate() {
-        socketUdp = new SocketUDP(this);
+        socketUdp = new SocketUDP(this,udpPort);
         socketUdp.startReceive();
-        socketTCP = new SocketTCP(this);
-        udpBroadCast = new udpBroadCast(this);
+        //socketTCP = new SocketTCP(this);
+
+        udpBroadCast = new udpBroadCast(this,udpBroadCastPort);
+
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
@@ -109,7 +116,7 @@ public class CommunicationService extends Service {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpBroadcast(EventBusMsgSendUDPBroadcastMsg msgType){
         Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ ",发送的UDP广播数据为：" + msgType.toString(),"Record_Event",true,true);
-        udpBroadCast.sendBroadMsg(msgType.getIpAddress(),msgType.getPort(),msgType.getMsg());
+        udpBroadCast.sendBroadMsg(msgType.getMsg());
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -225,6 +232,7 @@ public class CommunicationService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "关闭各种Socket连接!");
         unregisteAllSocket(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
         if(socketUdp != null){
             socketUdp.stopReceive();
@@ -238,6 +246,7 @@ public class CommunicationService extends Service {
             udpBroadCast.closeMS();
             udpBroadCast = null;
         }
+
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }

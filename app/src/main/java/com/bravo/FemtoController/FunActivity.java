@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.GSM_Fragment;
 import com.bravo.config.General_Fragment;
 import com.bravo.config.LTE_Fragment;
@@ -23,12 +24,12 @@ import com.bravo.femto.FragmentAdjacentCell;
 import com.bravo.femto.FragmentBcastHistory;
 import com.bravo.femto.FragmentBcastStart;
 import com.bravo.femto.FragmentCellScan;
-import com.bravo.config.FragmentSetConfig;
 import com.bravo.femto.FragmentTarget;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
 import com.bravo.parse_generate_xml.Status;
+import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
 import com.bravo.status.HwMonitor_Fragment;
@@ -39,11 +40,14 @@ import com.bravo.test.Terminal_Fragmen;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import static com.bravo.utils.Utils.getWifiIp;
 
 
 public class FunActivity extends BaseActivity {
@@ -93,9 +97,7 @@ public class FunActivity extends BaseActivity {
                 super.recordOnClick(v, "Back Event " + TAG);
             }
         });
-        ((TextView) findViewById(R.id.tv_activity_title)).setText(
-                SharePreferenceUtils.getInstance(this).getString("app_name",""));
-        // ((TextView) findViewById(R.id.tv_activity_title)).setText("Femto");
+        ((TextView) findViewById(R.id.tv_activity_title)).setText("ScannerController");
         selectedIV = (ImageView) findViewById(R.id.circle_menu_selected_iv);
 
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.circleMenuLayout);
@@ -139,26 +141,33 @@ public class FunActivity extends BaseActivity {
         }*/
         switch(pos){
             case 0:
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 onFemtoClicked();
                 Logs.w("RecordOnClick", "Enter Femto Function", "Record_Event", true);
                 break;
             case 1:
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 onConfigClicked();
                 Logs.w("RecordOnClick", "Enter Config Function", "Record_Event", true);
                 break;
             case 2:
-                onLogClicked();
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                //onLogClicked();
+                EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, "Ip=" + getWifiIp(this)));
                 Logs.w("RecordOnClick", "Enter Log Function", "Record_Event", true);
                 break;
             case 3:
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 onStatusClicked();
                 Logs.w("RecordOnClick", "Enter Status Function", "Record_Event", true);
                 break;
             case 4:
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 onSystemClicked();
                 Logs.w("RecordOnClick", "Enter System Function", "Record_Event", true);
                 break;
             case 5:
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 onTestClicked();
                 Logs.w("RecordOnClick", "Enter Test Function", "Record_Event", true);
                 break;
