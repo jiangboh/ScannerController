@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:background="#F2F2F2"
     android:paddingTop="10dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    >
+    android:orientation="vertical">
     <!--bcast start ui-->
     <ScrollView
+        android:id="@+id/layout_start"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/layout_start">
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,9 +23,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size_18"
+                android:text="*"
                 android:textColor="#FF0000"
-                android:text="*"/>
+                android:textSize="@dimen/font_size_18" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,609 +38,669 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="49.7dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
                             android:layout_gravity="center"
-                            android:text="Band:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="Band:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <TextView
                             android:id="@+id/band"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
                             android:layout_gravity="center"
                             android:layout_weight="1.5"
-                            android:textColor="@color/colorItemText"/>
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1.5"
-                            android:layout_height="@dimen/item_heigh"
                             android:id="@+id/layout_band"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/item_heigh"
+                            android:layout_weight="1.5"
                             android:orientation="vertical"
                             android:visibility="gone">
+
                             <Spinner
                                 android:id="@+id/spinner_band"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:textColor="@color/colorItemText"
-                                android:textSize="@dimen/font_size_16"
-                                ></Spinner>
-                            </LinearLayout>
+                                android:textSize="@dimen/font_size_16"></Spinner>
+                        </LinearLayout>
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                 </LinearLayout>
                 <!--mcc-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_16"
-                        android:text="MCC:"
                         android:layout_weight="1"
-                        android:textColor="@color/colorItemText"/>
+                        android:text="MCC:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
+
                     <EditText
                         android:id="@+id/mcc"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:inputType="number"
-                        android:textSize="@dimen/font_size_16"
                         android:background="@null"
-                        android:textColor="@color/colorItemText"
+                        android:hint="length less than 3"
+                        android:inputType="number"
                         android:maxLength="3"
-                        android:hint="length less than 3"/>
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
                 </LinearLayout>
+
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorItemLine"
                     android:layout_width="match_parent"
-                    android:layout_height="0.3dp"/>
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
                 <!--mnc-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_16"
-                        android:text="MNC:"
                         android:layout_weight="1"
-                        android:textColor="@color/colorItemText"/>
+                        android:text="MNC:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
+
                     <EditText
                         android:id="@+id/mnc"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:textSize="@dimen/font_size_16"
-                        android:inputType="number"
-                        android:textColor="@color/colorItemText"
                         android:background="@null"
+                        android:hint="length less than 3"
+                        android:inputType="number"
                         android:maxLength="3"
-                        android:hint="length less than 3"/>
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
                 </LinearLayout>
+
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorItemLine"
                     android:layout_width="match_parent"
-                    android:layout_height="0.3dp"/>
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
                 <!--channels-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_16"
-                        android:text="Channels:"
                         android:layout_weight="1"
-                        android:textColor="@color/colorItemText"/>
+                        android:text="Channels:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
+
                     <EditText
                         android:id="@+id/bcast_channels"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:background="@null"
-                        android:textSize="@dimen/font_size_16"
                         android:layout_weight="1.5"
+                        android:background="@null"
+                        android:digits="01234567890,."
+                        android:hint="int,int,int..int"
                         android:singleLine="true"
                         android:textColor="@color/colorItemText"
-                        android:digits="01234567890,."
-                        android:hint="int,int,int..int"/>
+                        android:textSize="@dimen/font_size_16" />
                 </LinearLayout>
+
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorItemLine"
                     android:layout_width="match_parent"
-                    android:layout_height="0.3dp"/>
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
                 <!--power level-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textSize="@dimen/font_size_16"
                         android:text="Power Level:"
-                        android:textColor="@color/colorItemText"/>
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
+
                     <Spinner
                         android:id="@+id/power_level"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:textSize="@dimen/font_size_16"
                         android:entries="@array/power_level"
-                        ></Spinner>
+                        android:textSize="@dimen/font_size_16"></Spinner>
                 </LinearLayout>
+
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorItemLine"
                     android:layout_width="match_parent"
-                    android:layout_height="0.3dp"/>
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
                 <!--antenna port-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_heigh"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_16"
-                        android:text="Antenna Port:"
                         android:layout_weight="1"
-                        android:textColor="@color/colorItemText"/>
+                        android:text="Antenna Port:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16" />
+
                     <Spinner
                         android:id="@+id/spinner_port"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
-                        android:textSize="@dimen/font_size_16"
                         android:entries="@array/port"
-                        />
+                        android:textSize="@dimen/font_size_16" />
                 </LinearLayout>
             </LinearLayout>
             <!--可选项-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size_18"/>
+                android:textSize="@dimen/font_size_18" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/item_bg"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <!--tech_specific_lte-->
                     <LinearLayout
+                        android:id="@+id/tech_specific_lte"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone"
-                        android:id="@+id/tech_specific_lte">
+                        android:visibility="gone">
                         <!--bandwidth-->
                         <LinearLayout
+                            android:id="@+id/layout_bandwidth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:id="@+id/layout_bandwidth">
+                            android:orientation="vertical">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/item_heigh"
                                 android:orientation="horizontal">
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_size_16"
-                                    android:text="BandWidth:"
                                     android:layout_weight="1"
-                                    android:textColor="@color/colorItemText"/>
+                                    android:text="BandWidth:"
+                                    android:textColor="@color/colorItemText"
+                                    android:textSize="@dimen/font_size_16" />
+
                                 <Spinner
                                     android:id="@+id/bandwidth"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1.5"
-                                    android:textSize="@dimen/font_size_16"
-                                    android:textColor="@color/colorItemText"
                                     android:entries="@array/bandwidth"
-                                    ></Spinner>
+                                    android:textColor="@color/colorItemText"
+                                    android:textSize="@dimen/font_size_16"></Spinner>
                             </LinearLayout>
+
                             <View
-                                android:layout_alignParentBottom="true"
-                                android:background="@color/colorItemLine"
                                 android:layout_width="match_parent"
-                                android:layout_height="0.3dp"/>
+                                android:layout_height="0.3dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/colorItemLine" />
                         </LinearLayout>
                         <!--tac-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="TAC:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="TAC:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/tac"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:background="@null"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="length less than 5"
                                 android:inputType="number"
                                 android:maxLength="5"
-                                android:hint="length less than 5"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                         <!--pci-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="PCI:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="PCI:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/pci"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:background="@null"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="length less than 3"
                                 android:inputType="number"
                                 android:maxLength="3"
-                                android:hint="length less than 3"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                     </LinearLayout>
                     <!--cid-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="CID:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="CID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/cid"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1.5"
                             android:background="@null"
+                            android:hint="length less than 9"
                             android:inputType="numberSigned"
-                            android:textSize="@dimen/font_size_16"
                             android:maxLength="9"
                             android:textColor="@color/colorItemText"
-                            android:hint="length less than 9"/>
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--rncid-->
                     <LinearLayout
+                        android:id="@+id/layout_rncid"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
-                        android:orientation="horizontal"
-                        android:id="@+id/layout_rncid">
+                        android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="RNCID:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="RNCID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/rncid"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:textSize="@dimen/font_size_16"
                             android:layout_weight="1.5"
+                            android:background="@null"
+                            android:hint="length less than 5"
                             android:inputType="numberSigned"
                             android:maxLength="5"
                             android:textColor="@color/colorItemText"
-                            android:hint="length less than 5"/>
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--eplmn-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="EPLMN:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="EPLMN:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/eplmn"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:textSize="@dimen/font_size_16"
-                            android:textColor="@color/colorItemText"
                             android:layout_weight="1.5"
-                            android:maxLines="5"
-                            android:maxLength="150"
-                            android:singleLine="true"
+                            android:background="@null"
                             android:digits="01234567890;"
-                            android:hint="plmn;plmn;..."/>
+                            android:hint="plmn;plmn;..."
+                            android:maxLength="150"
+                            android:maxLines="5"
+                            android:singleLine="true"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--operator name-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="Operator Name:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="Operator Name:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/operator_name"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:textSize="@dimen/font_size_16"
                             android:layout_weight="1.3"
-                            android:maxLines="1"
+                            android:background="@null"
                             android:maxLength="250"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:textColor="@color/colorItemText"
-                            android:singleLine="true"/>
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--anto-switch-interval-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="Auto Switch Interval:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="Auto Switch Interval:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/auto_switch_interval"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:textSize="@dimen/font_size_16"
-                            android:textColor="@color/colorItemText"
                             android:layout_weight="1.5"
+                            android:background="@null"
+                            android:hint="time in seconds"
                             android:inputType="number"
-                            android:hint="time in seconds"/>
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--antenna_gain-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:text="Antenna Gain:"
                             android:layout_weight="1"
-                            android:textColor="@color/colorItemText"/>
+                            android:text="Antenna Gain:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
+
                         <EditText
                             android:id="@+id/antenna_gain"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@null"
-                            android:textSize="@dimen/font_size_16"
                             android:layout_weight="1.5"
+                            android:background="@null"
+                            android:hint="antenna gain in DB"
                             android:inputType="numberSigned"
-                            android:textColor="@color/colorItemText"
                             android:maxLength="6"
-                            android:hint="antenna gain in DB"/>
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
                         android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
                     <!--tech_specific-->
                     <LinearLayout
+                        android:id="@+id/tech_specific_gsm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone"
-                        android:id="@+id/tech_specific_gsm">
+                        android:visibility="gone">
                         <!--ncc-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="NCC:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="NCC:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/ncc"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
-                                android:background="@null"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="0-7"
                                 android:inputType="number"
                                 android:maxLength="2"
-                                android:hint="0-7"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                         <!--bcc-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="BCC:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="BCC:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/bcc"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
-                                android:background="@null"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="0-7"
                                 android:inputType="number"
                                 android:maxLength="1"
-                                android:hint="0-7"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                     </LinearLayout>
                     <!--lac-->
                     <LinearLayout
+                        android:id="@+id/layout_lac"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
-                        android:orientation="vertical"
-                        android:id="@+id/layout_lac">
+                        android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="49.7dp"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="LAC:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="LAC:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/lac"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:background="@null"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="length less than 5"
                                 android:inputType="number"
                                 android:maxLength="5"
-                                android:hint="length less than 5"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                     </LinearLayout>
                     <!--psc-->
                     <LinearLayout
+                        android:id="@+id/layout_psc"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="vertical"
-                        android:visibility="gone"
-                        android:id="@+id/layout_psc">
+                        android:visibility="gone">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="49.7dp"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:text="PSC:"
                                 android:layout_weight="1"
-                                android:textColor="@color/colorItemText"/>
+                                android:text="PSC:"
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/psc"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:background="@null"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="length less than 5"
                                 android:inputType="number"
                                 android:maxLength="5"
-                                android:hint="length less than 5"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                     </LinearLayout>
                     <!--threshold-->
                     <LinearLayout
@@ -650,24 +711,26 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:text="Threshold:"
                             android:textColor="@color/colorItemText"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"/>
+                            android:textSize="@dimen/font_size_16" />
+
                         <SeekBar
                             android:id="@+id/sb_threshold"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1.5"
-                            android:max="96"/>
+                            android:max="96" />
+
                         <TextView
                             android:id="@+id/tx_threshold"
                             android:layout_width="0dp"
-                            android:textColor="@color/colorItemText"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_weight="0.5"/>
+                            android:layout_weight="0.5"
+                            android:textColor="@color/colorItemText" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -675,16 +738,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size_18"
+                android:text="Implicit Redirect"
                 android:textColor="#2B669F"
-                android:textStyle="bold"
-                android:text="Implicit Redirect"/>
+                android:textSize="@dimen/font_size_18"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/item_bg"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/item_bg"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -694,85 +759,92 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/font_size_16"
-                            android:textColor="@color/color16355F"
+                            android:layout_weight="1"
                             android:text="Tech:"
-                            android:layout_weight="1"/>
+                            android:textColor="@color/color16355F"
+                            android:textSize="@dimen/font_size_16" />
+
                         <Spinner
                             android:id="@+id/ir_tech"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1.5"
-                            android:textSize="@dimen/font_size_16"
-                            android:textColor="@color/color16355F"
                             android:entries="@array/tech"
-                            />
+                            android:textColor="@color/color16355F"
+                            android:textSize="@dimen/font_size_16" />
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/layout_ir_bc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone"
-                        android:id="@+id/layout_ir_bc">
+                        android:visibility="gone">
+
                         <View
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/colorItemLine"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.3dp"/>
+                            android:layout_width="match_parent"
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                         <!--band-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/color16355F"
+                                android:layout_weight="1"
                                 android:text="Band:"
-                                android:layout_weight="1"/>
+                                android:textColor="@color/color16355F"
+                                android:textSize="@dimen/font_size_16" />
+
                             <Spinner
                                 android:id="@+id/ir_band"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:textColor="@color/colorItemText"
                                 android:layout_weight="1.5"
-                                android:textSize="@dimen/font_size_16"
-                                ></Spinner>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16"></Spinner>
                         </LinearLayout>
+
                         <View
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/colorItemLine"
                             android:layout_width="match_parent"
-                            android:layout_height="0.3dp"/>
+                            android:layout_height="0.3dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/colorItemLine" />
                         <!--channel-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/color16355F"
+                                android:layout_weight="1"
                                 android:text="Channel:"
-                                android:layout_weight="1"/>
+                                android:textColor="@color/color16355F"
+                                android:textSize="@dimen/font_size_16" />
+
                             <EditText
                                 android:id="@+id/ir_channel"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:background="@null"
-                                android:textSize="@dimen/font_size_16"
                                 android:layout_weight="1.5"
+                                android:background="@null"
+                                android:hint="length less than 5"
                                 android:inputType="numberSigned"
-                                android:textColor="@color/color16355F"
                                 android:maxLength="5"
-                                android:hint="length less than 5"/>
+                                android:textColor="@color/color16355F"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
-                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
             <!--cs fallback-->
@@ -782,18 +854,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_size_18"
+                    android:text="CS FallBack"
                     android:textColor="#2B669F"
-                    android:textStyle="bold"
-                    android:text="CS FallBack"/>
+                    android:textSize="@dimen/font_size_18"
+                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/item_bg"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -803,90 +878,97 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/item_heigh"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
+                                android:layout_weight="1"
                                 android:text="Tech:"
-                                android:layout_weight="1"/>
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
+
                             <Spinner
                                 android:id="@+id/cs_tech"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1.5"
-                                android:textSize="@dimen/font_size_16"
-                                android:textColor="@color/colorItemText"
                                 android:entries="@array/cs_fallback"
-                                />
+                                android:textColor="@color/colorItemText"
+                                android:textSize="@dimen/font_size_16" />
                         </LinearLayout>
+
                         <LinearLayout
+                            android:id="@+id/layout_cs_bc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:visibility="gone"
-                            android:id="@+id/layout_cs_bc">
+                            android:visibility="gone">
+
                             <View
-                                android:layout_alignParentBottom="true"
-                                android:background="@color/colorItemLine"
                                 android:layout_width="match_parent"
-                                android:layout_height="0.3dp"/>
+                                android:layout_height="0.3dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/colorItemLine" />
                             <!--band-->
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/item_heigh"
                                 android:orientation="horizontal">
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_size_16"
+                                    android:layout_weight="1"
                                     android:text="Band:"
                                     android:textColor="@color/colorItemText"
-                                    android:layout_weight="1"/>
+                                    android:textSize="@dimen/font_size_16" />
+
                                 <Spinner
                                     android:id="@+id/cs_band"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:textColor="@color/colorItemText"
                                     android:layout_weight="1.5"
-                                    android:textSize="@dimen/font_size_16"
-                                    ></Spinner>
+                                    android:textColor="@color/colorItemText"
+                                    android:textSize="@dimen/font_size_16"></Spinner>
                             </LinearLayout>
+
                             <View
-                                android:layout_alignParentBottom="true"
-                                android:background="@color/colorItemLine"
                                 android:layout_width="match_parent"
-                                android:layout_height="0.3dp"/>
+                                android:layout_height="0.3dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/colorItemLine" />
                             <!--channel-->
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/item_heigh"
                                 android:orientation="horizontal">
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_size_16"
+                                    android:layout_weight="1"
                                     android:text="Channel:"
                                     android:textColor="@color/colorItemText"
-                                    android:layout_weight="1"/>
+                                    android:textSize="@dimen/font_size_16" />
+
                                 <EditText
                                     android:id="@+id/cs_channel"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:background="@null"
-                                    android:textSize="@dimen/font_size_16"
                                     android:layout_weight="1.5"
+                                    android:background="@null"
+                                    android:hint="length less than 5"
                                     android:inputType="numberSigned"
-                                    android:textColor="@color/colorItemText"
                                     android:maxLength="5"
-                                    android:hint="length less than 5"/>
+                                    android:textColor="@color/colorItemText"
+                                    android:textSize="@dimen/font_size_16" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-    </LinearLayout>
+        </LinearLayout>
     </ScrollView>
     <!--bcast end ui-->
     <LinearLayout

@@ -63,6 +63,7 @@ import com.bravo.parse_generate_xml.conn_request.ConnRequestNotif;
 import com.bravo.parse_generate_xml.cs_fallback.CsFallbackRes;
 import com.bravo.parse_generate_xml.target_attach.TargetAttach;
 import com.bravo.parse_generate_xml.target_position.TargetPosition;
+import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -171,6 +172,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
         iCurBtsState = Integer.parseInt(SharePreferenceUtils.getInstance(context).getString("status_notif_bts" +
                 ((ProxyApplication)context.getApplicationContext()).getCurSocketAddress() +
                 ((ProxyApplication)context.getApplicationContext()).getiTcpPort(), "1"));
+        iCurBtsState = 3;
         if (iCurBtsState == 3 || iCurBtsState == 4) {
             BcastUIState(BCAST_END);
             loadCurTargetList(adapterConnTarget, context);
@@ -1060,6 +1062,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     private int iCounter = 0;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetPosition(TargetPosition tp) {
+        Logs.d(TAG,"TargetPosition***************");
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(tp.getImsi());
         targetDataStruct.setAuthState(1);
@@ -1078,6 +1081,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetAttach(TargetAttach ta) {
+        Logs.d(TAG,"TargetAttach***************");
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(ta.getImsi());
         targetDataStruct.setImei(ta.getImei());
@@ -1090,6 +1094,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ConnReqNotif(ConnRequestNotif crn) {
+        Logs.d(TAG,"ConnReqNotif***************");
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(crn.getImsi());
         if (crn.getTechSpecific() != null)
@@ -1109,6 +1114,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     private int iBtsFiveCount = 0;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void StatusNotif(Status s) {
+        Logs.d(TAG,"StatusNotif***************");
         iCurBtsState = Integer.parseInt(s.getBtsState());
         strControlIP = s.getControllerClient();
         if (!TextUtils.isEmpty(s.getTech()) && !s.getTech().equals(strCurTech)) {
@@ -1150,6 +1156,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void BcastEndRes(BcastEndRes ber) {
+        Logs.d(TAG,"BcastEndRes***************");
         try {
             if (ber.getStatus().equals("SUCCESS")) {
                 iCurBtsState = 1;
@@ -1167,6 +1174,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void BcastStartRes(BcastStartRes bsr) {
+        Logs.d(TAG,"BcastStartRes***************");
         try {
             if (bsr.getStatus().equals("SUCCESS")) {
                 bDialogState = false;
@@ -1198,6 +1206,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void CellScanNotif(CellScanNotif scn){
+        Logs.d(TAG,"CellScanNotif***************");
         if (scn.getCells().size() > 0) {
             switchList(true);
             for (int i = 0; i < scn.getCells().size(); i++) {
@@ -1210,6 +1219,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetDetach(TargetDetach targetDetach) {
+        Logs.d(TAG,"TargetDetach***************");
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(targetDetach.getImsi());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
@@ -1218,6 +1228,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void CSFallBack(CsFallbackRes csFallbackRes) {
+        Logs.d(TAG,"CSFallBack***************");
         if (csFallbackRes.getStatus().equals("SUCCESS")) {
             CustomToast.showToast(context, "cs fallback success");
         } else {

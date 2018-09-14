@@ -54,6 +54,16 @@ public  class udpBroadCast extends Thread {
             e.printStackTrace();
         }
     }
+    public void sendMsg(String sIP,int sPort,String dataString) {
+        byte[] buf = dataString.getBytes();
+        //创建发送方的数据报信息(包的最大长度为64k)
+        try {
+            group = InetAddress.getByName(sIP);
+            ms.send(new DatagramPacket(buf, buf.length ,group, sPort));//通过套接字发送数据
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void run() {
@@ -78,7 +88,7 @@ public  class udpBroadCast extends Thread {
                         {
                             Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
                         }
-                        sendBroadMsg(EncodeApXmlMessage(msg.msgId+1,msg));
+                        sendMsg(dp.getAddress().getHostAddress(),dp.getPort(),EncodeApXmlMessage(msg.msgId+1,msg));
 
                         //wifiAP.StartPing(dp.getAddress().getHostAddress());
                         //EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));

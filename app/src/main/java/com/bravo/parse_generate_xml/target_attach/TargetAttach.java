@@ -1,5 +1,7 @@
 package com.bravo.parse_generate_xml.target_attach;
 
+import com.bravo.xml.FindMsgStruct;
+import com.bravo.xml.Msg_Body_Struct;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -19,6 +21,15 @@ public class TargetAttach {
     private String imei;
     @XStreamAlias("tech-specific")
     private TargetAttachTechSpecific techSpecific;
+
+    public static TargetAttach xmlToBean(Msg_Body_Struct struct) {
+        if (!struct.type.equals("scanner")) return null;
+        TargetAttach target = new TargetAttach();
+        target.version = "1.0.1";
+        target.imsi = FindMsgStruct.GetMsgStringValueInList("imsi",struct.dic,"");
+        target.imei = "dd";
+        return target;
+    }
 
     public static String toXml(TargetAttach tlr){
         XStream xStream = new XStream(new DomDriver("UTF-8"));

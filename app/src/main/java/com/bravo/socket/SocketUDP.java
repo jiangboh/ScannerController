@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.bravo.parse_generate_xml.ex_config.ConfigRsp;
 import com.bravo.parse_generate_xml.ex_status.StatusNotif;
+import com.bravo.parse_generate_xml.target_attach.TargetAttach;
 import com.bravo.parse_generate_xml.udp.ActionResponse;
 import com.bravo.parse_generate_xml.udp.BTSOnline;
 import com.bravo.utils.Logs;
@@ -117,6 +118,10 @@ public class SocketUDP {
                         {
                             Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
                         }
+
+                        TargetAttach ta = TargetAttach.xmlToBean(msg);
+                        if (ta != null)
+                            EventBus.getDefault().post(ta);
                         send(packet.getAddress().getHostAddress(), packet.getPort(),EncodeApXmlMessage(msg.msgId+1,msg));
                     }
                     socket.close();

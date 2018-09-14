@@ -29,6 +29,7 @@ import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
 import com.bravo.parse_generate_xml.Status;
+import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
@@ -153,7 +154,10 @@ public class FunActivity extends BaseActivity {
             case 2:
                 //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onLogClicked();
+
+                //发送广播
                 EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, "Ip=" + getWifiIp(this)));
+
                 Logs.w("RecordOnClick", "Enter Log Function", "Record_Event", true);
                 break;
             case 3:
@@ -163,7 +167,8 @@ public class FunActivity extends BaseActivity {
                 break;
             case 4:
                 //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                onSystemClicked();
+                //onSystemClicked();
+                onScannerClicked();
                 Logs.w("RecordOnClick", "Enter System Function", "Record_Event", true);
                 break;
             case 5:
@@ -362,6 +367,24 @@ public class FunActivity extends BaseActivity {
 
         /*Intent intent = new Intent(this,NetTestActivity.class);
         startActivityWithAnimation(intent);*/
+    }
+
+    private void onScannerClicked(){
+        Intent intent = new Intent(mContext,RevealAnimationActivity.class);
+        ArrayList<String> menuList = new ArrayList<String>();
+        menuList.add("Scanner");
+        intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
+
+        ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
+        fragments.add(new FragmentScannerListen());
+        intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
+        //icon
+        ArrayList<Integer> iconsResId = new ArrayList<Integer>();
+        iconsResId.add(R.drawable.icon_broadcast_selector);
+        intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
+
+        intent.putExtra(RevealAnimationActivity.TITLE, "Scanner");
+        startActivityWithAnimation(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
