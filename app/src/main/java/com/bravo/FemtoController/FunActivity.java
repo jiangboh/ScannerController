@@ -377,6 +377,7 @@ public class FunActivity extends BaseActivity {
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
+        //fragments.add(new Terminal_Fragmen());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();

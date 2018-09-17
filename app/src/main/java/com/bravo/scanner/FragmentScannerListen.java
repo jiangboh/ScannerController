@@ -1,7 +1,6 @@
 package com.bravo.scanner;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.POWER_SERVICE;
 import static com.bravo.femto.BcastCommonApi.secToTime;
 import static com.bravo.femto.BcastCommonApi.sendTargetList;
@@ -188,15 +186,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     }
 
     private void saveData() {
-        SharedPreferences preferences = context.getSharedPreferences("set_config",MODE_PRIVATE);
-        SharedPreferences.Editor editor=preferences.edit();
-        editor.putString("port" + strCurTech, edit_port.getText().toString());
-        editor.putString("retry" + strCurTech, edit_retry.getText().toString());
-        editor.putInt("mode" + strCurTech, spinner_mode.getSelectedItemPosition());
-        editor.putString("default_gw" + strCurTech, ipEdit_default_gw.getIPAddtrss());
-        editor.putString("nb_gw" + strCurTech, ipEdit_nb_gw.getIPAddtrss());
-        editor.putInt("interval_time" + strCurTech, spinner_interval.getSelectedItemPosition());
-        editor.commit();
+        
     }
 
     private void loadData() {
@@ -262,18 +252,21 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
+        Logs.d(TAG,"onPause***************");
         saveData();
         super.onPause();
     }
 
     @Override
     public void onStop() {
+        Logs.d(TAG,"onStop***************");
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
+        Logs.d(TAG,"onDestroy***************");
         super.onDestroy();
         switchBcastTimer(false);
 

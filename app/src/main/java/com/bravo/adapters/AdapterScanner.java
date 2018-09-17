@@ -117,7 +117,7 @@ public class AdapterScanner extends BaseAdapter {
         iCurAuthTotal++;
         for (int i = iCurAuthTotal; i < targetDataStructs.size(); i++) {
             if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                if (/*!TextUtils.isEmpty(targetDataStructs.get(i).getImei()) && */TextUtils.isEmpty(targetDataStruct.getImei())) {
+                if (TextUtils.isEmpty(targetDataStruct.getImei())) {
                     targetDataStructs.get(0).setImei(targetDataStructs.get(i).getImei());
                 }
                 targetDataStructs.get(0).setStrConntime(targetDataStructs.get(i).getStrConntime());
@@ -222,6 +222,7 @@ public class AdapterScanner extends BaseAdapter {
         return iCurAuthTotal;
     }
     private class ViewHolder {
+        LinearLayout layout_conntime;
         LinearLayout layout_name;
         TextView textViewName;
         TextView textViewImsi;
@@ -237,6 +238,7 @@ public class AdapterScanner extends BaseAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.adapter_conn_target, null);
+            holder.layout_conntime = (LinearLayout) convertView.findViewById(R.id.layout_conntime);
             holder.textViewName = ((TextView) convertView.findViewById(R.id.name));
             holder.textViewImsi = ((TextView) convertView.findViewById(R.id.imsi));
             holder.textViewConntime = ((TextView)convertView.findViewById(R.id.conntime));
@@ -338,8 +340,8 @@ public class AdapterScanner extends BaseAdapter {
         }
 
         //conntime
-        holder.textViewConntime.setText(targetDataStructs.get(position).getStrConntime());
-
+        holder.textViewConntime.setText("targetDataStructs.get(position).getStrConntime()");
+        holder.layout_conntime.setVisibility(View.GONE);
         //count
         holder.textViewCount.setText("Conn Count " + targetDataStructs.get(position).getCount());
         return convertView;
