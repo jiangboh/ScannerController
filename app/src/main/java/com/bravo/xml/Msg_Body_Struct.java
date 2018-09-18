@@ -15,6 +15,9 @@ public class Msg_Body_Struct
     public HashMap<String, Object> dic;
     public List<Name_DIC_Struct> n_dic;
 
+    public static final String BroadCast = "BroadCast";
+    public static final String BroadCast_result = "BroadCast_result";
+
     public Msg_Body_Struct(int id,String type)
     {
         this.msgId = id;

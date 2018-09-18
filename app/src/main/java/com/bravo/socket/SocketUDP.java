@@ -2,13 +2,8 @@ package com.bravo.socket;
 
 import android.content.Context;
 
-import com.bravo.parse_generate_xml.ex_config.ConfigRsp;
-import com.bravo.parse_generate_xml.ex_status.StatusNotif;
-import com.bravo.parse_generate_xml.target_attach.TargetAttach;
-import com.bravo.parse_generate_xml.udp.ActionResponse;
-import com.bravo.parse_generate_xml.udp.BTSOnline;
+import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
-import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.xml.Msg_Body_Struct;
 
 import org.greenrobot.eventbus.EventBus;
@@ -22,24 +17,25 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
-import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by lenovo on 2016/12/22.
  */
 
 public class SocketUDP {
-    private int port;
     private boolean stopReceive = false;
     private final String TAG = "SocketUDP";
     private DatagramSocket socket;
     private Context context;
+    private int port;
 
     public SocketUDP(Context context,int port) {
         this.context = context;
+        this.port = port;
         try {
             //socket = new DatagramSocket(8001 + new Random().nextInt(1000));
             socket = new DatagramSocket(port);
+            Logs.d(TAG,"启动UDP监听，监听端口：" + port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -89,52 +85,67 @@ public class SocketUDP {
         new Thread(){
             @Override
             public void run() {
+                Logs.d(TAG,"启动UDP消息接收线程，监听端口：" + port);
                 try {
                     byte data[] = new byte[8 * 1024];
                     DatagramPacket packet = new DatagramPacket(data, data.length);
                     while(!stopReceive){
-                        socket.receive(packet);
-                        //把接收到的data转换为String字符串
-                        String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
-                        Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
-
-                        /*ProtocolStartAndEndTag startAndEndTag = new ProtocolStartAndEndTag();
-                        ArrayList<String> headers = startAndEndTag.getUdpHeaders();
-                        HashMap<String,String> correspondEnds = startAndEndTag.getCorrespondEnd();
-                        for(String header : headers){
-                            String endTag = correspondEnds.get(header);
-                            //Log.d(TAG,"header == " + header + "endTag == " + endTag);
-                            if(result.contains(header)&&result.contains(endTag)){
-                                Log.d(TAG,"UDP数据：" + result);
-                                parseXml(result,packet.getAddress().getHostAddress(), packet.getPort());
-                            }else{
-//                                Log.d(TAG,"UDP数据不完整：" + result);
+                        try {
+                            socket.receive(packet);
+                            //把接收到的data转换为String字符串
+                            String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
+                            Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
+                            try {
+                                HandleMsg(packet.getAddress().getHostAddress(),packet.getPort(),result);
+                            } catch (Exception e) {
+                                Logs.e(TAG, "处理收到的消息出错：" + e.getMessage());
                             }
-                        }*/
-                        Msg_Body_Struct msg = DecodeApXmlMessage(result);
-                        Logs.d(TAG,"接收消息id：" + msg.msgId);
-                        Logs.d(TAG,"接收消息类型：" + msg.type);
-                        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
-                        {
-                            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Logs.d(TAG, "接收UDP消息异常：" + e.getMessage());
                         }
-
-                        TargetAttach ta = TargetAttach.xmlToBean(msg);
-                        if (ta != null)
-                            EventBus.getDefault().post(ta);
-                        send(packet.getAddress().getHostAddress(), packet.getPort(),EncodeApXmlMessage(msg.msgId+1,msg));
                     }
                     socket.close();
                     socket = null;
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                    Logs.d(TAG,"接收UDP消息异常：" + e.getMessage());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Logs.d(TAG,"接收UDP消息异常：" + e.getMessage());
                     e.printStackTrace();
+                    socket.close();
+                    socket = null;
                 }
             }
         }.start();
+    }
+
+    private void HandleMsg(String ip,int port,String result)
+    {
+        Msg_Body_Struct msg = DecodeApXmlMessage(result);
+        if (msg == null) return;
+
+        Logs.d(TAG,"接收消息id：" + msg.msgId);
+        Logs.d(TAG,"接收消息类型：" + msg.type);
+        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
+        {
+            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
+        }
+
+        if (msg.type.equalsIgnoreCase(Msg_Body_Struct.BroadCast_result))
+        {
+            FindDeviceInfo fdi = FindDeviceInfo.xmlToBean(msg);
+            if (fdi != null)
+                EventBus.getDefault().post(fdi);
+        }
+        else
+        {
+            Logs.e(TAG,String.format("消息类型(%s)为不支持的消息类型！",msg.type));
+        }
+        /*TargetAttach ta = TargetAttach.xmlToBean(msg);
+                        if (ta != null)
+                            EventBus.getDefault().post(ta);*/
+
+
+
+       // EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));
     }
 
     /**
@@ -143,39 +154,10 @@ public class SocketUDP {
      *@return void
      **/
     public void stopReceive(){
+        Logs.d(TAG,"暂停UDP消息接，监听端口：" + port);
         stopReceive = true;
     }
 
-    private void parseXml(String str,String ipAddress, int iPort){
-        //Logs.w(TAG,"解析前的UDP数据为：" + str);
-        if(str.startsWith("<bts-online")){
-            Logs.d("<bts-online","BTSOnline返回数据为：" + str);
-            BTSOnline bs = BTSOnline.xmlToBean(str);
-            Logs.d("<bts-online","BTSOnline解析后的数据为：" + bs.toString());
-            EventBus.getDefault().post(bs);
-        /*}else if(str.startsWith("<register-client")){
-            //TODO
-        }else if(str.startsWith("<set-config")){
-            //TODO
-        }else if(str.startsWith("<unregister-client")){
-            //TODO*/
-        }else if(str.startsWith("<action-response")){
-            ActionResponse ar = ActionResponse.xmlToBean(str);
-            Logs.d(TAG,ar.toString()+"   actionStatus == " + ar.getActionStatus());
-            if("register-client".equals(ar.getActionType())){
-                SharePreferenceUtils.getInstance(context).setString("registe",ar.getActionStatus());
-            }else if("unregister-client".equals(ar.getActionType())){
-//                EventBus.getDefault().post(new EventBusMsgStopTCPSocket(ipAddress));
-            }
-            EventBus.getDefault().post(ar);
-        }else if(str.startsWith("<ex-config-rsp")){
-            ConfigRsp cr = ConfigRsp.xmlToBean(str);
-            Logs.d(TAG,"解析出ex-config-rsp数据：" + cr.toString());
-            EventBus.getDefault().post(cr);
-        } else if(str.startsWith("<ex-status-notif")){
-            StatusNotif sn = StatusNotif.xmlToBean(str);
-            Logs.d(TAG,"解析出ex-status-notif数据：" + sn.toString());
-            EventBus.getDefault().post(sn);
-        }
-    }
+
+
 }

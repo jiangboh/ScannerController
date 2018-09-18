@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bravo.Find.FragmentFind;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.GSM_Fragment;
@@ -30,7 +31,6 @@ import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
 import com.bravo.parse_generate_xml.Status;
 import com.bravo.scanner.FragmentScannerListen;
-import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
 import com.bravo.status.HwMonitor_Fragment;
@@ -41,14 +41,11 @@ import com.bravo.test.Terminal_Fragmen;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static com.bravo.utils.Utils.getWifiIp;
 
 
 public class FunActivity extends BaseActivity {
@@ -156,8 +153,8 @@ public class FunActivity extends BaseActivity {
                 //onLogClicked();
 
                 //发送广播
-                EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, "Ip=" + getWifiIp(this)));
-
+                //EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, "Ip=" + getWifiIp(this)));
+                onFindClicked();
                 Logs.w("RecordOnClick", "Enter Log Function", "Record_Event", true);
                 break;
             case 3:
@@ -385,6 +382,25 @@ public class FunActivity extends BaseActivity {
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "Scanner");
+        startActivityWithAnimation(intent);
+    }
+
+    private void onFindClicked(){
+        Intent intent = new Intent(mContext,RevealAnimationActivity.class);
+        ArrayList<String> menuList = new ArrayList<String>();
+        menuList.add("Find");
+        intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
+
+        ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
+        fragments.add(new FragmentFind());
+        //fragments.add(new Terminal_Fragmen());
+        intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
+        //icon
+        ArrayList<Integer> iconsResId = new ArrayList<Integer>();
+        iconsResId.add(R.drawable.icon_scan_default);
+        intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
+
+        intent.putExtra(RevealAnimationActivity.TITLE, "Find");
         startActivityWithAnimation(intent);
     }
 

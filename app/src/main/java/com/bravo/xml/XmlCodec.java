@@ -110,7 +110,7 @@ public class XmlCodec {
     /// </summary>
     /// <param name="KeyValueList">键值对列表</param>
     /// <returns>封装后的xml消息</returns>
-    static public String EncodeApXmlMessage(int id, Msg_Body_Struct TypeKeyValue)
+    static public String EncodeApXmlMessage(Msg_Body_Struct TypeKeyValue)
     {
         //初始化一个xml实例
         Document myXmlDoc = null;
@@ -132,7 +132,7 @@ public class XmlCodec {
 
             //添加消息id
             Element levelId = myXmlDoc.createElement("id");
-            levelId.setTextContent(String.valueOf(id));
+            levelId.setTextContent(String.valueOf(TypeKeyValue.msgId));
             levelElement1.appendChild(levelId);
 
             //初始化第二层节点（消息类型）

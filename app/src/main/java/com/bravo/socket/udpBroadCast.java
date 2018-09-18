@@ -13,7 +13,6 @@ import java.net.MulticastSocket;
 import java.util.Map;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
-import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by user on 15-5-4.
@@ -39,7 +38,7 @@ public  class udpBroadCast extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            this.start();
+            //this.start();
         }
     }
 
@@ -77,29 +76,35 @@ public  class udpBroadCast extends Thread {
                     if (dp.getAddress() != null) {
                         String result = new String(dp.getData(), dp.getOffset(), dp.getLength(), "UTF-8");
                         //BTSOnline btsOnline = BTSOnline.xmlToBean(result);
-                        Logs.w(TAG, "接收到的UDP广播数据为：" + result);
-
-                        Msg_Body_Struct msg = DecodeApXmlMessage(result);
-                        if (msg == null) continue;
-
-                        Logs.d(TAG,"接收消息id：" + msg.msgId);
-                        Logs.d(TAG,"接收消息类型：" + msg.type);
-                        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
-                        {
-                            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
+                        try {
+                            Logs.w(TAG, "接收到的UDP广播数据为：" + result);
+                            HandleMsg(result);
+                        } catch (Exception e) {
+                            Logs.e(TAG, "处理收到的消息出错：" + e.getMessage());
                         }
-                        sendMsg(dp.getAddress().getHostAddress(),dp.getPort(),EncodeApXmlMessage(msg.msgId+1,msg));
-
-                        //wifiAP.StartPing(dp.getAddress().getHostAddress());
-                        //EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Logs.e(TAG, "接收处理收到的消息出错：" + e.getMessage());
             }
         }
         ms.close();
         ms = null;
+    }
+    private void HandleMsg(String result)
+    {
+
+        Msg_Body_Struct msg = DecodeApXmlMessage(result);
+        if (msg == null) return;
+
+        Logs.d(TAG,"接收消息id：" + msg.msgId);
+        Logs.d(TAG,"接收消息类型：" + msg.type);
+        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
+        {
+            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
+        }
+
+        //EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));
     }
 
     public void closeMS() {
