@@ -17,10 +17,12 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
-import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
+import com.bravo.socket_service.CommunicationService;
+import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
 import com.bravo.xml.Msg_Body_Struct;
 
@@ -72,6 +74,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         ((RevealAnimationActivity)context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
+                adapterFind.RemoveAll();
                 SwitchView(true);
             }
         });
@@ -91,7 +94,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         imageView = (ImageView) contentView.findViewById(R.id.FindImageView);
 
         TargetListView = (ListView) contentView.findViewById(R.id.findDeviceList);
-        adapterFind = new AdapeterFind(context);
+        adapterFind = new AdapeterFind(context,true);
         TargetListView.setAdapter(adapterFind);
         TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
             @Override
@@ -126,10 +129,12 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.BroadCast);
         msg.dic.put("ip",getWifiIp(context));
-        msg.dic.put("port",14721);
+        msg.dic.put("port", CommunicationService.udpPort);
         String sendText = EncodeApXmlMessage(msg);
         //发送广播
-        EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, sendText));
+        //EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, sendText));
+
+        EventBus.getDefault().post(new EventBusMsgSendUDPMsg("192.168.100.102", CommunicationService.udpBroadCastPort, sendText));
     }
 
 
@@ -260,7 +265,13 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         deviceDataStruct.setMode(fdi.getMode());
         deviceDataStruct.setIp(fdi.getIp());
         deviceDataStruct.setPort(fdi.getPort());
-
-        adapterFind.FindDeviceTarget(deviceDataStruct);
+        if (-1 == DeviceFragmentStruct.inListIndex(fdi.getSN())) {
+            deviceDataStruct.setiState(DeviceDataStruct.OFF_LINE);
+        }
+        else
+        {
+            deviceDataStruct.setiState(DeviceDataStruct.ON_LINE);
+        }
+        adapterFind.DeviceListTarget(deviceDataStruct);
     }
 }

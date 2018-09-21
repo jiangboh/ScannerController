@@ -12,8 +12,16 @@ import android.widget.TextView;
 
 import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.socket_service.CommunicationService;
+import com.bravo.socket_service.EventBusMsgSendUDPMsg;
+import com.bravo.xml.Msg_Body_Struct;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+
+import static com.bravo.utils.Utils.getWifiIp;
+import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by admin on 2018-9-17.
@@ -26,11 +34,11 @@ public class AdapeterFind  extends BaseAdapter {
     //private int iCurPosition;
     private String strCurTech;
     private int iCurFindTotal = 0;
-    //private RadioButton radioButton;
+    private boolean findList = true;
     private TextView tvTotal;
 
-    public AdapeterFind(Context context) {
-        //this.radioButton = radioButton;
+    public AdapeterFind(Context context,boolean findList) {
+        this.findList = findList;
         this.mContext = context;
         //iCurPosition = -1;
     }
@@ -72,9 +80,7 @@ public class AdapeterFind  extends BaseAdapter {
     public void RemoveAll() {
         deviceDataStructs.clear();
         iCurFindTotal = 0;
-        if (tvTotal != null) {
-            tvTotal.setText("0");
-        }
+
         notifyDataSetChanged();
     }
 
@@ -109,36 +115,51 @@ public class AdapeterFind  extends BaseAdapter {
         holder.Ip.setText(deviceDataStructs.get(position).getIp());
         holder.Port.setText(String.valueOf(deviceDataStructs.get(position).getPort()));
 
-        //holder.fullname_layout.setVisibility(View.GONE);
-        //holder.addImage.setVisibility(View.GONE);
+        if (findList) {
+            holder.imageView.setVisibility(View.GONE);
+            holder.addImage.setVisibility(View.VISIBLE);
 
-        holder.imageView.setVisibility(View.GONE);
+            holder.addImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "点击添加按钮。。。");
+                    Log.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort());
 
-        holder.addImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG,"点击添加按钮。。。");
-                Log.d(TAG,"ip=" + deviceDataStructs.get(position).getIp() +";" + deviceDataStructs.get(position).getPort());
+                    Msg_Body_Struct text = new Msg_Body_Struct(0, Msg_Body_Struct.SetUDPServerIp);
+                    text.dic.put("ip", getWifiIp(mContext));
+                    text.dic.put("port", CommunicationService.udpPort);
+                    String sendText = EncodeApXmlMessage(text);
+
+                    EventBusMsgSendUDPMsg msg = new EventBusMsgSendUDPMsg(
+                            deviceDataStructs.get(position).getIp(),
+                            deviceDataStructs.get(position).getPort(),
+                            sendText);
+
+                    EventBus.getDefault().post(msg);
+                }
+            });
+
+            if (deviceDataStructs.get(position).getiState() == DeviceDataStruct.ON_LINE) {
+                holder.addImage.setVisibility(View.INVISIBLE);
+            } else {
+                holder.addImage.setVisibility(View.VISIBLE);
             }
-        });
-        /*String mode = deviceDataStructs.get(position).getMode();
-        if (mode.equalsIgnoreCase("LTE"))
-        {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(),R.drawable.icon_4g_default));
+        } else {
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.addImage.setVisibility(View.GONE);
+
+
         }
-        else if (mode.equalsIgnoreCase("WCDMA"))
-        {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(),R.drawable.icon_3g_default));
-        }
-        else if (mode.equalsIgnoreCase("GSM"))
-        {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(),R.drawable.icon_2g_default));
-        }
-        else
-        {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(),R.drawable.icon_4g_default));
-        }*/
-        return convertView;
+        return convertView;/* String mode = deviceDataStructs.get(position).getMode();
+            if (mode.equalsIgnoreCase("LTE")) {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
+            } else if (mode.equalsIgnoreCase("WCDMA")) {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_default));
+            } else if (mode.equalsIgnoreCase("GSM")) {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_default));
+            } else {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
+            }*/
     }
 
     private class ViewHolder {
@@ -152,14 +173,24 @@ public class AdapeterFind  extends BaseAdapter {
         LinearLayout fullname_layout;
     }
 
-    public void FindDeviceTarget(DeviceDataStruct deviceDataStruct) {
+    public void DeviceListTarget(DeviceDataStruct deviceDataStruct) {
+        boolean newDevice = true;
+
         for (int i = 0; i < iCurFindTotal; i++) {
             if (deviceDataStruct.getSN().equals(deviceDataStructs.get(i).getSN())) {
-                return;
+                deviceDataStructs.get(i).setiState(deviceDataStruct.getiState());
+
+                newDevice = false;
+                break;
+                //return;
             }
         }
-        deviceDataStructs.add(0, deviceDataStruct);
-        iCurFindTotal++;
+
+        if (newDevice) {
+            deviceDataStruct.setiState(DeviceDataStruct.ON_LINE);
+            deviceDataStructs.add(deviceDataStruct);
+            iCurFindTotal++;
+        }
 
         notifyDataSetChanged();
     }

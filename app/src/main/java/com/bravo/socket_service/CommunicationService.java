@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.FemtoController.TranslucentActivity;
+import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.parse_generate_xml.ErrorNotif;
 import com.bravo.parse_generate_xml.udp.UnregisterClient;
 import com.bravo.socket.SocketTCP;
@@ -21,6 +22,7 @@ import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.utils.SimpleDateUtils;
 import com.bravo.wifi.WifiAP;
 import com.bravo.wifi.WifiAdmin;
+import com.bravo.xml.HandleRecvXmlMsg;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,9 +43,9 @@ public class CommunicationService extends Service {
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
     private udpBroadCast udpBroadCast;
-    private int udpBroadCastPort = 14720;
-    private int udpPort = 14721;
-    private int lteServerPort = 14786;
+    public static final int udpBroadCastPort = 51888;
+    public static final int udpPort = 14721;
+    //private int lteServerPort = 14786;
 
     @Nullable
     @Override
@@ -58,6 +60,9 @@ public class CommunicationService extends Service {
         //socketTCP = new SocketTCP(this);
 
         udpBroadCast = new udpBroadCast(this,udpBroadCastPort);
+
+        //10秒检测一次Ap在线状态
+        DeviceFragmentStruct.StartCheckApTimer(10000);
 
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -100,8 +105,20 @@ public class CommunicationService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void RecvMsgHandle(EventBusMsgRecvXmlMsg msgType) {
+        Log.d(TAG,"收到UDP消息。");
+        try {
+            new HandleRecvXmlMsg(this).HandleRecvMsg(msgType);
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG,String.format("处理设备[%s:%d]消息出错。",msgType.getIp(),msgType.getPort()));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpMsg(EventBusMsgSendUDPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "发送的UDP数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "\n发送的UDP数据为：" + msgType.toString(),"Record_Event",true,true);
         if (socketUdp != null) {
             socketUdp.send(msgType.getIpAddress(), msgType.getPort(), msgType.getMsg());
         }
@@ -109,13 +126,13 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendTcpMsg(EventBusMsgSendTCPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ ",发送的TCP数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的TCP数据为：" + msgType.toString(),"Record_Event",true,true);
         socketTCP.sendData(msgType.getIpAddress(),msgType.getPort(),msgType.getMsg());
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpBroadcast(EventBusMsgSendUDPBroadcastMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ ",发送的UDP广播数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为：" + msgType.toString(),"Record_Event",true,true);
         udpBroadCast.sendBroadMsg(msgType.getMsg());
     }
 

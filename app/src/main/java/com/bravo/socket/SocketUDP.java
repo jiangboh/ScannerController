@@ -1,10 +1,10 @@
 package com.bravo.socket;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
+import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
-import com.bravo.xml.Msg_Body_Struct;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -14,9 +14,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Map;
-
-import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
 
 /**
  * Created by lenovo on 2016/12/22.
@@ -52,7 +49,7 @@ public class SocketUDP {
             public void run() {
                 try {
                     if (!msg.isEmpty()) {
-//                      Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
+                        Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
                         byte[] buf = msg.getBytes();
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)
@@ -61,16 +58,16 @@ public class SocketUDP {
                     }
                     else
                     {
-                        Logs.d(TAG,"发送UDP消息内容为空!");
+                        Logs.e(TAG,"发送UDP消息内容为空!");
                     }
                 } catch (UnknownHostException e) {
-                    Logs.d(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
                     e.printStackTrace();
                 } catch (SocketException e) {
-                    Logs.d(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
                     e.printStackTrace();
                 } catch (IOException e) {
-                    Logs.d(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -95,11 +92,8 @@ public class SocketUDP {
                             //把接收到的data转换为String字符串
                             String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
                             Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
-                            try {
-                                HandleMsg(packet.getAddress().getHostAddress(),packet.getPort(),result);
-                            } catch (Exception e) {
-                                Logs.e(TAG, "处理收到的消息出错：" + e.getMessage());
-                            }
+                            //EventBus.getDefault().post(new EventBusMsgSendUDPMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
+                            EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                         } catch (Exception e) {
                             e.printStackTrace();
                             Logs.d(TAG, "接收UDP消息异常：" + e.getMessage());
@@ -117,36 +111,7 @@ public class SocketUDP {
         }.start();
     }
 
-    private void HandleMsg(String ip,int port,String result)
-    {
-        Msg_Body_Struct msg = DecodeApXmlMessage(result);
-        if (msg == null) return;
 
-        Logs.d(TAG,"接收消息id：" + msg.msgId);
-        Logs.d(TAG,"接收消息类型：" + msg.type);
-        for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
-        {
-            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
-        }
-
-        if (msg.type.equalsIgnoreCase(Msg_Body_Struct.BroadCast_result))
-        {
-            FindDeviceInfo fdi = FindDeviceInfo.xmlToBean(msg);
-            if (fdi != null)
-                EventBus.getDefault().post(fdi);
-        }
-        else
-        {
-            Logs.e(TAG,String.format("消息类型(%s)为不支持的消息类型！",msg.type));
-        }
-        /*TargetAttach ta = TargetAttach.xmlToBean(msg);
-                        if (ta != null)
-                            EventBus.getDefault().post(ta);*/
-
-
-
-       // EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));
-    }
 
     /**
      *@author Jack.liao

@@ -1,18 +1,48 @@
 package com.bravo.data_ben;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
+import com.bravo.utils.Logs;
+import com.bravo.xml.FindMsgStruct;
+import com.bravo.xml.Msg_Body_Struct;
+
+import java.util.ArrayList;
 
 /**
  * Created by admin on 2018-9-17.
  */
 
-public class DeviceDataStruct implements Parcelable {
+public class DeviceDataStruct {
+    private static final String TAG = "DeviceDataStruct";
+
     public static final int ON_LINE = 1;
     public static final int OFF_LINE = 0;
 
-    private final String TAG = "DeviceDataStruct";
+    public static class MODE {
+        public static final String NOMODE = "NOMODE";
+        public static final String LTE = "LTE";
+        public static final String WCDMA = "WCDMA";
+        public static final String GSM = "GSM";
+        public static final String GSM_V2 = "GSM_V2";
+        public static final String CDMA = "CDMA";
+    }
+
+    public static String String2Mode(String mode)
+    {
+        if (mode.equalsIgnoreCase("lte_fdd"))
+            return MODE.LTE;
+        else if (mode.equalsIgnoreCase("lte_tdd"))
+            return MODE.LTE;
+        else if (mode.equalsIgnoreCase("wcdma"))
+            return MODE.WCDMA;
+        else if (mode.equalsIgnoreCase("gsm"))
+            return MODE.GSM;
+        else if (mode.equalsIgnoreCase("gsm_v2"))
+            return MODE.GSM_V2;
+        else if (mode.equalsIgnoreCase("cdma"))
+            return MODE.CDMA;
+        else
+            return MODE.NOMODE;
+    }
+
 
     private String Ip;
     private int Port;
@@ -20,11 +50,38 @@ public class DeviceDataStruct implements Parcelable {
     private String Mode;
     private String FullName;
     private Long LastTime;
-    private int detail;
+    private Long detail;
     private String version;
+    private ArrayList<Msg_Body_Struct> msgList = new ArrayList<>();
     private int iState = OFF_LINE;
 
     public DeviceDataStruct() {
+
+    }
+
+    public DeviceDataStruct xmlToBean(String ip,int port,Msg_Body_Struct msg) {
+        DeviceDataStruct deviceInfo = new DeviceDataStruct();
+
+        String sn = FindMsgStruct.GetMsgStringValueInList("sn",msg.dic,"");
+        String mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.LTE);
+        if (mode.equals(DeviceDataStruct.MODE.NOMODE))
+        {
+            Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中Mode类型错误。",sn,ip,port));
+            return null;
+        }
+
+        deviceInfo.setIp(ip);
+        deviceInfo.setPort(port);
+        deviceInfo.setMode(mode);
+        deviceInfo.setSN(sn);
+        deviceInfo.setLastTime( System.currentTimeMillis());
+        deviceInfo.setFullName(FindMsgStruct.GetMsgStringValueInList("fullname",msg.dic,""));
+        deviceInfo.setVersion(FindMsgStruct.GetMsgStringValueInList("version",msg.dic,""));
+        String sd = FindMsgStruct.GetMsgStringValueInList("detail",msg.dic,"0x0");
+        Long detail = Long.valueOf(sd.replace("0x","").replace("0X",""),16);
+        deviceInfo.setDetail(detail);
+
+        return deviceInfo;
     }
 
     public Long getLastTime() {
@@ -35,11 +92,11 @@ public class DeviceDataStruct implements Parcelable {
         LastTime = lastTime;
     }
 
-    public int getDetail() {
+    public Long getDetail() {
         return detail;
     }
 
-    public void setDetail(int detail) {
+    public void setDetail(Long detail) {
         this.detail = detail;
     }
 
@@ -115,8 +172,16 @@ public class DeviceDataStruct implements Parcelable {
         return iState;
     }
 
+    public ArrayList<Msg_Body_Struct> getMsgList() {
+        return msgList;
+    }
 
-    @Override
+    public void setMsgList(ArrayList<Msg_Body_Struct> msgList) {
+        this.msgList = msgList;
+    }
+
+
+    /*@Override
     public int describeContents() {
         return 0;
     }
@@ -132,6 +197,37 @@ public class DeviceDataStruct implements Parcelable {
         dest.writeLong(LastTime);
         dest.writeInt(detail);
         dest.writeString(version);
+        dest.writeArray(msgList);
     }
+
+    public static final Creator<DeviceDataStruct> CREATOR = new Creator<DeviceDataStruct>()
+    {
+        @Override
+        public DeviceDataStruct[] newArray(int size)
+        {
+            return new DeviceDataStruct[size];
+        }
+
+        @Override
+        public DeviceDataStruct createFromParcel(Parcel in)
+        {
+            return new DeviceDataStruct(in);
+        }
+    };
+
+    public DeviceDataStruct(Parcel in) {
+        SN = in.readString();
+        FullName = in.readString();
+        Ip = in.readString();
+        Port = in.readInt();
+        detail = in.readInt();
+        Mode = in.readString();
+
+        version = in.readString();
+        iState = in.readInt();
+        LastTime = in.readLong();
+        msgList = in.readArrayList();
+    }*/
+
 
 }

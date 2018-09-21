@@ -275,7 +275,7 @@ public class XmlCodec {
             return null;
         }
 
-        if (idNode.getTextContent() == null || idNode.getTextContent().isEmpty())
+        if (idNode == null || idNode.getTextContent() == null || idNode.getTextContent().isEmpty())
             TypeKeyValueList.msgId = 0;
         else
             TypeKeyValueList.msgId = Integer.parseInt(idNode.getTextContent().trim(),10);

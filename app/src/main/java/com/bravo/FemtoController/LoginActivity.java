@@ -23,6 +23,7 @@ import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgConstant;
 import com.bravo.utils.FileUtils;
 import com.bravo.utils.SharePreferenceUtils;
+import com.bravo.xml.HandleRecvXmlMsg;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -147,6 +148,8 @@ public class LoginActivity extends BaseActivity {
     protected void initData(Bundle savedInstanceState) {
         Intent intent = new Intent(this,CommunicationService.class);
         startService(intent);
+        Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
+        startService(intent1);
     }
 
     private void requestPermission(){

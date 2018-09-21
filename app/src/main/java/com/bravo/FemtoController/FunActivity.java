@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bravo.Find.FragmentFind;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
+import com.bravo.config.Fragment_Device;
 import com.bravo.config.GSM_Fragment;
 import com.bravo.config.General_Fragment;
 import com.bravo.config.LTE_Fragment;
@@ -29,8 +30,9 @@ import com.bravo.femto.FragmentTarget;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
-import com.bravo.parse_generate_xml.Status;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.CommunicationService;
+import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
 import com.bravo.status.HwMonitor_Fragment;
@@ -40,12 +42,15 @@ import com.bravo.system.Upgrade_Fragment;
 import com.bravo.test.Terminal_Fragmen;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
+import com.bravo.xml.Msg_Body_Struct;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import static com.bravo.utils.Utils.getWifiIp;
+import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 
 public class FunActivity extends BaseActivity {
@@ -117,6 +122,8 @@ public class FunActivity extends BaseActivity {
         selectedIV.setVisibility(View.GONE);
         mCircleMenuLayout.setHandler(null);
 
+        ((TextView) findViewById(R.id.tv_sn)).setText("WiFi:" + getWifiIp(mContext));
+
         initStatusView();
     }
 
@@ -145,7 +152,8 @@ public class FunActivity extends BaseActivity {
                 break;
             case 1:
                 //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                onConfigClicked();
+                //onConfigClicked();
+                onSetDeviceClicked();
                 Logs.w("RecordOnClick", "Enter Config Function", "Record_Event", true);
                 break;
             case 2:
@@ -170,7 +178,16 @@ public class FunActivity extends BaseActivity {
                 break;
             case 5:
                 //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                onTestClicked();
+                //onTestClicked();
+                Msg_Body_Struct text = new Msg_Body_Struct(0,Msg_Body_Struct.SetUDPServerIp);
+                text.dic.put("ip",getWifiIp(mContext));
+                text.dic.put("port", CommunicationService.udpPort);
+                String sendText = EncodeApXmlMessage(text);
+
+                EventBusMsgSendUDPMsg msg = new EventBusMsgSendUDPMsg("192.168.100.102",51888,sendText);
+
+                EventBus.getDefault().post(msg);
+
                 Logs.w("RecordOnClick", "Enter Test Function", "Record_Event", true);
                 break;
         }
@@ -397,18 +414,37 @@ public class FunActivity extends BaseActivity {
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.icon_scan_default);
+        iconsResId.add(R.drawable.btn_scan_normal);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "Find");
         startActivityWithAnimation(intent);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    private void onSetDeviceClicked(){
+        Intent intent = new Intent(mContext,RevealAnimationActivity.class);
+        ArrayList<String> menuList = new ArrayList<String>();
+        menuList.add("DeviceList");
+        intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
+
+        ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
+        fragments.add(new Fragment_Device());
+        //fragments.add(new Terminal_Fragmen());
+        intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
+        //icon
+        ArrayList<Integer> iconsResId = new ArrayList<Integer>();
+        iconsResId.add(R.drawable.btn_config_normal);
+        intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
+
+        intent.putExtra(RevealAnimationActivity.TITLE, "DeviceList");
+        startActivityWithAnimation(intent);
+    }
+
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     public void StatusNotif(Status s) {
         super.StatusNotif(s);
         ((TextView) findViewById(R.id.tv_sn)).setText("SN:" + s.getFemtoSn());
         ((TextView) findViewById(R.id.tv_sw)).setText(s.getFemtoVer());
         ((TextView) findViewById(R.id.tv_tech_band)).setText("Tech:" + s.getTech() + "        Band:" + s.getBand());
-    }
+    }*/
 }

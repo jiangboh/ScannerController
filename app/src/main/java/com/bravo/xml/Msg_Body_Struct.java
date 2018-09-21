@@ -17,6 +17,13 @@ public class Msg_Body_Struct
 
     public static final String BroadCast = "BroadCast";
     public static final String BroadCast_result = "BroadCast_result";
+    public static final String SetUDPServerIp = "SetUDPServerIp";
+    public static final String SetUDPServerIp_result = "SetUDPServerIp_result";
+
+    public static final String status_response = "status_response";
+    public static final String status_request = "status_request";
+
+    public static final String scanner = "scanner";
 
     public Msg_Body_Struct(int id,String type)
     {

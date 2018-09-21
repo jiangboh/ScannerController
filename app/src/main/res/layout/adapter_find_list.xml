@@ -102,6 +102,7 @@
                     android:orientation="horizontal"
                     android:id="@+id/layout_mode">
                     <TextView
+                        android:id="@+id/name_mode"
                         android:layout_width="0dp"
                         android:textStyle="bold"
                         android:layout_weight="1"
@@ -212,10 +213,9 @@
             <TextView
                 android:id="@+id/addImageView"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="25dp"
-                android:background="@drawable/btn_add_normal"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_add_selected"
                 android:textColor="@android:color/white"
                 android:visibility="visible"/>
 
