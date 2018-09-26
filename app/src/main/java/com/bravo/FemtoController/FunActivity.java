@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.Find.FragmentFind;
+import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.Fragment_Device;
@@ -382,13 +383,13 @@ public class FunActivity extends BaseActivity {
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
-        fragments.add(new FragmentScannerListen());
+        fragments.add(new FragmentFindConfig());
         fragments.add(new FragmentScannerListen());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_broadcast_selector);
-        iconsResId.add(R.drawable.icon_basic_selector);
+        iconsResId.add(R.drawable.icon_config_selector);
         iconsResId.add(R.drawable.icon_history_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
@@ -405,12 +406,12 @@ public class FunActivity extends BaseActivity {
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentFind());
-        fragments.add(new FragmentFind());
+        fragments.add(new FragmentFindConfig());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_scan_selector);
-        iconsResId.add(R.drawable.icon_basic_selector);
+        iconsResId.add(R.drawable.icon_config_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "设备搜索");

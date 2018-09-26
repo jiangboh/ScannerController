@@ -39,7 +39,7 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
 
-        ((RevealAnimationActivity)context).getSettingBtn().setVisibility(View.VISIBLE);
+        ((RevealAnimationActivity)context).getSettingBtn().setVisibility(View.GONE);
         ((RevealAnimationActivity)context).getSettingBtn().setImageResource(R.drawable.btn_scan_normal);
         ((RevealAnimationActivity)context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override

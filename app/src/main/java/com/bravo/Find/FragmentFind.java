@@ -1,5 +1,6 @@
 package com.bravo.Find;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +35,7 @@ import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.bravo.R.drawable.btn_scan_normal;
 import static com.bravo.utils.Utils.getWifiBroadcastIp;
 import static com.bravo.utils.Utils.getWifiIp;
@@ -45,7 +47,6 @@ import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 public class FragmentFind extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentFind";
-    private final int AllFindTime = 10; //搜索时间
 
     private final int FIND_END = 0;
     private final int  FIND_START = 1;
@@ -65,8 +66,11 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     private Boolean isFind = false;
 
+    private int AllFindTime ; //搜索时间
+
     @Override
     public void onResume() {
+        Logs.d(TAG,"onResume");
         super.onResume();
         loadData();
         if (!EventBus.getDefault().isRegistered(this))
@@ -86,11 +90,12 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void initView() {
-
+        Logs.d(TAG,"initView");
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        Logs.d(TAG,"initData");
         findImageViewLayout= (LinearLayout)contentView.findViewById(R.id.FindImageViewLayout);
         findImageViewLayout.setVisibility(View.GONE);
 
@@ -117,6 +122,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Logs.d(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_find);
     }
@@ -126,7 +132,8 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     }
 
     private void loadData() {
-
+        SharedPreferences sp = context.getSharedPreferences(FragmentFindConfig.TABLE_NAME, MODE_PRIVATE);
+        AllFindTime = sp.getInt(FragmentFindConfig.tn_AllFindTime,10);
     }
 
     private void BroadCast()

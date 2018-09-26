@@ -5,8 +5,8 @@
     android:focusableInTouchMode="true"
     android:background="#F2F2F2"
     android:paddingTop="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
     android:orientation="vertical"
     android:weightSum="1">
     <!--bcast start ui-->
@@ -26,16 +26,31 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Timer:"
+                android:text="捕号时间:"
+                android:textStyle="bold"
                 android:textColor="@color/colorItemText"/>
             <TextView
                 android:id="@+id/scanner_timemeter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:textColor="@color/colorItemText"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
+                android:text="捕号数量:"
+                android:textColor="@color/colorItemText"/>
+            <TextView
+                android:id="@+id/cur_Total"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="0"
                 android:textColor="@color/colorItemText"/>
         </LinearLayout>
-        <!--Total-->
+        <!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,12 +69,14 @@
                 android:text="0"
                 android:textColor="@color/colorItemText"/>
         </LinearLayout>
+        -->
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@drawable/item_bg"
         android:id="@+id/layout_scannerListen">
 
         <!--list-->
