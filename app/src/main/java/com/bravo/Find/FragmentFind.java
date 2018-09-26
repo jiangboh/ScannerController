@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
@@ -17,12 +18,11 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.DeviceDataStruct;
-import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.socket_service.CommunicationService;
-import com.bravo.socket_service.EventBusMsgSendUDPMsg;
+import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
 import com.bravo.utils.Logs;
 import com.bravo.xml.Msg_Body_Struct;
 
@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.bravo.R.drawable.btn_scan_normal;
+import static com.bravo.utils.Utils.getWifiBroadcastIp;
 import static com.bravo.utils.Utils.getWifiIp;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
@@ -43,7 +45,7 @@ import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 public class FragmentFind extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentFind";
-
+    private final int AllFindTime = 10; //搜索时间
 
     private final int FIND_END = 0;
     private final int  FIND_START = 1;
@@ -56,6 +58,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     private int StartFindNum = 0;
     private LinearLayout findImageViewLayout;
     private ImageView imageView;
+    private TextView residualTime;
 
     private ListView TargetListView;
     private AdapeterFind adapterFind;
@@ -70,7 +73,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
             EventBus.getDefault().register(this);
 
         ((RevealAnimationActivity)context).getSettingBtn().setVisibility(View.VISIBLE);
-        ((RevealAnimationActivity)context).getSettingBtn().setImageResource(R.drawable.btn_scan_normal);
+        ((RevealAnimationActivity)context).getSettingBtn().setImageResource(btn_scan_normal);
         ((RevealAnimationActivity)context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
@@ -109,6 +112,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
             }
         });
+        residualTime = (TextView) contentView.findViewById(R.id.residualTime);
     }
 
     @Override
@@ -132,9 +136,10 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         msg.dic.put("port", CommunicationService.udpPort);
         String sendText = EncodeApXmlMessage(msg);
         //发送广播
-        //EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, sendText));
+        EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg(getWifiBroadcastIp(context),
+                CommunicationService.udpBroadCastPort_lte, sendText));
 
-        EventBus.getDefault().post(new EventBusMsgSendUDPMsg("192.168.100.102", CommunicationService.udpBroadCastPort, sendText));
+        //EventBus.getDefault().post(new EventBusMsgSendUDPMsg("192.168.100.102", CommunicationService.udpBroadCastPort_lte, sendText));
     }
 
 
@@ -145,7 +150,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
             Logs.d(TAG,"StartFindNum=" + StartFindNum);
 
             BroadCast();
-            if (StartFindNum > 10)
+            if (StartFindNum > AllFindTime)
             {
                 SwitchView(false);
             }
@@ -205,22 +210,29 @@ public class FragmentFind extends RevealAnimationBaseFragment {
             Logs.d(TAG,"what=" + msg.what);
             switch (msg.what) {
                 case FIND_START:
+                    residualTime.setText("搜索剩余" + (AllFindTime) + "秒");
                     findImageViewLayout.setVisibility(View.VISIBLE);
                     ((RevealAnimationActivity)context).getSettingBtn().setVisibility(View.GONE);
                     break;
                 case FIND_END:
+                    residualTime.setText("");
                     findImageViewLayout.setVisibility(View.GONE);
                     ((RevealAnimationActivity)context).getSettingBtn().setVisibility(View.VISIBLE);
+                    break;
                 case FIND_BACK_0:
+                    residualTime.setText("搜索剩余" + (AllFindTime - StartFindNum) + "秒");
                     imageView.setImageDrawable(ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.ic_wifi_signal_1_dark));
                     break;
                 case FIND_BACK_1:
+                    residualTime.setText("搜索剩余" + (AllFindTime - StartFindNum) + "秒");
                     imageView.setImageDrawable(ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.ic_wifi_signal_2_dark));
                     break;
                 case FIND_BACK_2:
+                    residualTime.setText("搜索剩余" + (AllFindTime - StartFindNum) + "秒");
                     imageView.setImageDrawable(ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.ic_wifi_signal_3_dark));
                     break;
                 case FIND_BACK_3:
+                    residualTime.setText("搜索剩余" + (AllFindTime - StartFindNum) + "秒");
                     imageView.setImageDrawable(ContextCompat.getDrawable(context.getApplicationContext(),R.drawable.ic_wifi_signal_4_dark));
                     break;
                 default:
@@ -253,25 +265,23 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetAttach(FindDeviceInfo fdi) {
-        Logs.d(TAG,"接收消息内容***************");
+        Logs.d(TAG,"接收到广播回应消息");
         if (!isFind)
         {
             Logs.d(TAG,"不是设备搜索接收时间！");
             return;
         }
-        DeviceDataStruct deviceDataStruct = new DeviceDataStruct();
-        deviceDataStruct.setSN(fdi.getSN());
-        deviceDataStruct.setFullName(fdi.getFullName());
-        deviceDataStruct.setMode(fdi.getMode());
-        deviceDataStruct.setIp(fdi.getIp());
-        deviceDataStruct.setPort(fdi.getPort());
-        if (-1 == DeviceFragmentStruct.inListIndex(fdi.getSN())) {
-            deviceDataStruct.setiState(DeviceDataStruct.OFF_LINE);
-        }
-        else
-        {
-            deviceDataStruct.setiState(DeviceDataStruct.ON_LINE);
-        }
-        adapterFind.DeviceListTarget(deviceDataStruct);
+
+        adapterFind.DeviceListTarget(new DeviceDataStruct().xmlToBean(fdi));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void TargetAttach(Msg_Body_Struct mbs) {
+        Logs.d(TAG,"接收到设备上线消息");
+        FindDeviceInfo fdi = FindDeviceInfo.xmlToBean(mbs);
+        DeviceDataStruct dds = new DeviceDataStruct();
+        dds.setSN(fdi.getSN());
+        dds.setiState(DeviceDataStruct.ON_LINE);
+        adapterFind.DeviceListChange(dds);
     }
 }

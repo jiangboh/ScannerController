@@ -17,6 +17,7 @@
             android:layout_weight="10"
             android:divider="#000000"
             android:dividerHeight="0dp"
+            android:transcriptMode="alwaysScroll"
             android:cacheColorHint="@android:color/transparent"
             android:listSelector="@android:color/transparent" />
 
@@ -26,16 +27,34 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@mipmap/fragment_title_bg"
-            android:orientation="vertical"
-            android:layout_gravity="center"
+            android:orientation="horizontal"
             android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.35"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:text="" />
 
             <ImageView
                 android:id="@+id/FindImageView"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="0.3"
                 app:srcCompat="@drawable/ic_wifi_signal_4_dark" />
+
+            <TextView
+                android:id="@+id/residualTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_weight="0.35"
+                android:text="时间："
+                android:textColor="#FFFFFF" />
+
         </LinearLayout>
 
     </LinearLayout>

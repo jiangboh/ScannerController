@@ -73,14 +73,14 @@ public class HistoryActivity extends BaseActivity {
             TargetDataStruct targetDataStruct = new TargetDataStruct();
             targetDataStruct.setImsi(users.get(i).getSrtImsi());
             targetDataStruct.setImei(users.get(i).getStrImei());
-            targetDataStruct.setAuthState(users.get(i).getIAuth());
+            targetDataStruct.setiUserType(users.get(i).getIAuth());
             targetDataStruct.setSilentState(users.get(i).getBSilent());
             targetDataStruct.setStrConntime(formatter.format(new Date(users.get(i).getConnTime())));
             if (users.get(i).getDetachTime() != null) {
                 targetDataStruct.setStrDetachtime(formatter.format(new Date(users.get(i).getDetachTime())));
             }
             targetDataStruct.setCount(users.get(i).getICount());
-            if (targetDataStruct.getAuthState() == 1) {
+            if (targetDataStruct.getiUserType() == 1) {
                 targetDataStruct.setStrAttachtime(formatter.format(new Date(users.get(i).getAttachTime())));
                 adapterConnTarget.AttachTarget(targetDataStruct);
             } else {

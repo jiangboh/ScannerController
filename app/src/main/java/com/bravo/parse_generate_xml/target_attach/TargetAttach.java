@@ -27,7 +27,7 @@ public class TargetAttach {
         TargetAttach target = new TargetAttach();
         target.version = "1.0.1";
         target.imsi = FindMsgStruct.GetMsgStringValueInList("imsi",struct.dic,"");
-        target.imei = "dd";
+        target.imei = "";
         return target;
     }
 

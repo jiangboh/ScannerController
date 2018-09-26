@@ -20,6 +20,7 @@ import com.bravo.config.Network_Fragment;
 import com.bravo.config.Switch_Fragment;
 import com.bravo.config.UMTS_Fragment;
 import com.bravo.custom_view.CircleMenuLayout;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.OneBtnHintDialog;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.femto.FragmentAdjacentCell;
@@ -31,8 +32,6 @@ import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
 import com.bravo.scanner.FragmentScannerListen;
-import com.bravo.socket_service.CommunicationService;
-import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
 import com.bravo.status.HwMonitor_Fragment;
@@ -42,15 +41,11 @@ import com.bravo.system.Upgrade_Fragment;
 import com.bravo.test.Terminal_Fragmen;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
-import com.bravo.xml.Msg_Body_Struct;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import static com.bravo.utils.Utils.getWifiIp;
-import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 
 public class FunActivity extends BaseActivity {
@@ -146,49 +141,43 @@ public class FunActivity extends BaseActivity {
         }*/
         switch(pos){
             case 0:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                onFemtoClicked();
-                Logs.w("RecordOnClick", "Enter Femto Function", "Record_Event", true);
+                //onFemtoClicked();
+                onFindClicked();
+                Logs.w("RecordOnClick", "点击设备搜索按钮", "Record_Event", true);
                 break;
             case 1:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onConfigClicked();
                 onSetDeviceClicked();
-                Logs.w("RecordOnClick", "Enter Config Function", "Record_Event", true);
+                Logs.w("RecordOnClick", "点击设备配置按钮", "Record_Event", true);
                 break;
             case 2:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onLogClicked();
-
-                //发送广播
-                //EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg("", 0, "Ip=" + getWifiIp(this)));
-                onFindClicked();
-                Logs.w("RecordOnClick", "Enter Log Function", "Record_Event", true);
+                Logs.w("RecordOnClick", "点击日志输出按钮", "Record_Event", true);
                 break;
             case 3:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                onStatusClicked();
-                Logs.w("RecordOnClick", "Enter Status Function", "Record_Event", true);
+                //onStatusClicked();
+                onScannerClicked();
+                Logs.w("RecordOnClick", "点击捕号显示按钮", "Record_Event", true);
                 break;
             case 4:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onSystemClicked();
-                onScannerClicked();
-                Logs.w("RecordOnClick", "Enter System Function", "Record_Event", true);
+                Logs.w("RecordOnClick", "点击系统配置按钮", "Record_Event", true);
                 break;
             case 5:
-                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onTestClicked();
-                Msg_Body_Struct text = new Msg_Body_Struct(0,Msg_Body_Struct.SetUDPServerIp);
+                /*Msg_Body_Struct text = new Msg_Body_Struct(0,Msg_Body_Struct.SetUDPServerIp);
                 text.dic.put("ip",getWifiIp(mContext));
                 text.dic.put("port", CommunicationService.udpPort);
                 String sendText = EncodeApXmlMessage(text);
 
                 EventBusMsgSendUDPMsg msg = new EventBusMsgSendUDPMsg("192.168.100.102",51888,sendText);
 
-                EventBus.getDefault().post(msg);
+                EventBus.getDefault().post(msg);*/
 
-                Logs.w("RecordOnClick", "Enter Test Function", "Record_Event", true);
+                Logs.w("RecordOnClick", "点击测试模式按钮", "Record_Event", true);
                 break;
         }
     }
@@ -386,45 +375,52 @@ public class FunActivity extends BaseActivity {
     private void onScannerClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("Scanner");
+        menuList.add("实时显示");
+        menuList.add("捕号配置");
+        menuList.add("历史数据");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
-        //fragments.add(new Terminal_Fragmen());
+        fragments.add(new FragmentScannerListen());
+        fragments.add(new FragmentScannerListen());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_broadcast_selector);
+        iconsResId.add(R.drawable.icon_basic_selector);
+        iconsResId.add(R.drawable.icon_history_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
-        intent.putExtra(RevealAnimationActivity.TITLE, "Scanner");
+        intent.putExtra(RevealAnimationActivity.TITLE, "捕号显示");
         startActivityWithAnimation(intent);
     }
 
     private void onFindClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("Find");
+        menuList.add("设备搜索");
+        menuList.add("搜索配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentFind());
-        //fragments.add(new Terminal_Fragmen());
+        fragments.add(new FragmentFind());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.btn_scan_normal);
+        iconsResId.add(R.drawable.icon_scan_selector);
+        iconsResId.add(R.drawable.icon_basic_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
-        intent.putExtra(RevealAnimationActivity.TITLE, "Find");
+        intent.putExtra(RevealAnimationActivity.TITLE, "设备搜索");
         startActivityWithAnimation(intent);
     }
 
     private void onSetDeviceClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("DeviceList");
+        menuList.add("在线设备");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
@@ -433,10 +429,10 @@ public class FunActivity extends BaseActivity {
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.btn_config_normal);
+        iconsResId.add(R.drawable.icon_femto_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
-        intent.putExtra(RevealAnimationActivity.TITLE, "DeviceList");
+        intent.putExtra(RevealAnimationActivity.TITLE, "设备配置");
         startActivityWithAnimation(intent);
     }
 

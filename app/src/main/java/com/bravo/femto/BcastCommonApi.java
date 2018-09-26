@@ -194,20 +194,20 @@ public class BcastCommonApi {
             TargetDataStruct targetDataStruct = new TargetDataStruct();
             targetDataStruct.setImsi(users.get(i).getSrtImsi());
             targetDataStruct.setImei(users.get(i).getStrImei());
-            targetDataStruct.setAuthState(users.get(i).getIAuth());
+            targetDataStruct.setiUserType(users.get(i).getIAuth());
             targetDataStruct.setSilentState(users.get(i).getBSilent());
             targetDataStruct.setStrConntime(formatter.format(new Date(users.get(i).getConnTime())));
             targetDataStruct.setCount(users.get(i).getICount());
-            if (targetDataStruct.getAuthState() == 1 &&
+            if (targetDataStruct.getiUserType() == 1 &&
                     SharePreferenceUtils.getInstance(context).getString("status_notif_bts" +
                             ((ProxyApplication)context.getApplicationContext()).getCurSocketAddress() +
                             ((ProxyApplication)context.getApplicationContext()).getiTcpPort(), "1").equals("3")) {
-                targetDataStruct.setAuthState(2);
+                targetDataStruct.setiUserType(2);
                 users.get(i).setIAuth(2);
                 users.get(i).setDetachTime(System.currentTimeMillis());
                 ProxyApplication.getDaoSession().getUserDao().update(users.get(i));
                 adapterConnTarget.addTarget(targetDataStruct);
-            } else if (targetDataStruct.getAuthState() == 1) {
+            } else if (targetDataStruct.getiUserType() == 1) {
                 targetDataStruct.setImei(users.get(i).getStrImei());
                 targetDataStruct.setStrAttachtime(formatter.format(new Date(users.get(i).getAttachTime())));
                 adapterConnTarget.AttachTarget(targetDataStruct);

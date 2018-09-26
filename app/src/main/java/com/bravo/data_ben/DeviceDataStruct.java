@@ -1,5 +1,6 @@
 package com.bravo.data_ben;
 
+import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
 import com.bravo.xml.FindMsgStruct;
 import com.bravo.xml.Msg_Body_Struct;
@@ -57,6 +58,23 @@ public class DeviceDataStruct {
 
     public DeviceDataStruct() {
 
+    }
+
+    public DeviceDataStruct xmlToBean(FindDeviceInfo fdi) {
+        DeviceDataStruct deviceDataStruct = new DeviceDataStruct();
+        deviceDataStruct.setSN(fdi.getSN());
+        deviceDataStruct.setFullName(fdi.getFullName());
+        deviceDataStruct.setMode(fdi.getMode());
+        deviceDataStruct.setIp(fdi.getIp());
+        deviceDataStruct.setPort(fdi.getPort());
+        if (-1 == DeviceFragmentStruct.inListIndex(fdi.getSN())) {
+            deviceDataStruct.setiState(DeviceDataStruct.OFF_LINE);
+        }
+        else
+        {
+            deviceDataStruct.setiState(DeviceDataStruct.ON_LINE);
+        }
+        return deviceDataStruct;
     }
 
     public DeviceDataStruct xmlToBean(String ip,int port,Msg_Body_Struct msg) {

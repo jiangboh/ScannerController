@@ -2,6 +2,7 @@ package com.bravo.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
+import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.database.TargetUser;
 import com.bravo.database.TargetUserDao;
@@ -98,7 +100,7 @@ public class AdapterScanner extends BaseAdapter {
 
     public void addTarget(TargetDataStruct targetDataStruct) {
         //Logs.d(TAG, "lmj->" + targetDataStructs.size() + ",iCurAuthTotal=" + iCurAuthTotal + ",targetDataStruct.getAuthState()=" + targetDataStruct.getAuthState());
-        if (targetDataStruct.getAuthState() == 2) {
+        if (targetDataStruct.getiUserType() == 2) {
             targetDataStructs.add(iCurAuthTotal, targetDataStruct);
         } else {
             targetDataStructs.add(targetDataStruct);
@@ -107,15 +109,24 @@ public class AdapterScanner extends BaseAdapter {
     }
 
     public void AttachTarget(TargetDataStruct targetDataStruct) {
+        String strImsi = targetDataStruct.getImsi();
+        if (TextUtils.isEmpty(strImsi))
+        {
+            Log.d(TAG,"Imsi为空！");
+            return;
+        }
+
         for (int i = 0; i < iCurAuthTotal; i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                targetDataStructs.get(i).setbPositionStatus(true);
+            if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
+                Log.d(TAG,"Imsi重复");
+                //targetDataStructs.get(i).setbPositionStatus(true);
                 return;
             }
         }
-        targetDataStructs.add(0, targetDataStruct);
+        //Log.d(TAG,"%%%%%%%%%%%%% " + targetDataStruct.getiUserType());
+        targetDataStructs.add(targetDataStruct);
         iCurAuthTotal++;
-        for (int i = iCurAuthTotal; i < targetDataStructs.size(); i++) {
+        /*for (int i = iCurAuthTotal; i < targetDataStructs.size(); i++) {
             if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
                 if (TextUtils.isEmpty(targetDataStruct.getImei())) {
                     targetDataStructs.get(0).setImei(targetDataStructs.get(i).getImei());
@@ -124,7 +135,7 @@ public class AdapterScanner extends BaseAdapter {
                 targetDataStructs.remove(i);
                 i = targetDataStructs.size();
             }
-        }
+        }*/
         updateTotal();
     }
 
@@ -144,7 +155,7 @@ public class AdapterScanner extends BaseAdapter {
         for (int i = 0; i < iCurAuthTotal; i++) {
             if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
                 targetDataStruct = targetDataStructs.get(i);
-                targetDataStruct.setAuthState(2);
+                targetDataStruct.setiUserType(2);
                 targetDataStruct.setStrConntime(targetDataStructs.get(i).getStrConntime());
                 targetDataStruct.setStrAttachtime(targetDataStructs.get(i).getStrAttachtime());
                 targetDataStructs.remove(i);
@@ -182,7 +193,7 @@ public class AdapterScanner extends BaseAdapter {
             if (!targetDataStructs.get(i).isbPositionStatus()) {
                 TargetDataStruct target = new TargetDataStruct();
                 target = targetDataStructs.get(i);
-                target.setAuthState(2);
+                target.setiUserType(2);
                 target.setbPositionStatus(false);
                 targetDataStructs.remove(i);
                 iCurAuthTotal--;
@@ -227,6 +238,7 @@ public class AdapterScanner extends BaseAdapter {
         TextView textViewName;
         TextView textViewImsi;
         TextView textViewConntime;
+        TextView attachtime;
         LinearLayout layout_imei;
         TextView textViewImei;
         TextView textViewCount;
@@ -247,103 +259,42 @@ public class AdapterScanner extends BaseAdapter {
             holder.textViewCount = ((TextView)convertView.findViewById(R.id.count));
             holder.iv_user_icon = ((ImageView)convertView.findViewById(R.id.user_icon));
             holder.layout_name = ((LinearLayout) convertView.findViewById(R.id.layout_name));
+            holder.attachtime = ((TextView)convertView.findViewById(R.id.attachtime));
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
+
+        //userType
+        int iUserType = targetDataStructs.get(position).getiUserType();
+        //Log.d(TAG,"************ = " + iUserType);
+        if (iUserType == 0)
+            holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
+        else if (iUserType == 1)
+            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
+        else if (iUserType == 2)
+            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
+        else
+            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
+
+        //name
+        holder.textViewName.setText(targetDataStructs.get(position).getName());
         //imsi
         holder.textViewImsi.setText(targetDataStructs.get(position).getImsi());
         //imei
-        if ("4G".equals(strCurTech) && targetDataStructs.get(position).getAuthState() !=  1) {
+        String strImei = targetDataStructs.get(position).getImei();
+        if (strImei == null || strImei.isEmpty() || DeviceDataStruct.MODE.LTE.equals(strImei)) {
             holder.layout_imei.setVisibility(View.GONE);
         } else {
             holder.layout_imei.setVisibility(View.VISIBLE);
             holder.textViewImei.setText(targetDataStructs.get(position).getImei());
         }
-        String strImeiName = "", strImsiName = "";
-        if (targetDataStructs.get(position).getAuthState() ==  1) {
-            TargetUser targetUser;
-            if (!TextUtils.isEmpty(targetDataStructs.get(position).getImei())) {
-                targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi()),
-                        TargetUserDao.Properties.StrImei.eq(targetDataStructs.get(position).getImei())).build().unique();
-                if (targetUser != null) {
-                    strImsiName = targetUser.getStrName();
-                } else {
-                    targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi())).build().unique();
-                    if (targetUser != null) {
-                        strImsiName = targetUser.getStrName();
-                    }
-                    targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImei.eq(targetDataStructs.get(position).getImei())).build().unique();
-                    if (targetUser != null) {
-                        strImeiName = targetUser.getStrName();
-                    }
-                }
-            } else {
-                targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi())).build().unique();
-                if (targetUser != null) {
-                    strImsiName = targetUser.getStrName();
-                }
-            }
-            holder.layout_name.setVisibility(View.VISIBLE);
-            if (TextUtils.isEmpty(strImeiName) && !TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImsiName);
-            } else if (!TextUtils.isEmpty(strImeiName) && TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImeiName);
-            } else if (!TextUtils.isEmpty(strImeiName) && !TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImsiName + "/" + strImeiName);
-            } else {
-                holder.layout_name.setVisibility(View.GONE);
-            }
-            holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
-            convertView.findViewById(R.id.layout_attachtime).setVisibility(View.VISIBLE);
-            ((TextView)convertView.findViewById(R.id.attachtime)).setText(targetDataStructs.get(position).getStrAttachtime());
-        } else if(targetDataStructs.get(position).getAuthState() ==  2) {
-            TargetUser targetUser;
-            if (!TextUtils.isEmpty(targetDataStructs.get(position).getImei())) {
-                targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi()),
-                        TargetUserDao.Properties.StrImei.eq(targetDataStructs.get(position).getImei())).build().unique();
-                if (targetUser != null) {
-                    strImsiName = targetUser.getStrName();
-                } else {
-                    targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi())).build().unique();
-                    if (targetUser != null) {
-                        strImsiName = targetUser.getStrName();
-                    }
-                    targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImei.eq(targetDataStructs.get(position).getImei())).build().unique();
-                    if (targetUser != null) {
-                        strImeiName = targetUser.getStrName();
-                    }
-                }
-            } else {
-                targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi())).build().unique();
-                if (targetUser != null) {
-                    strImsiName = targetUser.getStrName();
-                }
-            }
-            holder.layout_name.setVisibility(View.VISIBLE);
-            if (TextUtils.isEmpty(strImeiName) && !TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImsiName);
-            } else if (!TextUtils.isEmpty(strImeiName) && TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImeiName);
-            } else if (!TextUtils.isEmpty(strImeiName) && !TextUtils.isEmpty(strImsiName)) {
-                holder.textViewName.setText(strImsiName + "/" + strImeiName);
-            } else {
-                holder.layout_name.setVisibility(View.GONE);
-            }
-            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
-            convertView.findViewById(R.id.layout_attachtime).setVisibility(View.GONE);
-        } else {
-            holder.layout_name.setVisibility(View.GONE);
-            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
-            //attachtime
-            convertView.findViewById(R.id.layout_attachtime).setVisibility(View.GONE);
-        }
 
         //conntime
-        holder.textViewConntime.setText("targetDataStructs.get(position).getStrConntime()");
+        holder.attachtime.setText(targetDataStructs.get(position).getStrAttachtime());
         holder.layout_conntime.setVisibility(View.GONE);
         //count
-        holder.textViewCount.setText("Conn Count " + targetDataStructs.get(position).getCount());
+        //holder.textViewCount.setText("Conn Count " + targetDataStructs.get(position).getCount());
         return convertView;
     }
 }

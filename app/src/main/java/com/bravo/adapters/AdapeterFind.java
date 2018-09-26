@@ -182,7 +182,6 @@ public class AdapeterFind  extends BaseAdapter {
 
                 newDevice = false;
                 break;
-                //return;
             }
         }
 
@@ -190,6 +189,18 @@ public class AdapeterFind  extends BaseAdapter {
             deviceDataStruct.setiState(DeviceDataStruct.ON_LINE);
             deviceDataStructs.add(deviceDataStruct);
             iCurFindTotal++;
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public void DeviceListChange(DeviceDataStruct deviceDataStruct) {
+        for (int i = 0; i < iCurFindTotal; i++) {
+            if (deviceDataStruct.getSN().equals(deviceDataStructs.get(i).getSN())) {
+                deviceDataStructs.get(i).setiState(deviceDataStruct.getiState());
+
+                break;
+            }
         }
 
         notifyDataSetChanged();

@@ -14,7 +14,7 @@ public class TargetDataStruct {
     private String strImsi ="";
     private String strImei ="";
     private boolean bCheckbox = false;
-    private int iAuthState = 0;//0普通名用户 1鉴权用户 2targetlist存在
+    private int iUserType = 0;//0普通名用户 1鉴权用户 2targetlist存在
     private boolean bSilentState = false;
     private String strLongitude;
     private String strLatitude;
@@ -41,7 +41,7 @@ public class TargetDataStruct {
                 ", strImsi='" + strImsi + '\'' +
                 ", strImei='" + strImei + '\'' +
                 ", bCheckbox=" + bCheckbox +
-                ", iAuthState=" + iAuthState +
+                ", iUserType=" + iUserType +
                 ", bSilentState=" + bSilentState +
                 ", strLongitude='" + strLongitude + '\'' +
                 ", strLatitude='" + strLatitude + '\'' +
@@ -92,11 +92,11 @@ public class TargetDataStruct {
         return strImei;
     }
 
-    public void setAuthState(int iAuthState) {
-        this.iAuthState = iAuthState;
+    public void setiUserType(int iAuthState) {
+        this.iUserType = iAuthState;
     }
-    public int getAuthState() {
-        return iAuthState;
+    public int getiUserType() {
+        return iUserType;
     }
 
     public void setSilentState(boolean bSilentState) {

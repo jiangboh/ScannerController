@@ -98,7 +98,7 @@ public class AdapterConnTarget extends BaseAdapter {
 
     public void addTarget(TargetDataStruct targetDataStruct) {
         //Logs.d(TAG, "lmj->" + targetDataStructs.size() + ",iCurAuthTotal=" + iCurAuthTotal + ",targetDataStruct.getAuthState()=" + targetDataStruct.getAuthState());
-        if (targetDataStruct.getAuthState() == 2) {
+        if (targetDataStruct.getiUserType() == 2) {
             targetDataStructs.add(iCurAuthTotal, targetDataStruct);
         } else {
             targetDataStructs.add(targetDataStruct);
@@ -144,7 +144,7 @@ public class AdapterConnTarget extends BaseAdapter {
         for (int i = 0; i < iCurAuthTotal; i++) {
             if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
                 targetDataStruct = targetDataStructs.get(i);
-                targetDataStruct.setAuthState(2);
+                targetDataStruct.setiUserType(2);
                 targetDataStruct.setStrConntime(targetDataStructs.get(i).getStrConntime());
                 targetDataStruct.setStrAttachtime(targetDataStructs.get(i).getStrAttachtime());
                 targetDataStructs.remove(i);
@@ -185,7 +185,7 @@ public class AdapterConnTarget extends BaseAdapter {
             if (!targetDataStructs.get(i).isbPositionStatus()) {
                 TargetDataStruct target = new TargetDataStruct();
                 target = targetDataStructs.get(i);
-                target.setAuthState(2);
+                target.setiUserType(2);
                 target.setbPositionStatus(false);
                 targetDataStructs.remove(i);
                 iCurAuthTotal--;
@@ -255,14 +255,14 @@ public class AdapterConnTarget extends BaseAdapter {
         //imsi
         holder.textViewImsi.setText(targetDataStructs.get(position).getImsi());
         //imei
-        if ("4G".equals(strCurTech) && targetDataStructs.get(position).getAuthState() !=  1) {
+        if ("4G".equals(strCurTech) && targetDataStructs.get(position).getiUserType() !=  1) {
             holder.layout_imei.setVisibility(View.GONE);
         } else {
             holder.layout_imei.setVisibility(View.VISIBLE);
             holder.textViewImei.setText(targetDataStructs.get(position).getImei());
         }
         String strImeiName = "", strImsiName = "";
-        if (targetDataStructs.get(position).getAuthState() ==  1) {
+        if (targetDataStructs.get(position).getiUserType() ==  1) {
             TargetUser targetUser;
             if (!TextUtils.isEmpty(targetDataStructs.get(position).getImei())) {
                 targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi()),
@@ -298,7 +298,7 @@ public class AdapterConnTarget extends BaseAdapter {
             holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
             convertView.findViewById(R.id.layout_attachtime).setVisibility(View.VISIBLE);
             ((TextView)convertView.findViewById(R.id.attachtime)).setText(targetDataStructs.get(position).getStrAttachtime());
-        } else if(targetDataStructs.get(position).getAuthState() ==  2) {
+        } else if(targetDataStructs.get(position).getiUserType() ==  2) {
             TargetUser targetUser;
             if (!TextUtils.isEmpty(targetDataStructs.get(position).getImei())) {
                 targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(targetDataStructs.get(position).getImsi()),

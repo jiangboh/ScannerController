@@ -32,7 +32,6 @@ import com.bravo.femto.AttachInfoActivity;
 import com.bravo.femto.IPEdit;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
-import com.bravo.parse_generate_xml.target_attach.TargetAttach;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 
@@ -41,8 +40,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -129,12 +126,16 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
                 final TargetDataStruct targetDataStruct = adapterScanner.getItem(position);
-                if (targetDataStruct.getAuthState() == 0) {
+                if (targetDataStruct.getiUserType() == 0) {
                     //((RevealAnimationActivity)context).changeFragment(3, new Bundle());
-                    DialogAddTarget dialogAddTarget = new DialogAddTarget(context, R.style.dialog_style, new DialogAddTarget.OnAddTargetDialogListener() {
+                    DialogAddTarget dialogAddTarget = new DialogAddTarget(context, R.style.dialog_style,
+                            new DialogAddTarget.OnAddTargetDialogListener() {
                         @Override
                         public void AddTargetCallBack(TargetDataStruct addTarget) {
-                            List<User> users = ProxyApplication.getDaoSession().getUserDao().queryBuilder().where(UserDao.Properties.Unique.eq(SharePreferenceUtils.getInstance(context).getString("status_notif_unique" + ((ProxyApplication)context.getApplicationContext()).getCurSocketAddress() + ((ProxyApplication)context.getApplicationContext()).getiTcpPort(), "")),
+                            List<User> users = ProxyApplication.getDaoSession().getUserDao().queryBuilder().where(
+                                    UserDao.Properties.Unique.eq(SharePreferenceUtils.getInstance(context).getString("status_notif_unique" +
+                                            ((ProxyApplication)context.getApplicationContext()).getCurSocketAddress() +
+                                            ((ProxyApplication)context.getApplicationContext()).getiTcpPort(), "")),
                                     UserDao.Properties.SrtImsi.eq(addTarget.getImsi())).build().list();
                             //判断用户是否存在数据库 存在改变状态
                             if (users.size() != 0) {
@@ -142,7 +143,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                                 updateData.setIAuth(2);
                                 ProxyApplication.getDaoSession().getUserDao().update(updateData);
                                 adapterScanner.removeTarget(position);
-                                targetDataStruct.setAuthState(2);
+                                targetDataStruct.setiUserType(2);
                                 adapterScanner.addTarget(targetDataStruct);
                             }
                             //add target
@@ -163,7 +164,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                           long arg3, String strMsg) {
                 TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
-                if (targetDataStruct.getAuthState() == 1) {
+                if (targetDataStruct.getiUserType() == 1) {
                     Intent intent = new Intent(context, AttachInfoActivity.class);
                     intent.putExtra("imsi",targetDataStruct.getImsi());
                     intent.putExtra("imei", targetDataStruct.getImei());
@@ -282,16 +283,9 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void TargetAttach(TargetAttach ta) {
-        Logs.d(TAG,"接收消息内容***************");
-        TargetDataStruct targetDataStruct = new TargetDataStruct();
-        targetDataStruct.setImsi(ta.getImsi());
-        targetDataStruct.setImei(ta.getImei());
-        targetDataStruct.setAuthState(1);
-        targetDataStruct.setbPositionStatus(true);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-        targetDataStruct.setStrAttachtime(formatter.format(new Date()));
-        adapterScanner.AttachTarget(targetDataStruct);
+    public void TargetAttach(TargetDataStruct tds) {
+        Logs.d(TAG,"接收到Scanner消息" + tds.getiUserType());
+        adapterScanner.AttachTarget(tds);
     }
 
 

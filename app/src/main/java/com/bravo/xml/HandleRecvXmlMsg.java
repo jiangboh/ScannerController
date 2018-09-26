@@ -1,16 +1,19 @@
 package com.bravo.xml;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
-import com.bravo.parse_generate_xml.target_attach.TargetAttach;
 import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
@@ -46,10 +49,7 @@ public class HandleRecvXmlMsg {
 
         //广播消息
         if (msg.type.equalsIgnoreCase(Msg_Body_Struct.BroadCast_result)) {
-            FindDeviceInfo fdi = FindDeviceInfo.xmlToBean(msg);
-            if (fdi != null)
-                EventBus.getDefault().post(fdi);
-
+            EventBus.getDefault().post(FindDeviceInfo.xmlToBean(msg));
             return;
         }
 
@@ -64,8 +64,10 @@ public class HandleRecvXmlMsg {
                 return;
             }
             DeviceFragmentStruct.addList(deviceInfo);
-
+            //更新设备列表界面
             EventBus.getDefault().post(deviceInfo);
+            //更新设备搜索界面
+            EventBus.getDefault().post(msg);
             return;
         }
 
@@ -76,9 +78,18 @@ public class HandleRecvXmlMsg {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
 
             if (msg.type.equalsIgnoreCase(Msg_Body_Struct.scanner)) {
-                TargetAttach ta = TargetAttach.xmlToBean(msg);
-                if (ta != null)
-                    EventBus.getDefault().post(ta);
+                TargetDataStruct targetDataStruct = new TargetDataStruct();
+
+                targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi",msg.dic,""));
+                targetDataStruct.setName(targetDataStruct.getImsi());
+                targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType",msg.dic,0));
+                Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
+                targetDataStruct.setImei("");
+                targetDataStruct.setbPositionStatus(true);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+                targetDataStruct.setStrAttachtime(formatter.format(new Date()));
+
+                EventBus.getDefault().post(targetDataStruct);
 
                 return;
             } else {

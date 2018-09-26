@@ -349,7 +349,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
                 final TargetDataStruct targetDataStruct = adapterConnTarget.getItem(position);
-                if (targetDataStruct.getAuthState() == 0) {
+                if (targetDataStruct.getiUserType() == 0) {
                     //((RevealAnimationActivity)context).changeFragment(3, new Bundle());
                     DialogAddTarget dialogAddTarget = new DialogAddTarget(context, R.style.dialog_style, new DialogAddTarget.OnAddTargetDialogListener() {
                         @Override
@@ -362,7 +362,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
                                 updateData.setIAuth(2);
                                 ProxyApplication.getDaoSession().getUserDao().update(updateData);
                                 adapterConnTarget.removeTarget(position);
-                                targetDataStruct.setAuthState(2);
+                                targetDataStruct.setiUserType(2);
                                 adapterConnTarget.addTarget(targetDataStruct);
                             }
                             //add target
@@ -383,7 +383,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
             public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3, String strMsg) {
                 TargetDataStruct targetDataStruct = adapterConnTarget.getItem(arg2);
-                if (targetDataStruct.getAuthState() == 1) {
+                if (targetDataStruct.getiUserType() == 1) {
                     Intent intent = new Intent(context, AttachInfoActivity.class);
                     intent.putExtra("imsi",targetDataStruct.getImsi());
                     intent.putExtra("imei", targetDataStruct.getImei());
@@ -1065,7 +1065,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
         Logs.d(TAG,"TargetPosition***************");
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(tp.getImsi());
-        targetDataStruct.setAuthState(1);
+        targetDataStruct.setiUserType(1);
         targetDataStruct.setbPositionStatus(true);
         adapterConnTarget.AttachTarget(targetDataStruct);
         //处理异常断开
@@ -1085,7 +1085,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
         TargetDataStruct targetDataStruct = new TargetDataStruct();
         targetDataStruct.setImsi(ta.getImsi());
         targetDataStruct.setImei(ta.getImei());
-        targetDataStruct.setAuthState(1);
+        targetDataStruct.setiUserType(1);
         targetDataStruct.setbPositionStatus(true);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
         targetDataStruct.setStrAttachtime(formatter.format(new Date()));
@@ -1102,7 +1102,7 @@ public class FragmentBcastStart extends RevealAnimationBaseFragment {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
         Date curDate = new Date();//获取当前时间
         targetDataStruct.setStrConntime(formatter.format(curDate));
-        targetDataStruct.setAuthState(crn.getiAuth());
+        targetDataStruct.setiUserType(crn.getiAuth());
         //List<User> users =  ProxyApplication.getDaoSession().getUserDao().queryBuilder().where(UserDao.Properties.SrtImsi.eq(crn.getImsi())).build().list();
         if (/*users.size() != 0*/crn.getiCount() > 1) {//已连接，count++
             targetDataStruct.setCount(/*users.get(0).getICount()*/crn.getiCount());

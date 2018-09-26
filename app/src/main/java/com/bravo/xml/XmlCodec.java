@@ -6,10 +6,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -237,13 +240,16 @@ public class XmlCodec {
         Node idNode = null;
         Node MsgTypeNode = null;
 
-        Msg_Body_Struct TypeKeyValueList = new Msg_Body_Struct();
+         Msg_Body_Struct TypeKeyValueList = new Msg_Body_Struct();
         InputStream inStream = new ByteArrayInputStream(msg.getBytes());
         DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
         Element root = null;
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();//DocumentBuilder 对象
-            Document doc = builder.parse(inStream);//包含整个xnl内容的 Document对象
+            //BufferedReader br= new BufferedReader(new InputStreamReader(inStream,"utf-8"));
+            BufferedReader br= new BufferedReader(new InputStreamReader(inStream,"UTF-8"));
+            InputSource is = new InputSource(br);
+            Document doc = builder.parse(is);//包含整个xnl内容的 Document对象
             root = doc.getDocumentElement();//得到 根节点
         } catch(Exception e){
             Logs.e(TAG,"加载Xml消息结构出错。");

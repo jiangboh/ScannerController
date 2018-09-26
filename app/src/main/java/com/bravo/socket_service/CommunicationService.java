@@ -43,7 +43,7 @@ public class CommunicationService extends Service {
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
     private udpBroadCast udpBroadCast;
-    public static final int udpBroadCastPort = 51888;
+    public static final int udpBroadCastPort_lte = 50001;
     public static final int udpPort = 14721;
     //private int lteServerPort = 14786;
 
@@ -59,7 +59,7 @@ public class CommunicationService extends Service {
         socketUdp.startReceive();
         //socketTCP = new SocketTCP(this);
 
-        udpBroadCast = new udpBroadCast(this,udpBroadCastPort);
+        udpBroadCast = new udpBroadCast(this, udpBroadCastPort_lte);
 
         //10秒检测一次Ap在线状态
         DeviceFragmentStruct.StartCheckApTimer(10000);
