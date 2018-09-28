@@ -84,6 +84,7 @@ public class FindMsgStruct {
         return Convert.ToUInt32(dic.get(key));
     }
     */
+
     static public int GetMsgIntValueInList(String key, HashMap<String, Object> dic)
     {
         if (!dic.containsKey(key)) return 0;

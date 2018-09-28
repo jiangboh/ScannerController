@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +46,7 @@ public class LoginActivity extends BaseActivity {
     private Button btnLogin;
     @Override
     protected void initView() {
+        Log.d(TAG,"initView");
         setContentView(R.layout.activity_login);
         //login btn
         btnLogin = (Button) findViewById(R.id.btn_login);
@@ -146,6 +148,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
+        Log.d(TAG,"initData");
         Intent intent = new Intent(this,CommunicationService.class);
         startService(intent);
         Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
@@ -171,6 +174,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        Log.d(TAG,"onRequestPermissionsResult");
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
                 //创建SDCard文件目录
@@ -215,6 +219,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG,"onDestroy");
         super.onDestroy();
         EventBus.getDefault().post(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
         EventBus.getDefault().post(EventBusMsgConstant.STOP_SERVICE);

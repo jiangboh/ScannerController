@@ -245,7 +245,7 @@ public class AdapterConnTarget extends BaseAdapter {
             holder.textViewConntime = ((TextView)convertView.findViewById(R.id.conntime));
             holder.layout_imei = (LinearLayout) convertView.findViewById(R.id.layout_imei);
             holder.textViewImei = ((TextView) convertView.findViewById(R.id.imei));
-            holder.textViewCount = ((TextView)convertView.findViewById(R.id.count));
+            holder.textViewCount = ((TextView)convertView.findViewById(R.id.scanner_count));
             holder.iv_user_icon = ((ImageView)convertView.findViewById(R.id.user_icon));
             holder.layout_name = ((LinearLayout) convertView.findViewById(R.id.layout_name));
             convertView.setTag(holder);

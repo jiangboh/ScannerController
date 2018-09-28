@@ -71,7 +71,9 @@
             android:name="com.bravo.FemtoController.FunActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity
             android:name="com.bravo.FemtoController.SibListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

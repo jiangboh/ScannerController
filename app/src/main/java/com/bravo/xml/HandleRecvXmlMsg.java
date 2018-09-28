@@ -1,12 +1,15 @@
 package com.bravo.xml;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.bravo.Find.FragmentFind;
+import com.bravo.adapters.AdapterScanner;
+import com.bravo.config.Fragment_Device;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
+import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
 
@@ -14,7 +17,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
 
@@ -40,12 +42,12 @@ public class HandleRecvXmlMsg {
         Msg_Body_Struct msg = DecodeApXmlMessage(result);
         if (msg == null) return;
 
-        Logs.d(TAG,"接收消息id：" + msg.msgId);
+       /* Logs.d(TAG,"接收消息id：" + msg.msgId);
         Logs.d(TAG,"接收消息类型：" + msg.type);
         for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
         {
             Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
-        }
+        }*/
 
         //广播消息
         if (msg.type.equalsIgnoreCase(Msg_Body_Struct.BroadCast_result)) {
@@ -64,10 +66,16 @@ public class HandleRecvXmlMsg {
                 return;
             }
             DeviceFragmentStruct.addList(deviceInfo);
-            //更新设备列表界面
-            EventBus.getDefault().post(deviceInfo);
-            //更新设备搜索界面
-            EventBus.getDefault().post(msg);
+            if (Fragment_Device.isOpen) {
+                //更新设备列表界面
+                EventBus.getDefault().post(deviceInfo);
+            }
+
+            if(FragmentFind.isOpen) {
+                //更新设备搜索界面
+                EventBus.getDefault().post(msg);
+            }
+
             return;
         }
 
@@ -78,18 +86,33 @@ public class HandleRecvXmlMsg {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
 
             if (msg.type.equalsIgnoreCase(Msg_Body_Struct.scanner)) {
+                DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
                 TargetDataStruct targetDataStruct = new TargetDataStruct();
 
+                targetDataStruct.setSN(dds.getSN());
+                targetDataStruct.setIP(dds.getIp());
+                targetDataStruct.setPort(dds.getPort());
+                targetDataStruct.setFullName(dds.getFullName());
+
                 targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi",msg.dic,""));
-                targetDataStruct.setName(targetDataStruct.getImsi());
                 targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType",msg.dic,0));
-                Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
-                targetDataStruct.setImei("");
+                //Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
+                targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei",msg.dic,""));
+                targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi",msg.dic,""));
+                targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp",msg.dic,0));
                 targetDataStruct.setbPositionStatus(true);
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                 targetDataStruct.setStrAttachtime(formatter.format(new Date()));
 
-                EventBus.getDefault().post(targetDataStruct);
+                //if (!FragmentScannerListen.isStart) return;
+
+                if(FragmentScannerListen.isOpen) {
+                    //更新界面
+                    EventBus.getDefault().post(targetDataStruct);
+                } else {
+                    //保存到列表
+                    AdapterScanner.AddScannerImsi(targetDataStruct);
+                }
 
                 return;
             } else {

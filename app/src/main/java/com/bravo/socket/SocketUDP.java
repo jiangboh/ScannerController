@@ -1,7 +1,6 @@
 package com.bravo.socket;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
@@ -49,7 +48,7 @@ public class SocketUDP {
             public void run() {
                 try {
                     if (!msg.isEmpty()) {
-                        Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
+                        //Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
                         byte[] buf = msg.getBytes();
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)
@@ -91,7 +90,7 @@ public class SocketUDP {
                             socket.receive(packet);
                             //把接收到的data转换为String字符串
                             String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
-                            Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
+                            //Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
                             //EventBus.getDefault().post(new EventBusMsgSendUDPMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                             EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                         } catch (Exception e) {

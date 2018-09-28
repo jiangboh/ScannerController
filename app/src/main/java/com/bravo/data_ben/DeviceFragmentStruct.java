@@ -41,7 +41,7 @@ public class DeviceFragmentStruct {
             try {
                 for(int i=dList.size()-1;i>=0;i--)
                 {
-                    Log.d(TAG,String.format("设备%d 时间！",(curTime - dList.get(i).getLastTime() )/1000));
+                    Log.d(TAG,String.format("设备最后条消息离现在已有(%d)秒 时间！",(curTime - dList.get(i).getLastTime() )/1000));
                     if ((curTime - dList.get(i).getLastTime())/1000 > diff)
                     {
                         Log.d(TAG,String.format("设备%s[%s:%d]下线了！",dList.get(i).getSN(),dList.get(i).getIp(),dList.get(i).getPort()));

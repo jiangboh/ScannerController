@@ -9,25 +9,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
-import com.bravo.database.TargetUser;
-import com.bravo.database.TargetUserDao;
-import com.bravo.database.User;
-import com.bravo.database.UserDao;
-import com.bravo.femto.BcastCommonApi;
-import com.bravo.parse_generate_xml.TargetDetach;
-import com.bravo.utils.SharePreferenceUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by admin on 2018-9-14.
@@ -35,22 +24,22 @@ import java.util.List;
 
 public class AdapterScanner extends BaseAdapter {
     private final static String TAG = "AdapterConnTarget";
-    private final ArrayList<TargetDataStruct> targetDataStructs = new ArrayList<>();
+    private final static ArrayList<TargetDataStruct> targetDataStructs = new ArrayList<>();
     private Context mContext;
-    //private int iCurPosition;
+    private ListView listView;
     private String strCurTech;
-    private int iCurAuthTotal = 0;
-    //private RadioButton radioButton;
+    private static int iCurAuthTotal = 0;
+    private Long changedTime = System.currentTimeMillis();
     private TextView tvTotal;
     public AdapterScanner(Context context) {
         //this.radioButton = radioButton;
         this.mContext = context;
         //iCurPosition = -1;
     }
-    public AdapterScanner(Context context, TextView txView) {
+    public AdapterScanner(Context context, TextView txView,ListView listView) {
         this.tvTotal = txView;
         this.mContext = context;
-        //iCurPosition = -1;
+        this.listView = listView;
     }
 
     public void updateCurTech(String strCurTech) {
@@ -76,39 +65,8 @@ public class AdapterScanner extends BaseAdapter {
         return targetDataStructs;
     }
 
-    public void updateGpsDistance(TargetDataStruct targetDataStruct, View view) {
-        for (int i = 0; i < iCurAuthTotal; i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                targetDataStructs.get(i).setStrLatitude(targetDataStruct.getStrLatitude());
-                targetDataStructs.get(i).setStrLongitude(targetDataStruct.getStrLongitude());
-                targetDataStructs.get(i).setDistance(targetDataStruct.getDistance());
-                targetDataStructs.get(i).setSignal(targetDataStruct.getSignal());
-                notifyDataSetChanged();
-                return;
-            }
-        }
-        targetDataStructs.add(0, targetDataStruct);
-        iCurAuthTotal++;
-        for (int i = iCurAuthTotal; i < targetDataStructs.size(); i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                targetDataStructs.remove(i);
-                return;
-            }
-        }
-        updateTotal();
-    }
-
-    public void addTarget(TargetDataStruct targetDataStruct) {
-        //Logs.d(TAG, "lmj->" + targetDataStructs.size() + ",iCurAuthTotal=" + iCurAuthTotal + ",targetDataStruct.getAuthState()=" + targetDataStruct.getAuthState());
-        if (targetDataStruct.getiUserType() == 2) {
-            targetDataStructs.add(iCurAuthTotal, targetDataStruct);
-        } else {
-            targetDataStructs.add(targetDataStruct);
-        }
-        updateTotal();
-    }
-
-    public void AttachTarget(TargetDataStruct targetDataStruct) {
+    public static void AddScannerImsi(TargetDataStruct targetDataStruct)
+    {
         String strImsi = targetDataStruct.getImsi();
         if (TextUtils.isEmpty(strImsi))
         {
@@ -118,60 +76,48 @@ public class AdapterScanner extends BaseAdapter {
 
         for (int i = 0; i < iCurAuthTotal; i++) {
             if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
-                Log.d(TAG,"Imsi重复");
+                //Log.d(TAG,"Imsi重复");
                 //targetDataStructs.get(i).setbPositionStatus(true);
                 return;
             }
         }
-        //Log.d(TAG,"%%%%%%%%%%%%% " + targetDataStruct.getiUserType());
-        targetDataStructs.add(targetDataStruct);
+
         iCurAuthTotal++;
-        /*for (int i = iCurAuthTotal; i < targetDataStructs.size(); i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                if (TextUtils.isEmpty(targetDataStruct.getImei())) {
-                    targetDataStructs.get(0).setImei(targetDataStructs.get(i).getImei());
-                }
-                targetDataStructs.get(0).setStrConntime(targetDataStructs.get(i).getStrConntime());
-                targetDataStructs.remove(i);
-                i = targetDataStructs.size();
-            }
-        }*/
-        updateTotal();
+        targetDataStruct.setCount(iCurAuthTotal);
+        targetDataStructs.add(targetDataStruct);
+
     }
 
-    public void RepeatTarget(TargetDataStruct targetDataStruct) {
-        for (int i = 0; i < targetDataStructs.size(); i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                targetDataStructs.get(i).setStrConntime(targetDataStruct.getStrConntime());
-                targetDataStructs.get(i).setCount(targetDataStruct.getCount());
-                notifyDataSetChanged();
-                return;
-            }
+
+    public void ChangedTotal(int count) {
+        if (tvTotal != null) {
+            tvTotal.setText(String.valueOf(iCurAuthTotal + count));
         }
-        addTarget(targetDataStruct);
     }
 
-    public void TargetDetach(TargetDataStruct targetDataStruct) {
-        for (int i = 0; i < iCurAuthTotal; i++) {
-            if (targetDataStruct.getImsi().equals(targetDataStructs.get(i).getImsi())) {
-                targetDataStruct = targetDataStructs.get(i);
-                targetDataStruct.setiUserType(2);
-                targetDataStruct.setStrConntime(targetDataStructs.get(i).getStrConntime());
-                targetDataStruct.setStrAttachtime(targetDataStructs.get(i).getStrAttachtime());
-                targetDataStructs.remove(i);
-                iCurAuthTotal--;
-                addTarget(targetDataStruct);
-                return;
+    public void AttachTarget(TargetDataStruct targetDataStruct) {
+        //Logs.d(TAG,"targetDataStruct==" + isChanged + ";" + targetDataStruct.getImsi());
+        AddScannerImsi(targetDataStruct);
+        updateTotal(true);
+    }
+
+    private void updateTotal(boolean isChanged){
+        //Long curTime = System.currentTimeMillis();
+        //大于秒才刷新界面
+        //if ((curTime - changedTime) > 1000) {
+            //changedTime = System.currentTimeMillis();
+
+            if (tvTotal != null) {
+                tvTotal.setText(String.valueOf(iCurAuthTotal));
             }
-        }
+
+            if (isChanged)
+                this.notifyDataSetChanged(iCurAuthTotal - 1);
+        //}
     }
 
     private void updateTotal(){
-        if (tvTotal != null) {
-            tvTotal.setText(String.valueOf(iCurAuthTotal));
-        }
-
-        notifyDataSetChanged();
+        this.updateTotal(true);
     }
 
     public void removeTarget(int iPosition) {
@@ -188,45 +134,25 @@ public class AdapterScanner extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void checkAuthTarget() {
-        for (int i = 0; i < iCurAuthTotal; i++) {
-            if (!targetDataStructs.get(i).isbPositionStatus()) {
-                TargetDataStruct target = new TargetDataStruct();
-                target = targetDataStructs.get(i);
-                target.setiUserType(2);
-                target.setbPositionStatus(false);
-                targetDataStructs.remove(i);
-                iCurAuthTotal--;
-                i--;
-                addTarget(target);
-                /////
-                String Unique = SharePreferenceUtils.getInstance(mContext).getString("status_notif_unique" + ((ProxyApplication)mContext.getApplicationContext()).getCurSocketAddress() + ((ProxyApplication)mContext.getApplicationContext()).getiTcpPort(), "");
-                List<User> users = ProxyApplication.getDaoSession().getUserDao().queryBuilder().orderDesc().where(UserDao.Properties.Unique.eq(Unique), UserDao.Properties.SrtImsi.eq(target.getImsi()),
-                        UserDao.Properties.ConnTime.gt(SharePreferenceUtils.getInstance(mContext).getLong("status_notif_starttime" + ((ProxyApplication)mContext.getApplicationContext()).getCurSocketAddress() + ((ProxyApplication)mContext.getApplicationContext()).getiTcpPort(), System.currentTimeMillis()))).build().list();
-                int iAuth = 0;
-                TargetUser targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(TargetUserDao.Properties.StrImsi.eq(target.getImsi())).build().unique();
-                if (targetUser !=  null) { iAuth = 2; }
-                if (users.size() != 0) {
-                    User updateData = users.get(0);
-                    updateData.setIAuth(iAuth);
-                    updateData.setDetachTime(System.currentTimeMillis());
-                    ProxyApplication.getDaoSession().getUserDao().update(updateData);
-                } else {
-                    User insertData = new User(null, target.getImsi(), null, iAuth, false, 1, null, null,  System.currentTimeMillis(), Unique);
-                    ProxyApplication.getDaoSession().getUserDao().insert(insertData);
-                }
-                /////
-                TargetDetach td = new TargetDetach();
-                td.setImsi(target.getImsi());
-                EventBus.getDefault().post(td);
-                try {
-                    BcastCommonApi.soundRing(mContext);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        notifyDataSetChanged();
+
+     private void notifyDataSetChanged( int position){
+        listView.setSelection(listView.getCount() - 1);
+        int firstVisiblePosition = listView.getFirstVisiblePosition();
+        int lastVisiblePosition = listView.getLastVisiblePosition();
+        //Log.d(TAG,"局部刷新:fisrst=" + firstVisiblePosition + ";last=" + lastVisiblePosition + ";p=" +position);
+
+         int len = lastVisiblePosition-firstVisiblePosition + 1;
+         if (len <= 1) {
+             notifyDataSetChanged();
+         } else {
+             //if (lastVisiblePosition != (position-1) ) return;
+             for (int i = firstVisiblePosition; i < len; i++) {
+                 View item = listView.getChildAt(i);
+                 item = getView(i, item, listView);
+             }
+             listView.setSelection(lastVisiblePosition);
+         }
+
     }
 
     public int getAuthTotal() {
@@ -246,6 +172,7 @@ public class AdapterScanner extends BaseAdapter {
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        //Log.e(TAG,"position=" + position);
         ViewHolder holder;
         if(convertView == null){
             holder = new ViewHolder();
@@ -256,7 +183,7 @@ public class AdapterScanner extends BaseAdapter {
             holder.textViewConntime = ((TextView)convertView.findViewById(R.id.conntime));
             holder.layout_imei = (LinearLayout) convertView.findViewById(R.id.layout_imei);
             holder.textViewImei = ((TextView) convertView.findViewById(R.id.imei));
-            holder.textViewCount = ((TextView)convertView.findViewById(R.id.count));
+            holder.textViewCount = ((TextView)convertView.findViewById(R.id.scanner_count));
             holder.iv_user_icon = ((ImageView)convertView.findViewById(R.id.user_icon));
             holder.layout_name = ((LinearLayout) convertView.findViewById(R.id.layout_name));
             holder.attachtime = ((TextView)convertView.findViewById(R.id.attachtime));
@@ -267,15 +194,14 @@ public class AdapterScanner extends BaseAdapter {
 
         //userType
         int iUserType = targetDataStructs.get(position).getiUserType();
-        //Log.d(TAG,"************ = " + iUserType);
         if (iUserType == 0)
             holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
         else if (iUserType == 1)
-            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
+            holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);
         else if (iUserType == 2)
             holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
         else
-            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
+            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
 
         //name
         holder.textViewName.setText(targetDataStructs.get(position).getName());
@@ -294,7 +220,7 @@ public class AdapterScanner extends BaseAdapter {
         holder.attachtime.setText(targetDataStructs.get(position).getStrAttachtime());
         holder.layout_conntime.setVisibility(View.GONE);
         //count
-        //holder.textViewCount.setText("Conn Count " + targetDataStructs.get(position).getCount());
+        holder.textViewCount.setText(String.valueOf(targetDataStructs.get(position).getCount()));
         return convertView;
     }
 }

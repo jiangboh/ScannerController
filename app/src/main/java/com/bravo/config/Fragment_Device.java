@@ -27,6 +27,8 @@ import org.greenrobot.eventbus.ThreadMode;
 public class Fragment_Device extends RevealAnimationBaseFragment {
     private final String TAG = "Fragment_Device";
 
+    public static boolean isOpen = false;
+
     private ListView TargetListView;
     private AdapeterDeviceList adapterList;
 
@@ -48,6 +50,7 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
             }
         });
 
+        isOpen = true;
         adapterList.dataChanged();
 
     }
@@ -95,21 +98,22 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
-        Logs.d(TAG,"onPause***************");
+        Logs.d(TAG,"onPause");
         saveData();
+        isOpen = false;
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Logs.d(TAG,"onStop***************");
+        Logs.d(TAG,"onStop");
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG,"onDestroy***************");
+        Logs.d(TAG,"onDestroy");
         super.onDestroy();
 
     }

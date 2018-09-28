@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.BlueTooth.EventBusTukTukMsg;
+import com.bravo.BlueTooth.tukTukService;
 import com.bravo.R;
 import com.bravo.no_http.download.DownloadListener;
 import com.bravo.no_http.download.DownloadQueue;
@@ -242,8 +243,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             case R.id.tuktuk_enter:
                 //检查蓝牙服务是否打开
 //                if (!isServiceRunning(mContext, "com.bravo.BlueTooth.tukTukService")){//检测蓝牙服务是否启动
-                    //intent = new Intent(this, tukTukService.class);
-                    //startService(intent);
+                intent = new Intent(this, tukTukService.class);
+                startService(intent);
                 break;
         }
     }

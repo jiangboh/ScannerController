@@ -47,6 +47,7 @@ import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 public class FragmentFind extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentFind";
+    public static boolean isOpen = false;
 
     private final int FIND_END = 0;
     private final int  FIND_START = 1;
@@ -85,7 +86,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
                 SwitchView(true);
             }
         });
-
+        isOpen = true;
     }
 
     @Override
@@ -251,21 +252,22 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
-        Logs.d(TAG,"onPause***************");
+        Logs.d(TAG,"onPause");
         saveData();
+        isOpen = false;
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Logs.d(TAG,"onStop***************");
+        Logs.d(TAG,"onStop");
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG,"onDestroy***************");
+        Logs.d(TAG,"onDestroy");
         super.onDestroy();
 
     }

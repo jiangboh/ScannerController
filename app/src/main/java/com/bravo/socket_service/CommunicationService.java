@@ -4,6 +4,7 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -40,6 +41,9 @@ import static java.lang.Thread.sleep;
 
 public class CommunicationService extends Service {
     public final String TAG = "CommunicationService";
+    public final static String TABLE_NAME = "SystemConfig";
+    public final static String tn_StartTime = "StartTime";
+
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
     private udpBroadCast udpBroadCast;
@@ -55,6 +59,9 @@ public class CommunicationService extends Service {
 
     @Override
     public void onCreate() {
+        //保存启动参数
+        saveData();
+
         socketUdp = new SocketUDP(this,udpPort);
         socketUdp.startReceive();
         //socketTCP = new SocketTCP(this);
@@ -69,6 +76,14 @@ public class CommunicationService extends Service {
         }
         //错误警告测试
 //        errorMsgTest();
+    }
+
+    private void saveData()
+    {
+        SharedPreferences preferences = getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(tn_StartTime, System.currentTimeMillis());
+        editor.commit();
     }
 
     private void errorMsgTest(){
@@ -106,7 +121,7 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void RecvMsgHandle(EventBusMsgRecvXmlMsg msgType) {
-        Log.d(TAG,"收到UDP消息。");
+        //Log.d(TAG,"收到UDP消息。");
         try {
             new HandleRecvXmlMsg(this).HandleRecvMsg(msgType);
         }

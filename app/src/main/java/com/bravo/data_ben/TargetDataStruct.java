@@ -11,13 +11,19 @@ import java.util.ArrayList;
 public class TargetDataStruct {
     private final String TAG = "TargetDataStruct";
     private String strName;
+    private String FullName ="";
+    private String SN ="";
+    private String IP ="";
+    private int Port;
+    private int rsrp;
     private String strImsi ="";
     private String strImei ="";
+    private String strTmsi ="";
     private boolean bCheckbox = false;
     private int iUserType = 0;//0普通名用户 1鉴权用户 2targetlist存在
     private boolean bSilentState = false;
-    private String strLongitude;
-    private String strLatitude;
+    private String strLongitude=""; //经度
+    private String strLatitude=""; //纬度
     private String strConntime;
     private String strAttachtime;
     private String strDetachtime;
@@ -33,32 +39,44 @@ public class TargetDataStruct {
     private boolean bRedir;
     private boolean bPositionStatus = false;//判断position消息出否上报，用于处理异常断开未收到detach消息的用户
 
-    @Override
-    public String toString() {
-        return "TargetDataStruct{" +
-                "TAG='" + TAG + '\'' +
-                ", strName='" + strName + '\'' +
-                ", strImsi='" + strImsi + '\'' +
-                ", strImei='" + strImei + '\'' +
-                ", bCheckbox=" + bCheckbox +
-                ", iUserType=" + iUserType +
-                ", bSilentState=" + bSilentState +
-                ", strLongitude='" + strLongitude + '\'' +
-                ", strLatitude='" + strLatitude + '\'' +
-                ", strConntime='" + strConntime + '\'' +
-                ", strAttachtime='" + strAttachtime + '\'' +
-                ", strDetachtime='" + strDetachtime + '\'' +
-                ", iDistance=" + iDistance +
-                ", iSignal=" + iSignal +
-                ", iCount=" + iCount +
-                ", distances=" + distances +
-                ", signals=" + signals +
-                ", strTech='" + strTech + '\'' +
-                ", strBand='" + strBand + '\'' +
-                ", strChannel='" + strChannel + '\'' +
-                ", bRedir=" + bRedir +
-                ", bPositionStatus=" + bPositionStatus +
-                '}';
+    public String getFullName() {
+        return FullName;
+    }
+
+    public void setFullName(String fullName) {
+        FullName = fullName;
+    }
+
+    public String getSN() {
+        return SN;
+    }
+
+    public void setSN(String SN) {
+        this.SN = SN;
+    }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+
+    public int getPort() {
+        return Port;
+    }
+
+    public void setPort(int port) {
+        Port = port;
+    }
+
+    public int getRsrp() {
+        return rsrp;
+    }
+
+    public void setRsrp(int rsrp) {
+        this.rsrp = rsrp;
     }
 
     public TargetDataStruct(){
@@ -77,7 +95,12 @@ public class TargetDataStruct {
     public String getImsi() {
         return strImsi;
     }
-
+    public void setTmsi(String strTmsi) {
+        this.strTmsi = strTmsi;
+    }
+    public String getTmsi() {
+        return strTmsi;
+    }
     public void setCheckbox(boolean bCheckbox) {
         this.bCheckbox = bCheckbox;
     }
@@ -216,5 +239,34 @@ public class TargetDataStruct {
 
     public void setbPositionStatus(boolean bPositionStatus) {
         this.bPositionStatus = bPositionStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "TargetDataStruct{" +
+                "strName='" + strName + '\'' +
+                ", FullName='" + FullName + '\'' +
+                ", strImsi='" + strImsi + '\'' +
+                ", strImei='" + strImei + '\'' +
+                ", strTmsi='" + strTmsi + '\'' +
+                ", bCheckbox=" + bCheckbox +
+                ", iUserType=" + iUserType +
+                ", bSilentState=" + bSilentState +
+                ", strLongitude='" + strLongitude + '\'' +
+                ", strLatitude='" + strLatitude + '\'' +
+                ", strConntime='" + strConntime + '\'' +
+                ", strAttachtime='" + strAttachtime + '\'' +
+                ", strDetachtime='" + strDetachtime + '\'' +
+                ", iDistance=" + iDistance +
+                ", iSignal=" + iSignal +
+                ", iCount=" + iCount +
+                ", distances=" + distances +
+                ", signals=" + signals +
+                ", strTech='" + strTech + '\'' +
+                ", strBand='" + strBand + '\'' +
+                ", strChannel='" + strChannel + '\'' +
+                ", bRedir=" + bRedir +
+                ", bPositionStatus=" + bPositionStatus +
+                '}';
     }
 }
