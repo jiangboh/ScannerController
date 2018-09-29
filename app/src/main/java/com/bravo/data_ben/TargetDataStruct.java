@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class TargetDataStruct {
     private final String TAG = "TargetDataStruct";
-    private String strName;
+    private String strName; //别名
     private String FullName ="";
     private String SN ="";
     private String IP ="";
@@ -19,6 +19,7 @@ public class TargetDataStruct {
     private String strImsi ="";
     private String strImei ="";
     private String strTmsi ="";
+    private String DeviceType =""; //设备类型
     private boolean bCheckbox = false;
     private int iUserType = 0;//0普通名用户 1鉴权用户 2targetlist存在
     private boolean bSilentState = false;
@@ -45,6 +46,14 @@ public class TargetDataStruct {
 
     public void setFullName(String fullName) {
         FullName = fullName;
+    }
+
+    public String getDeviceType() {
+        return DeviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        DeviceType = deviceType;
     }
 
     public String getSN() {

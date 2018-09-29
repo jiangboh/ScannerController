@@ -56,10 +56,15 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     private final int TIMER_SECOND = 1;
     private final int STOP_FLAG = 2;
     private final int START_FLAG = 3;
-    private final int SEND_IMSI_FLAG = 4;
+    private final int SEND_IMSI_START = 4;
+    private final int SEND_IMSI_END = 5;
 
     private int iBcastTimer ;//开始捕号时间
     private Timer bcastTimer;//小区定时器
+
+    private int index = 0;
+
+    private Long changedTime = System.currentTimeMillis();
 
     private CustomProgressDialog proDialog;
     private OneBtnHintDialog hintDialog;
@@ -89,6 +94,8 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         });
 
         isOpen = true;
+        adapterScanner.ChangedTotal(targetDataStructs.size());
+        adapterScanner.setSelectionEnd();
         switchBcastTimer(true);
     }
 
@@ -124,23 +131,25 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView);
         TargetListView.setAdapter(adapterScanner);
 
-        TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
-           @Override
-            public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
-                    return;
-            }
-        });
-        TargetListView.setOnItemClickListener(new RecordOnItemClick() {
-            @Override
-            public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3, String strMsg) {
-                TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
-                new DialogScannerInfo(context,targetDataStruct).show();
-                //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
-                Log.d(TAG,"点击：" + targetDataStruct.getImsi());
-            }
-        });
-
-
+        try {
+            TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
+               @Override
+                public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
+                        return;
+                }
+            });
+            TargetListView.setOnItemClickListener(new RecordOnItemClick() {
+                @Override
+                public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3, String strMsg) {
+                    TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
+                    new DialogScannerInfo(context,targetDataStruct).show();
+                    //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
+                    Log.d(TAG,"点击：" + targetDataStruct.getImsi());
+                }
+            });
+        }catch (Exception e) {
+            Logs.e(TAG,"点击界面出错：" + e.getMessage());
+        }
     }
 
     @Override
@@ -187,22 +196,35 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         }
     }
 
+    class SendEndTimer extends TimerTask implements Serializable {
+        @Override
+        public void run() {
+            //Logs.d(TAG,"发送run。。。" + index);
+            // 需要做的事:发送消息
+            Message message = new Message();
+            message.what = SEND_IMSI_END;
+            handler.sendMessage(message);
+        }
+    }
+
     private void SendImsiTimer (){
         //Logs.d(TAG,"执行定时器。。。");
-
         lock.lock();
         try {
             //Logs.d(TAG,"接收到Scanner消息数量" + targetDataStructs.size());
             if (!isStart) {
                 adapterScanner.ChangedTotal(targetDataStructs.size());
             } else {
-                for(int i=targetDataStructs.size()-1;i>=0;i--)
-                {
-                    try {
-                        adapterScanner.AttachTarget(targetDataStructs.get(i));
-                    }catch (Exception e) {};
-                    targetDataStructs.remove(i);
+                try {
+                    //Logs.d(TAG,"发送IMSI开始。。。" + index);
+                    TargetListView.setEnabled(false);
+                    adapterScanner.AttachTarget(targetDataStructs);
+
+                    new Timer().schedule(new SendEndTimer(), 100);
+                }catch (Exception e) {
+                    Logs.e(TAG,"刷新界面出错：" + e.getMessage());
                 }
+                targetDataStructs.clear();
             }
         } finally {
             lock.unlock();
@@ -244,14 +266,21 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                     break;
                 case STOP_FLAG:
                     isStart = false;
+                    TargetListView.setEnabled(true);
                     ((RevealAnimationActivity)context).getSettingBtn().setImageResource(R.drawable.btn_refresh_normal);
                     break;
                 case TIMER_SECOND://小区计时
                     iBcastTimer++;
                     ((TextView)contentView.findViewById(R.id.scanner_timemeter)).setText(secToTime(iBcastTimer));
                     break;
-                case SEND_IMSI_FLAG://
+                case SEND_IMSI_START://
                     SendImsiTimer();
+                    //((TextView)contentView.findViewById(R.id.scanner_timemeter)).setText(secToTime(iBcastTimer));
+                    break;
+                case SEND_IMSI_END://
+                    //Logs.d(TAG,"发送IMSI完成！" + index);
+                    index++;
+                    TargetListView.setEnabled(true);
                     //((TextView)contentView.findViewById(R.id.scanner_timemeter)).setText(secToTime(iBcastTimer));
                     break;
                 default:
@@ -308,9 +337,14 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             lock.unlock();
         }
 
-        Message message = new Message();
-        message.what = SEND_IMSI_FLAG;
-        handler.sendMessage(message);
+        Long curTime = System.currentTimeMillis();
+        //大于秒才刷新界面
+        if ((curTime - changedTime) > 1000) {
+            changedTime = System.currentTimeMillis();
+            Message message = new Message();
+            message.what = SEND_IMSI_START;
+            handler.sendMessage(message);
+        }
     }
 
 

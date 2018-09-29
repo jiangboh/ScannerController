@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.utils.Logs;
 
 import java.util.ArrayList;
 
@@ -27,23 +28,18 @@ public class AdapterScanner extends BaseAdapter {
     private final static ArrayList<TargetDataStruct> targetDataStructs = new ArrayList<>();
     private Context mContext;
     private ListView listView;
-    private String strCurTech;
     private static int iCurAuthTotal = 0;
     private Long changedTime = System.currentTimeMillis();
     private TextView tvTotal;
-    public AdapterScanner(Context context) {
-        //this.radioButton = radioButton;
+    private static int MAX_TOTAL = 15000;
+
+    /*public AdapterScanner(Context context) {
         this.mContext = context;
-        //iCurPosition = -1;
-    }
-    public AdapterScanner(Context context, TextView txView,ListView listView) {
+    }*/
+    public AdapterScanner(Context context, TextView txView, ListView listView) {
         this.tvTotal = txView;
         this.mContext = context;
         this.listView = listView;
-    }
-
-    public void updateCurTech(String strCurTech) {
-        this.strCurTech = strCurTech;
     }
 
     @Override
@@ -65,59 +61,81 @@ public class AdapterScanner extends BaseAdapter {
         return targetDataStructs;
     }
 
-    public static void AddScannerImsi(TargetDataStruct targetDataStruct)
-    {
-        String strImsi = targetDataStruct.getImsi();
-        if (TextUtils.isEmpty(strImsi))
-        {
-            Log.d(TAG,"Imsi为空！");
+    //添加imsi到列表
+    public static void AddScannerImsi(TargetDataStruct tds) {
+        String strImsi = tds.getImsi();
+        //Log.d(TAG, "iCurAuthTotal = " + strImsi);
+        if (TextUtils.isEmpty(strImsi)) {
+            Log.d(TAG, "Imsi为空！");
             return;
         }
-
-        for (int i = 0; i < iCurAuthTotal; i++) {
+        //Log.d(TAG, "去重时数组中的数量 = " + targetDataStructs.size());
+        for (int i = 0; i < targetDataStructs.size(); i++) {
             if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
                 //Log.d(TAG,"Imsi重复");
-                //targetDataStructs.get(i).setbPositionStatus(true);
                 return;
             }
         }
 
+        //Log.d(TAG, "判断后数组中的数量 = " + targetDataStructs.size());
         iCurAuthTotal++;
-        targetDataStruct.setCount(iCurAuthTotal);
-        targetDataStructs.add(targetDataStruct);
-
+        tds.setCount(iCurAuthTotal);
+        targetDataStructs.add(tds);
     }
 
-
+    //刷新捕号数量显示
     public void ChangedTotal(int count) {
         if (tvTotal != null) {
-            tvTotal.setText(String.valueOf(iCurAuthTotal + count));
+            tvTotal.setText(String.valueOf(iCurAuthTotal));
         }
     }
 
-    public void AttachTarget(TargetDataStruct targetDataStruct) {
-        //Logs.d(TAG,"targetDataStruct==" + isChanged + ";" + targetDataStruct.getImsi());
-        AddScannerImsi(targetDataStruct);
-        updateTotal(true);
+    public void AttachTarget(TargetDataStruct tds) {
+        //Logs.d(TAG, "targetDataStruct==" + targetDataStruct.getImsi());
+        AddScannerImsi(tds);
+        updateTotal();
+
     }
 
-    private void updateTotal(boolean isChanged){
-        //Long curTime = System.currentTimeMillis();
-        //大于秒才刷新界面
-        //if ((curTime - changedTime) > 1000) {
-            //changedTime = System.currentTimeMillis();
-
-            if (tvTotal != null) {
-                tvTotal.setText(String.valueOf(iCurAuthTotal));
+    public void AttachTarget(ArrayList<TargetDataStruct> tdsList) {
+        for(int i=0;i<tdsList.size();i++)
+        {
+            try {
+                AddScannerImsi(tdsList.get(i));
+            }catch (Exception e) {
+                Logs.e(TAG,"出错：" + e.getMessage());
             }
+        }
 
-            if (isChanged)
-                this.notifyDataSetChanged(iCurAuthTotal - 1);
-        //}
+        updateTotal();
+
+        int len = getCount();
+        //Log.d(TAG, "添加前删除个数：" + len );
+        for (int i = MAX_TOTAL; i < len ; i++) {
+            //Log.d(TAG, "添加前删除。。。" );
+            targetDataStructs.remove(0);
+        }
+        //Log.d(TAG, "添加前删除个数：" + getCount());
     }
 
-    private void updateTotal(){
-        this.updateTotal(true);
+    //刷新界面
+    private void updateTotal() {
+        if (tvTotal != null) {
+            tvTotal.setText(String.valueOf(iCurAuthTotal));
+        }
+        //Log.d(TAG, "刷新时个数：" + getCount());
+        //this.notifyDataSetChanged(getCount() - 1);
+        this.notifyDataSetChanged();
+    }
+
+    private void checkCount()
+    {
+        if (iCurAuthTotal > MAX_TOTAL)
+        {
+            //Log.d(TAG, "删除。。。" );
+            targetDataStructs.remove(0);
+            notifyDataSetChanged();
+        }
     }
 
     public void removeTarget(int iPosition) {
@@ -134,30 +152,53 @@ public class AdapterScanner extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setSelectionEnd()
+    {
+        listView.setSelection(listView.getCount() - 1);
+    }
 
-     private void notifyDataSetChanged( int position){
+    private void notifyDataSetChanged(int position) {
+        setSelectionEnd();
+        int firstVisiblePosition = listView.getFirstVisiblePosition();
+        int lastVisiblePosition = listView.getLastVisiblePosition();
+
+        //Log.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition  +";p=" + position);
+
+        if (lastVisiblePosition - firstVisiblePosition < 1)
+        {
+            notifyDataSetChanged();
+        } else {
+            if (iCurAuthTotal > MAX_TOTAL) {
+                //Log.d(TAG, "刷新：" + position);
+                for (int i = firstVisiblePosition; i <= lastVisiblePosition; i++) {
+                    View item = listView.getChildAt(firstVisiblePosition - i);
+                    //Log.d(TAG, "局部刷新:f=" + (i+1));
+                    getView(i + 1, item, listView);
+                }
+            }
+        }
+    }
+
+    /*private void notifyDataSetChanged(int position) {
         listView.setSelection(listView.getCount() - 1);
         int firstVisiblePosition = listView.getFirstVisiblePosition();
         int lastVisiblePosition = listView.getLastVisiblePosition();
-        //Log.d(TAG,"局部刷新:fisrst=" + firstVisiblePosition + ";last=" + lastVisiblePosition + ";p=" +position);
 
-         int len = lastVisiblePosition-firstVisiblePosition + 1;
-         if (len <= 1) {
-             notifyDataSetChanged();
-         } else {
-             //if (lastVisiblePosition != (position-1) ) return;
-             for (int i = firstVisiblePosition; i < len; i++) {
-                 View item = listView.getChildAt(i);
-                 item = getView(i, item, listView);
-             }
-             listView.setSelection(lastVisiblePosition);
-         }
+        int len = lastVisiblePosition - firstVisiblePosition + 1;
+        //Log.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition + ";len=" + len +";p=" + position);
+        if (len <= 1) {
+            notifyDataSetChanged();
+        } else {
+            //if (lastVisiblePosition != (position-1) ) return;
+            *//*for (int i = firstVisiblePosition; i <= lastVisiblePosition; i++) {
+                View item = listView.getChildAt(firstVisiblePosition - i);
+                //Log.d(TAG, "局部刷新:f=" + (i+1));
+                getView(i+1, item, listView);
+            }*//*
+        }
 
-    }
+    }*/
 
-    public int getAuthTotal() {
-        return iCurAuthTotal;
-    }
     private class ViewHolder {
         LinearLayout layout_conntime;
         LinearLayout layout_name;
@@ -170,26 +211,27 @@ public class AdapterScanner extends BaseAdapter {
         TextView textViewCount;
         ImageView iv_user_icon;
     }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         //Log.e(TAG,"position=" + position);
         ViewHolder holder;
-        if(convertView == null){
+        if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.adapter_conn_target, null);
             holder.layout_conntime = (LinearLayout) convertView.findViewById(R.id.layout_conntime);
             holder.textViewName = ((TextView) convertView.findViewById(R.id.name));
             holder.textViewImsi = ((TextView) convertView.findViewById(R.id.imsi));
-            holder.textViewConntime = ((TextView)convertView.findViewById(R.id.conntime));
+            holder.textViewConntime = ((TextView) convertView.findViewById(R.id.conntime));
             holder.layout_imei = (LinearLayout) convertView.findViewById(R.id.layout_imei);
             holder.textViewImei = ((TextView) convertView.findViewById(R.id.imei));
-            holder.textViewCount = ((TextView)convertView.findViewById(R.id.scanner_count));
-            holder.iv_user_icon = ((ImageView)convertView.findViewById(R.id.user_icon));
+            holder.textViewCount = ((TextView) convertView.findViewById(R.id.scanner_count));
+            holder.iv_user_icon = ((ImageView) convertView.findViewById(R.id.user_icon));
             holder.layout_name = ((LinearLayout) convertView.findViewById(R.id.layout_name));
-            holder.attachtime = ((TextView)convertView.findViewById(R.id.attachtime));
+            holder.attachtime = ((TextView) convertView.findViewById(R.id.attachtime));
             convertView.setTag(holder);
         } else {
-            holder = (ViewHolder)convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //userType

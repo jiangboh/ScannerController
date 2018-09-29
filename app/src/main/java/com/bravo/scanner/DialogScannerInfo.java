@@ -29,7 +29,7 @@ public class DialogScannerInfo extends Dialog {
     private EditText sInfo_fullname;
     private EditText sInfo_sn ;
     private EditText sInfo_ip;
-    private EditText sInfo_port;
+    private EditText sInfo_devType;
     private EditText sInfo_rsrp ;
     private EditText sInfo_we ;
 
@@ -68,9 +68,9 @@ public class DialogScannerInfo extends Dialog {
         sInfo_sn = (EditText) findViewById(R.id.sInfo_sn);
         sInfo_sn.setText(tds.getSN());
         sInfo_ip = (EditText) findViewById(R.id.sInfo_ip);
-        sInfo_ip.setText(tds.getIP());
-        sInfo_port = (EditText) findViewById(R.id.sInfo_port);
-        sInfo_port.setText(String.valueOf(tds.getPort()));
+        sInfo_ip.setText(tds.getIP() + ":" + String.valueOf(tds.getPort()));
+        sInfo_devType = (EditText) findViewById(R.id.sInfo_devType);
+        sInfo_devType.setText(tds.getDeviceType());
         sInfo_rsrp = (EditText) findViewById(R.id.sInfo_rsrp);
         sInfo_rsrp.setText(String.valueOf(tds.getRsrp()));
         sInfo_we = (EditText) findViewById(R.id.sInfo_we);

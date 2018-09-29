@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="别名:"
             android:layout_weight="1"/>
@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="用户类型:"
             android:layout_weight="1"/>
@@ -64,7 +64,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -83,7 +82,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="IMSI:"
             android:layout_weight="1"/>
@@ -92,7 +91,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -111,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="TMSI:"
             android:layout_weight="1"/>
@@ -120,7 +118,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -139,7 +136,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="IMEI:"
             android:layout_weight="1"/>
@@ -148,7 +145,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -167,7 +163,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="捕捉时间:"
             android:layout_weight="1"/>
@@ -176,7 +172,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -209,7 +204,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="设备全名:"
             android:layout_weight="1"/>
@@ -218,7 +213,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -238,7 +232,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="SN:"
             android:layout_weight="1"/>
@@ -247,7 +241,34 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textSize="@dimen/font_size_14"
+            android:textColor="@color/colordialogvalue"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc"/>
+
+    <!--devType-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/font_size_14"
+            android:textColor="@color/colordialogtext"
+            android:text="设备类型:"
+            android:layout_weight="1"/>
+        <EditText
+            android:id="@+id/sInfo_devType"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -267,7 +288,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="Ip地址:"
             android:layout_weight="1"/>
@@ -276,36 +297,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
-            android:background="@android:color/transparent"
-            android:focusable="false"
-            android:textSize="@dimen/font_size_14"
-            android:textColor="@color/colordialogvalue"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#cccccc"/>
-
-    <!--port-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/font_size_30"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
-            android:textColor="@color/colordialogtext"
-            android:text="端口:"
-            android:layout_weight="1"/>
-        <EditText
-            android:id="@+id/sInfo_port"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -325,7 +316,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="RSRP:"
             android:layout_weight="1"/>
@@ -334,7 +325,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -354,7 +344,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="@dimen/font_size_18"
+            android:textSize="@dimen/font_size_14"
             android:textColor="@color/colordialogtext"
             android:text="经纬度:"
             android:layout_weight="1"/>
@@ -363,7 +353,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:maxLength="15"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textSize="@dimen/font_size_14"
@@ -386,7 +375,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="确  定"
-            android:background="@drawable/dialog_right_btn_bg_selector"
+            android:background="@drawable/dialog_one_btn_selected_bg"
             android:textAllCaps="false"
             android:textColor="#00b4ff"
             android:textSize="@dimen/font_size_18"/>

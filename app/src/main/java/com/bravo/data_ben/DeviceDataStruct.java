@@ -22,7 +22,7 @@ public class DeviceDataStruct {
         public static final String LTE = "LTE";
         public static final String WCDMA = "WCDMA";
         public static final String GSM = "GSM";
-        public static final String GSM_V2 = "GSM_V2";
+        public static final String GSM_V2 = "GSM_ZYF";
         public static final String CDMA = "CDMA";
     }
 

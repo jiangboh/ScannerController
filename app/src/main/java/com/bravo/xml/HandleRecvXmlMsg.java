@@ -1,22 +1,17 @@
 package com.bravo.xml;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bravo.Find.FragmentFind;
-import com.bravo.adapters.AdapterScanner;
 import com.bravo.config.Fragment_Device;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
-import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
-import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
 
@@ -84,39 +79,12 @@ public class HandleRecvXmlMsg {
             return;
         } else {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
-
-            if (msg.type.equalsIgnoreCase(Msg_Body_Struct.scanner)) {
-                DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
-                TargetDataStruct targetDataStruct = new TargetDataStruct();
-
-                targetDataStruct.setSN(dds.getSN());
-                targetDataStruct.setIP(dds.getIp());
-                targetDataStruct.setPort(dds.getPort());
-                targetDataStruct.setFullName(dds.getFullName());
-
-                targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi",msg.dic,""));
-                targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType",msg.dic,0));
-                //Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
-                targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei",msg.dic,""));
-                targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi",msg.dic,""));
-                targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp",msg.dic,0));
-                targetDataStruct.setbPositionStatus(true);
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-                targetDataStruct.setStrAttachtime(formatter.format(new Date()));
-
-                //if (!FragmentScannerListen.isStart) return;
-
-                if(FragmentScannerListen.isOpen) {
-                    //更新界面
-                    EventBus.getDefault().post(targetDataStruct);
-                } else {
-                    //保存到列表
-                    AdapterScanner.AddScannerImsi(targetDataStruct);
-                }
-
-                return;
+            DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
+            Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getMode(),dds.getPort(),msg.type));
+            if (dds.getMode().equals(DeviceDataStruct.MODE.LTE)) {
+                new LTE(mContext).HandleMsg(dds,msg);
             } else {
-                Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type));
+                Logs.e(TAG, String.format("设备类型(%s)为不支持的消息类型！", dds.getMode()));
             }
         }
     }
