@@ -35,7 +35,7 @@ public class DeviceFragmentStruct {
         public void run() {
             // 需要做的事
             boolean del = false;
-            int diff = 20;//秒
+            int diff = 2000;//秒
             Long curTime = System.currentTimeMillis();
             lock.lock();
             try {

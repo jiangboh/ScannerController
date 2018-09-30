@@ -20,7 +20,7 @@ import java.util.Date;
 public class GSM_ZYF {
     private final String TAG = "GSM_ZYF";
 
-    private final byte MsgHadeLen = 12;
+    private final int MsgHadeLen = 12;
 
     private static final int Sys1 = 0;
     private static final int Sys2 = 1;
@@ -106,13 +106,13 @@ public class GSM_ZYF {
     }
 
     private class STRUCT_CONFIG_FAP_MSG {
-        public byte bWorkingMode;         //工作模式:1 为侦码模式 ;3驻留模式.
-        public byte bC;                   //是否自动切换模式。保留
+        public int bWorkingMode;         //工作模式:1 为侦码模式 ;3驻留模式.
+        public int bC;                   //是否自动切换模式。保留
         public int wRedirectCellUarfcn;  //CDMA黑名单频点
         public Long dwDateTime;           //当前时间
         public String bPLMNId;              //PLMN标志
-        public byte bTxPower;             //实际发射功率.设置发射功率衰减寄存器, 0输出最大功率, 每增加1, 衰减1DB
-        public byte bRxGain;              //接收信号衰减寄存器. 每增加1增加1DB的增益
+        public int bTxPower;             //实际发射功率.设置发射功率衰减寄存器, 0输出最大功率, 每增加1, 衰减1DB
+        public int bRxGain;              //接收信号衰减寄存器. 每增加1增加1DB的增益
         public int wPhyCellId;           //物理小区ID.
         public int wLAC;                 //追踪区域码。GSM：LAC;CDMA：REG_ZONE
         public int wUARFCN;              //小区频点. CDMA 制式为BSID
@@ -154,7 +154,7 @@ public class GSM_ZYF {
             this.bSegmentID = 0;
             this.bActionType = 0;
             this.bIMSI = new String[arrayNum];
-            //this.bUeActionFlag = new byte[arrayNum];
+            //this.bUeActionFlag = new int[arrayNum];
         }
     }
 
@@ -164,12 +164,12 @@ public class GSM_ZYF {
     }
 
     public void HandleMsg(DeviceDataStruct dds, Msg_Body_Struct msgBody) {
-        if (msgBody.type == Msg_Body_Struct.agent_straight_msg)
+        if (msgBody.type.equals(Msg_Body_Struct.straight_msg))
         {
             MsgRecvStruct recv = null;
             String msg_data = FindMsgStruct.GetMsgStringValueInList("data", msgBody.dic);
             msg_data = msg_data.replace(" ", "");
-            if (NoEmpty(msg_data))
+            if (!NoEmpty(msg_data))
             {
                 Log.e(TAG, "收到XML消息格式错误，XML中data字段为空！");
                 return;
@@ -244,27 +244,27 @@ public class GSM_ZYF {
     {
         MsgRecvStruct recv = new MsgRecvStruct();
         GetDataValue gdv = new GetDataValue(msg_data);
-        byte bProtocolSap = gdv.GetValueByString_Byte();
-        if ( bProtocolSap != (byte)GSM)
+        int bProtocolSap = gdv.GetValueByString_Byte();
+        if (bProtocolSap != (int)GSM && bProtocolSap != (int)CDMA)
         {
             Log.e(TAG, String.format("解析GSM_V2消息格式错误，bProtocolSap为%d,字段错误！", bProtocolSap));
             return null;
         }
         recv.bProtocolSap = bProtocolSap;
 
-        byte bMsgId = gdv.GetValueByString_Byte();
+        int bMsgId = gdv.GetValueByString_Byte();
         recv.bMsgId = bMsgId;
 
-        byte bMsgType = gdv.GetValueByString_Byte();
-        if (bMsgId != INITIAL_MSG && bMsgId !=SUCC_OUTCOME && bMsgId != UNSUCC_OUTCOME )
+        int bMsgType = gdv.GetValueByString_Byte();
+        if (bMsgType != INITIAL_MSG && bMsgType !=SUCC_OUTCOME && bMsgType != UNSUCC_OUTCOME )
         {
             Log.e(TAG, String.format("解析GSM_V2消息格式错误，bMsgType%d，不在定义中！", bMsgType));
             return null;
         }
         recv.bMsgType = bMsgType;
 
-        byte bCellIdx = gdv.GetValueByString_Byte();
-        if (bCellIdx != (byte)Sys1 && bCellIdx != (byte)Sys2)
+        int bCellIdx = gdv.GetValueByString_Byte();
+        if (bCellIdx != (int)Sys1 && bCellIdx != (int)Sys2)
         {
             Log.e(TAG, String.format("解析GSM_V2消息格式错误，bCellIdx为%d,字段错误！", bCellIdx));
             return null;
@@ -313,13 +313,13 @@ public class GSM_ZYF {
         Name_DIC_Struct nDic = new Name_DIC_Struct();
         nDic.name = "UE_STATUS_REPORT_MSG";
 
-        byte addFlag = 0;
-        byte type1 = gdv.GetValueByString_Byte();
+        int addFlag = 0;
+        int type1 = gdv.GetValueByString_Byte();
 
         String msg = gdv.GetValueByString_String(30);
-        GetDataValue item1 = new GetDataValue(recv.data);
+        GetDataValue item1 = new GetDataValue(msg);
         int rsrp = gdv.GetValueByString_SByte();
-        byte len = gdv.GetValueByString_Byte();
+        int len = gdv.GetValueByString_Byte();
 
         if (type1 == 1)
         {
@@ -353,8 +353,8 @@ public class GSM_ZYF {
         }
 
 
-        byte type2 = gdv.GetValueByString_Byte();
-        GetDataValue item2 = new GetDataValue(recv.data);
+        int type2 = gdv.GetValueByString_Byte();
+        GetDataValue item2 = new GetDataValue(msg);
         msg = gdv.GetValueByString_String(30).toString();
         len = gdv.GetValueByString_Byte();
 
@@ -390,9 +390,9 @@ public class GSM_ZYF {
         }
 
 
-        byte type3 = gdv.GetValueByString_Byte();
+        int type3 = gdv.GetValueByString_Byte();
         msg = gdv.GetValueByString_String(30).toString();
-        GetDataValue item3 = new GetDataValue(recv.data);
+        GetDataValue item3 = new GetDataValue(msg);
         len = gdv.GetValueByString_Byte();
 
         if (type3 == 1)
@@ -493,13 +493,13 @@ private class GetDataValue {
         return value;
     }
 
-    private Byte GetValueByString_Byte() {
+    private Integer GetValueByString_Byte() {
         int len = 2;
         if (MsgData.length() < len) {
             MsgData = "";
             return 0;
         }
-        Byte value = Byte.parseByte(MsgData.substring(0, len), 16);
+        int value = Integer.parseInt(MsgData.substring(0, len), 16);
         MsgData = MsgData.substring(len);
         return value;
     }
@@ -511,6 +511,10 @@ private class GetDataValue {
             return 0;
         }
         int value = Integer.parseInt(MsgData.substring(0, len), 16);
+        if (value > Byte.MAX_VALUE)
+        {
+            value = Byte.MAX_VALUE - value;
+        }
         MsgData = MsgData.substring(len);
         return value;
     }

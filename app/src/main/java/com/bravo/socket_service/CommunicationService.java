@@ -120,14 +120,14 @@ public class CommunicationService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void RecvMsgHandle(EventBusMsgRecvXmlMsg msgType) {
+    public void RecvMsgHandle(EventBusMsgRecvXmlMsg RecvMsg) {
         //Log.d(TAG,"收到UDP消息。");
         try {
-            new HandleRecvXmlMsg(this).HandleRecvMsg(msgType);
+            new HandleRecvXmlMsg(this).HandleRecvMsg(RecvMsg);
         }
         catch (Exception e)
         {
-            Log.d(TAG,String.format("处理设备[%s:%d]消息出错。",msgType.getIp(),msgType.getPort()));
+            Log.d(TAG,String.format("处理设备[%s:%d]消息出错。",RecvMsg.getIp(),RecvMsg.getPort()));
         }
     }
 

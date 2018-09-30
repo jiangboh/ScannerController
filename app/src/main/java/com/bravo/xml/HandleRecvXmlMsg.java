@@ -28,14 +28,17 @@ public class HandleRecvXmlMsg {
         this.mContext=context;
     }
 
-    public void HandleRecvMsg(EventBusMsgRecvXmlMsg msgType)
+    public void HandleRecvMsg(EventBusMsgRecvXmlMsg RecvMsg)
     {
-        String ip = msgType.getIp();
-        int port = msgType.getPort();
-        String result = msgType.getMsg();
+        String ip = RecvMsg.getIp();
+        int port = RecvMsg.getPort();
+        String result = RecvMsg.getMsg();
 
         Msg_Body_Struct msg = DecodeApXmlMessage(result);
-        if (msg == null) return;
+        if (msg == null) {
+            Log.d(TAG,"解析消息出错:\n" + result);
+            return;
+        }
 
        /* Logs.d(TAG,"接收消息id：" + msg.msgId);
         Logs.d(TAG,"接收消息类型：" + msg.type);
@@ -80,7 +83,7 @@ public class HandleRecvXmlMsg {
         } else {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
-            Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getMode(),dds.getPort(),msg.type));
+            Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getPort(),dds.getMode(),msg.type));
             if (dds.getMode().equals(DeviceDataStruct.MODE.LTE) || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                 new LTE(mContext).HandleMsg(dds,msg);
             } else if (dds.getMode().equals(DeviceDataStruct.MODE.CDMA) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {

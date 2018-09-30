@@ -141,9 +141,9 @@ public class AdapeterDeviceList extends BaseAdapter {
         String mode = dds.getMode();
         if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.LTE)) {
             holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
-        } else if (mode.equalsIgnoreCase("WCDMA")) {
+        } else if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.WCDMA) || mode.equalsIgnoreCase(DeviceDataStruct.MODE.CDMA)) {
             holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_default));
-        } else if (mode.equalsIgnoreCase("GSM")) {
+        } else if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.GSM) || mode.equalsIgnoreCase(DeviceDataStruct.MODE.GSM_V2)) {
             holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_default));
         } else {
             //holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
