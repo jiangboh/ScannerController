@@ -110,6 +110,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                 | PowerManager.ON_AFTER_RELEASE, TAG);
         mWakeLock.acquire();
     }
+
     private void coverTarget(TargetDataStruct newTarget, final TargetDataStruct oldTarget){
         TargetUser targetUser = ProxyApplication.getDaoSession().getTargetUserDao().queryBuilder().where(
                 TargetUserDao.Properties.StrImsi.eq(oldTarget.getImsi()),

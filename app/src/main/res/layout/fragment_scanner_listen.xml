@@ -46,8 +46,9 @@
                 android:id="@+id/cur_Total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.8"
                 android:text="0"
+                android:gravity="right"
                 android:textColor="@color/colorItemText"/>
         </LinearLayout>
         <!--

@@ -81,8 +81,10 @@ public class HandleRecvXmlMsg {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
             Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getMode(),dds.getPort(),msg.type));
-            if (dds.getMode().equals(DeviceDataStruct.MODE.LTE)) {
+            if (dds.getMode().equals(DeviceDataStruct.MODE.LTE) || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                 new LTE(mContext).HandleMsg(dds,msg);
+            } else if (dds.getMode().equals(DeviceDataStruct.MODE.CDMA) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
+                new GSM_ZYF(mContext).HandleMsg(dds,msg);
             } else {
                 Logs.e(TAG, String.format("设备类型(%s)为不支持的消息类型！", dds.getMode()));
             }

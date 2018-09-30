@@ -15,61 +15,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/item_bg"
+        android:background="@drawable/dialog_one_btn_selected_bg"
         android:orientation="vertical">
-        <!--timer-->
+        <!--IMSI-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/item_bg">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="捕号时间:"
-                android:textStyle="bold"
-                android:textColor="@color/colorItemText"/>
+                android:text="IMSI:"
+                android:textSize="@dimen/font_size_14"
+                android:textColor="@color/colordialogtext"/>
             <TextView
                 android:id="@+id/scanner_timemeter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:textColor="@color/colorItemText"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:text="捕号数量:"
-                android:textColor="@color/colorItemText"/>
-            <TextView
-                android:id="@+id/cur_Total"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="0"
-                android:textColor="@color/colorItemText"/>
+                android:textSize="@dimen/font_size_14"
+                android:textColor="@color/colordialogvalue"/>
         </LinearLayout>
-        <!--
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Total:"
-                android:textColor="@color/colorItemText"/>
-            <TextView
-                android:id="@+id/cur_Total"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textColor="@color/colorItemText"/>
+            android:orientation="horizontal"
+            android:background="@drawable/item_bg">
+
+            <Button
+                android:id="@+id/sInfo_ok"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:background="@drawable/dialog_one_btn_selected_bg"
+                android:gravity="right"
+                android:text="搜  索  "
+                android:textColor="#00b4ff"
+                android:textSize="@dimen/font_size_14" />
         </LinearLayout>
-        -->
+
     </LinearLayout>
 
     <LinearLayout
