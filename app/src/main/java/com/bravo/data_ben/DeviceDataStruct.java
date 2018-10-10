@@ -87,6 +87,10 @@ public class DeviceDataStruct {
             Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中Mode类型错误。",sn,ip,port));
             return null;
         }
+        mode = mode.replace("-","_");
+        if (mode.equals("LTE_FDD") || mode.equals("LTE_TDD")) {
+            mode = MODE.LTE;
+        }
 
         deviceInfo.setIp(ip);
         deviceInfo.setPort(port);

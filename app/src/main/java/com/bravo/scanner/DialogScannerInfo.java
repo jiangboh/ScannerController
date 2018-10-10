@@ -25,6 +25,7 @@ public class DialogScannerInfo extends Dialog {
     private EditText sInfo_imsi;
     private EditText sInfo_type ;
     private EditText sInfo_tmsi;
+    private EditText sInfo_imei;
     private EditText sInfo_time;
     private EditText sInfo_fullname;
     private EditText sInfo_sn ;
@@ -50,17 +51,17 @@ public class DialogScannerInfo extends Dialog {
         sInfo_imsi.setText(tds.getImsi());
 
         sInfo_type = (EditText) findViewById(R.id.sInfo_type);
-        if (tds.getiUserType() == 0){
-            sInfo_type.setText("普通用户");
-        } else if (tds.getiUserType() == 0){
+        if (tds.getiUserType() == TargetDataStruct.WHITE_IMSI){
             sInfo_type.setText("白名单用户");
-        } else if (tds.getiUserType() == 0){
+        } else if (tds.getiUserType() == TargetDataStruct.BLACK_IMSI){
             sInfo_type.setText("黑名单用户");
         } else {
             sInfo_type.setText("普通用户");
         }
         sInfo_tmsi = (EditText) findViewById(R.id.sInfo_tmsi);
         sInfo_tmsi.setText(tds.getTmsi());
+        sInfo_imei = (EditText) findViewById(R.id.sInfo_imei);
+        sInfo_imei.setText(tds.getImei());
         sInfo_time = (EditText) findViewById(R.id.sInfo_time);
         sInfo_time.setText(tds.getStrAttachtime());
         sInfo_fullname = (EditText) findViewById(R.id.sInfo_fullname);

@@ -88,8 +88,10 @@ public class HandleRecvXmlMsg {
                 new LTE(mContext).HandleMsg(dds,msg);
             } else if (dds.getMode().equals(DeviceDataStruct.MODE.CDMA) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
                 new GSM_ZYF(mContext).HandleMsg(dds,msg);
+            } else if (dds.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+                new GSM_HJT(mContext).HandleMsg(dds,msg);
             } else {
-                Logs.e(TAG, String.format("设备类型(%s)为不支持的消息类型！", dds.getMode()));
+                Logs.e(TAG, String.format("设备类型(%s)为不支持的设备类型！", dds.getMode()));
             }
         }
     }

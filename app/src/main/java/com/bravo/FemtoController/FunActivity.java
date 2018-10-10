@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bravo.BuildConfig;
 import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
@@ -118,8 +119,8 @@ public class FunActivity extends BaseActivity {
         selectedIV.setVisibility(View.GONE);
         mCircleMenuLayout.setHandler(null);
 
-        ((TextView) findViewById(R.id.tv_sn)).setText("WiFi:" + getWifiIp(mContext));
-
+        ((TextView) findViewById(R.id.tv_wifi)).setText("WiFi地址: " + getWifiIp(mContext));
+        ((TextView) findViewById(R.id.tv_sn)).setText("编译时间: " + BuildConfig.versionDateTime);
         initStatusView();
     }
 
@@ -149,7 +150,7 @@ public class FunActivity extends BaseActivity {
             case 1:
                 //onConfigClicked();
                 onSetDeviceClicked();
-                Logs.w("RecordOnClick", "点击设备配置按钮", "Record_Event", true);
+                Logs.w("RecordOnClick", "点击设备管理按钮", "Record_Event", true);
                 break;
             case 2:
                 CustomToast.showToast(this, "功能开发进行中，敬请期待...");
@@ -158,7 +159,11 @@ public class FunActivity extends BaseActivity {
                 break;
             case 3:
                 //onStatusClicked();
-                onScannerClicked();
+                try{
+                    onScannerClicked();
+                }catch (Exception e) {
+                    Logs.e(TAG,"点击捕号显示出错：" + e.getMessage());
+                }
                 Logs.w("RecordOnClick", "点击捕号显示按钮", "Record_Event", true);
                 break;
             case 4:
@@ -377,20 +382,20 @@ public class FunActivity extends BaseActivity {
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("实时显示");
-        menuList.add("捕号配置");
-        menuList.add("历史数据");
+        //menuList.add("捕号配置");
+        //menuList.add("数据搜索");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
-        fragments.add(new FragmentFindConfig());
-        fragments.add(new FragmentScannerListen());
+        //fragments.add(new FragmentFindConfig());
+        //fragments.add(new FragmentScannerSearch());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_broadcast_selector);
-        iconsResId.add(R.drawable.icon_config_selector);
-        iconsResId.add(R.drawable.icon_history_selector);
+        //iconsResId.add(R.drawable.icon_config_selector);
+        //iconsResId.add(R.drawable.icon_scan_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "捕号显示");
@@ -433,7 +438,7 @@ public class FunActivity extends BaseActivity {
         iconsResId.add(R.drawable.icon_femto_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
-        intent.putExtra(RevealAnimationActivity.TITLE, "设备配置");
+        intent.putExtra(RevealAnimationActivity.TITLE, "设备管理");
         startActivityWithAnimation(intent);
     }
 

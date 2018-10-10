@@ -2,21 +2,17 @@ package com.bravo.scanner;
 
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
-import com.bravo.adapters.AdapterScanner;
+import com.bravo.adapters.AdapterScannerSearch;
 import com.bravo.custom_view.RecordOnClick;
-import com.bravo.custom_view.RecordOnItemClick;
-import com.bravo.custom_view.RecordOnItemLongClick;
-import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.fragments.RevealAnimationBaseFragment;
-import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,9 +24,20 @@ import static android.content.Context.POWER_SERVICE;
 
 public class FragmentScannerSearch extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentScannerSearch";
+    private final int UP_FLAG = 0;
+    private final int DOWN_FLAG = 1;
+
+    public final String TABLE_NAME = "ScannerSearch";
+    public final String tn_imsi = "imsi";
+
     private PowerManager.WakeLock mWakeLock;
     private ListView TargetListView;
-    private AdapterScanner adapterScanner;
+    private AdapterScannerSearch adapterScannerSearch;
+    private LinearLayout imsiLayout;
+    private TextView imsiText;
+    private ImageView bDown;
+    private boolean isDown = false;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -43,7 +50,9 @@ public class FragmentScannerSearch extends RevealAnimationBaseFragment {
         ((RevealAnimationActivity)context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
-                //switchBtu();
+                /*saveData();
+                SearchClick();
+                switchBtu(false);*/
             }
         });
     }
@@ -62,9 +71,17 @@ public class FragmentScannerSearch extends RevealAnimationBaseFragment {
 
     @Override
     public void initView() {
+        /*imsiLayout = (LinearLayout)contentView.findViewById(R.id.layout_imsi);
+        imsiText = (TextView) contentView.findViewById(R.id.scanner_imsi);
+
+        bDown = (ImageView)contentView.findViewById(R.id.sInfo_down);
+        bDown.setOnClickListener(new ImageView.OnClickListener(){
+            @Override
+            public void onClick(View arg0) {
+                switchBtu(!isDown);
+            }
+        });
         TargetListView = (ListView) contentView.findViewById(R.id.scannerlist);
-        adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView);
-        TargetListView.setAdapter(adapterScanner);
 
         try {
             TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
@@ -76,19 +93,84 @@ public class FragmentScannerSearch extends RevealAnimationBaseFragment {
             TargetListView.setOnItemClickListener(new RecordOnItemClick() {
                 @Override
                 public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3, String strMsg) {
-                    TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
-                    new DialogScannerInfo(context,targetDataStruct).show();
-                    //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
-                    Log.d(TAG,"点击：" + targetDataStruct.getImsi());
+                    return;
                 }
             });
         }catch (Exception e) {
             Logs.e(TAG,"点击界面出错：" + e.getMessage());
-        }
+        }*/
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        //SharedPreferences sp = context.getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
+        //imsiText.setText(sp.getString(tn_imsi,""));
 
+        //switchBtu(false);
     }
+
+    /*private void saveData() {
+        SharedPreferences preferences = context.getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(tn_imsi, imsiText.getText().toString());
+
+        editor.commit();
+    }
+
+    private void SearchClick(){
+        ArrayList<TargetDataStruct> tds = new ArrayList<TargetDataStruct>();
+        ArrayList<TargetDataStruct> mList = AdapterScanner.getList();
+        String imsi = imsiText.getText().toString();
+        for (int i = 0; i < mList.size(); i++) {
+            if (!imsi.isEmpty()) {
+                if (!imsi.equals(mList.get(i).getImsi())) {
+                    continue;
+                }
+            }
+
+            tds.add(mList.get(i));
+        }
+        adapterScannerSearch = new AdapterScannerSearch(context,tds,TargetListView);
+        TargetListView.setAdapter(adapterScannerSearch);
+        adapterScannerSearch.notifyDataSetChanged();
+    }
+
+    private void switchBtu(boolean downflag)
+    {
+        if(downflag)
+        {
+            Message message = new Message();
+            message.what = DOWN_FLAG;
+            handler.sendMessage(message);
+        }
+        else
+        {
+            Message message = new Message();
+            message.what = UP_FLAG;
+            handler.sendMessage(message);
+        }
+    }
+
+    private Handler handler = new SerializableHandler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UP_FLAG:
+                    isDown = false;
+                    bDown.setImageResource(R.mipmap.icon_up_defult);
+                    imsiLayout.setVisibility(View.GONE);
+                    break;
+                case DOWN_FLAG:
+                    isDown = true;
+                    bDown.setImageResource(R.mipmap.icon_down_defult);
+                    imsiLayout.setVisibility(View.VISIBLE);
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+    };*/
 }

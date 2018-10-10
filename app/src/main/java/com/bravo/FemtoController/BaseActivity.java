@@ -6,7 +6,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.BlueTooth.EventBusTukTukMsg;
-import com.bravo.BlueTooth.tukTukService;
 import com.bravo.R;
 import com.bravo.no_http.download.DownloadListener;
 import com.bravo.no_http.download.DownloadQueue;
@@ -225,17 +223,17 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         switch(v.getId()){
             case R.id.connect_status_iv:
                 //TODO
-                Intent intent = new Intent();
+                /*Intent intent = new Intent();
                 intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FemtoListActivity");
-                startActivityWithAnimation(intent);
+                startActivityWithAnimation(intent);*/
                 break;
             case R.id.error_status_iv:
-                Intent intent1 = new Intent(this,ErrorMsgActivity.class);
-                startActivityWithAnimation(intent1);
+                //Intent intent1 = new Intent(this,ErrorMsgActivity.class);
+                //startActivityWithAnimation(intent1);
                 break;
             case R.id.gps_status_iv:
                 //TODO
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                //startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 break;
             case R.id.bts_status_tv:
                 //TODO
@@ -243,8 +241,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             case R.id.tuktuk_enter:
                 //检查蓝牙服务是否打开
 //                if (!isServiceRunning(mContext, "com.bravo.BlueTooth.tukTukService")){//检测蓝牙服务是否启动
-                intent = new Intent(this, tukTukService.class);
-                startService(intent);
+                //intent = new Intent(this, tukTukService.class);
+                //startService(intent);
                 break;
         }
     }

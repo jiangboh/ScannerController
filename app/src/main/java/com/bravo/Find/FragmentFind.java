@@ -37,6 +37,8 @@ import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.bravo.R.drawable.btn_scan_normal;
+import static com.bravo.socket_service.CommunicationService.TABLE_NAME;
+import static com.bravo.socket_service.CommunicationService.udpBroadCastPortArray;
 import static com.bravo.utils.Utils.getWifiBroadcastIp;
 import static com.bravo.utils.Utils.getWifiIp;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
@@ -133,7 +135,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     }
 
     private void loadData() {
-        SharedPreferences sp = context.getSharedPreferences(FragmentFindConfig.TABLE_NAME, MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
         AllFindTime = sp.getInt(FragmentFindConfig.tn_AllFindTime,10);
     }
 
@@ -144,9 +146,10 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         msg.dic.put("port", CommunicationService.udpPort);
         String sendText = EncodeApXmlMessage(msg);
         //发送广播
-        EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg(getWifiBroadcastIp(context),
-                CommunicationService.udpBroadCastPort_lte, sendText));
-
+        for(int i =0;i<udpBroadCastPortArray.length;i++) {
+            EventBus.getDefault().post(new EventBusMsgSendUDPBroadcastMsg(getWifiBroadcastIp(context),
+                    udpBroadCastPortArray[i], sendText));
+        }
         //EventBus.getDefault().post(new EventBusMsgSendUDPMsg("192.168.100.102", CommunicationService.udpBroadCastPort_lte, sendText));
     }
 

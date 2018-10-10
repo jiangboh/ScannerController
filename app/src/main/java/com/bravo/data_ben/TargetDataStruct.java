@@ -9,6 +9,11 @@ import java.util.ArrayList;
  */
 
 public class TargetDataStruct {
+    public static final int BLACK_IMSI = 1;
+    public static final int WHITE_IMSI = 0;
+    public static final int OTHER_IMSI = 2;
+    public static final int ORDINARY_IMSI = 3;
+
     private final String TAG = "TargetDataStruct";
     private String strName; //别名
     private String FullName ="";
@@ -21,7 +26,7 @@ public class TargetDataStruct {
     private String strTmsi ="";
     private String DeviceType =""; //设备类型
     private boolean bCheckbox = false;
-    private int iUserType = 0;//0普通名用户 1鉴权用户 2targetlist存在
+    private int iUserType = 0;//0白名单；1黑名单；其它用户
     private boolean bSilentState = false;
     private String strLongitude=""; //经度
     private String strLatitude=""; //纬度
@@ -39,6 +44,10 @@ public class TargetDataStruct {
     private String strChannel;
     private boolean bRedir;
     private boolean bPositionStatus = false;//判断position消息出否上报，用于处理异常断开未收到detach消息的用户
+
+    public TargetDataStruct(){
+        this.iUserType = ORDINARY_IMSI;
+    }
 
     public String getFullName() {
         return FullName;
@@ -88,9 +97,6 @@ public class TargetDataStruct {
         this.rsrp = rsrp;
     }
 
-    public TargetDataStruct(){
-
-    }
     public void setName(String strName) {
         this.strName = strName;
     }

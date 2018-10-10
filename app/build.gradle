@@ -27,18 +27,20 @@ android {
         applicationId "com.bravo.FemtoController"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.5"
+        versionCode 0
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField 'String', 'versionDateTime', '\"'+releaseTime()+'\"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
             debuggable true
+            buildConfigField 'String', 'versionDateTime', '\"'+releaseTime()+'\"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -47,16 +49,22 @@ android {
         daoPackage 'com.bravo.database'
         targetGenDir 'src/main/java'
     }
+
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             def newApkName
-            newApkName = "SmartController-v" + defaultConfig.versionCode + "." + defaultConfig.versionName + ".apk"
+            newApkName = "ScannerController-v"  + defaultConfig.versionName + "." + defaultConfig.versionCode + "." + new Date().format("MMddHHmm") + ".apk"
             outputFileName = newApkName;
         }
     }
     sourceSets.main {
         jni.srcDirs = []
     }
+}
+
+//得到打包时间
+def static releaseTime() {
+    return new Date().format("yyyy-MM-dd HH:mm:ss")
 }
 
 dependencies {

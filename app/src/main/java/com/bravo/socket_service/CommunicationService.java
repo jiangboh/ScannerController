@@ -46,8 +46,8 @@ public class CommunicationService extends Service {
 
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
-    private udpBroadCast udpBroadCast;
-    public static final int udpBroadCastPort_lte = 50001;
+    //private udpBroadCast udpBroadCast;
+    public static final int[] udpBroadCastPortArray = {50001,50003,50004};
     public static final int udpPort = 14721;
     //private int lteServerPort = 14786;
 
@@ -66,7 +66,7 @@ public class CommunicationService extends Service {
         socketUdp.startReceive();
         //socketTCP = new SocketTCP(this);
 
-        udpBroadCast = new udpBroadCast(this, udpBroadCastPort_lte);
+        //udpBroadCast = new udpBroadCast(this, udpBroadCastPort_lte);
 
         //10秒检测一次Ap在线状态
         DeviceFragmentStruct.StartCheckApTimer(10000);
@@ -145,10 +145,17 @@ public class CommunicationService extends Service {
         socketTCP.sendData(msgType.getIpAddress(),msgType.getPort(),msgType.getMsg());
     }
 
+    private void sendBradcast(String msgText,int port)
+    {
+        udpBroadCast udpBroadCast;
+        udpBroadCast = new udpBroadCast(this, port);
+        udpBroadCast.sendBroadMsg(msgText);
+        udpBroadCast = null;
+    }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpBroadcast(EventBusMsgSendUDPBroadcastMsg msgType){
         Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为：" + msgType.toString(),"Record_Event",true,true);
-        udpBroadCast.sendBroadMsg(msgType.getMsg());
+        sendBradcast(msgType.getMsg(),msgType.getPort());
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -274,10 +281,10 @@ public class CommunicationService extends Service {
             socketTCP.stopAllSockets();
             socketTCP = null;
         }
-        if (udpBroadCast != null) {
+        /*if (udpBroadCast != null) {
             udpBroadCast.closeMS();
             udpBroadCast = null;
-        }
+        }*/
 
         EventBus.getDefault().unregister(this);
         super.onDestroy();

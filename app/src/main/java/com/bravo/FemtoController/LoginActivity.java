@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
@@ -233,17 +234,18 @@ public class LoginActivity extends BaseActivity {
 
     private void StartFemtoActivity() {
         String check = "bravo";
-        //if ((account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals(check))){
+        if ((account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals(check))){
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FunActivity");
             startActivityWithAnimation(intent);
-       /* } else if (account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals("Test")) {
+        } /*else if (account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals("Test")) {
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FemtoListActivity");
             startActivityWithAnimation(intent);
-        } else {
-            CustomToast.showToast(this, "account or password  incorrect");
-        }*/
+        } */else {
+            //CustomToast.showToast(this, "account or password  incorrect");
+            CustomToast.showToast(this, "用户名或密码错误");
+        }
         SharePreferenceUtils.getInstance(mContext).setString("account", account.getText().toString());
         SharePreferenceUtils.getInstance(mContext).setString("password", password.getText().toString());
     }

@@ -19,6 +19,7 @@
         android:orientation="vertical">
         <!--IMSI-->
         <LinearLayout
+            android:id="@+id/layout_imsi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -31,7 +32,7 @@
                 android:textSize="@dimen/font_size_14"
                 android:textColor="@color/colordialogtext"/>
             <TextView
-                android:id="@+id/scanner_timemeter"
+                android:id="@+id/scanner_imsi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -43,17 +44,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/item_bg">
+            android:background="@drawable/dialog_one_btn_selected_bg">
 
-            <Button
-                android:id="@+id/sInfo_ok"
+            <ImageView
+                android:id="@+id/sInfo_down"
                 android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:background="@drawable/dialog_one_btn_selected_bg"
-                android:gravity="right"
-                android:text="搜  索  "
-                android:textColor="#00b4ff"
-                android:textSize="@dimen/font_size_14" />
+                android:layout_height="12dp"
+                android:background="@mipmap/icon_down_defult"
+                android:scaleType="centerInside"
+                android:gravity="right" />
         </LinearLayout>
 
     </LinearLayout>
@@ -68,7 +67,7 @@
         <!--list-->
         <ListView
             android:id="@+id/scannerlist"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="0dp"
             android:clickable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="mode">
+        <item>CN</item>
+        <item>CNE</item>
+    </string-array>
+
+    <string-array name="conn_mode">
+        <item></item>
+        <item>WIFI-AP</item>
+        <item>WIFI-CLIENT</item>
+        <item>ETHERNET</item>
+    </string-array>
+
+    <string-array name="security_mode">
+        <item>WPA-PSK</item>
+        <item>WPA2-PSK</item>
+        <item>WPA-PSK/WPA2-PSK AUTO</item>
+    </string-array>
+
+    <string-array name="encryption_algorithm">
+        <item>TKIP</item>
+        <item>AES</item>
+        <item>TKIP/AES AUTO</item>
+    </string-array>
+
+    <string-array name="afc">
+        <item>TRUE</item>
+        <item>FALSE</item>
+    </string-array>
+
+    <string-array name="power_level">
+        <item>Quarter</item>
+        <item>Half</item>
+        <item>Full</item>
+        <item>MAX</item>
+    </string-array>
+
+    <string-array name="port">
+        <item>Port1</item>
+        <item>Port2</item>
+    </string-array>
+
+    <string-array name="tech">
+        <item></item>
+        <item>GSM</item>
+        <item>UMTS</item>
+        <item>LTE</item>
+    </string-array>
+    
+    <string-array name="fan_speed">
+        <item>Slow</item>
+        <item>Middle</item>
+        <item>Fast</item>
+    </string-array>
+
+    <string-array name="epc_log_lev">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="enb_log_lev">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="pixcell_agent_log_lev">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="bandwidth">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+    </string-array>
+
+    <string-array name="wifi_mode">
+        <item>WIFI-AP</item>
+        <item>WIFI-CLIENT</item>
+    </string-array>
+
+    <string-array name="band_2g">
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="band_3g">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="band_4g">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+    </string-array>
+
+    <string-array name="cs_fallback">
+        <item></item>
+        <item>GSM</item>
+        <item>UMTS</item>
+    </string-array>
+
+    <string-array name="interval_time">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="core_pool_size">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="tt_tech">
+        <item>GSM</item>
+        <item>UMTS</item>
+        <item>LTE</item>
+    </string-array>
+
+    <string-array name="tt_sound">
+        <item>OFF</item>
+        <item>ON</item>
+    </string-array>
+
+    <string-array name="tt_avg">
+        <item>0.5s</item>
+        <item>1.0s</item>
+        <item>1.5s</item>
+        <item>2.0s</item>
+        <item>2.5s</item>
+        <item>3.0s</item>
+        <item>3.5s</item>
+        <item>4.0s</item>
+        <item>4.5s</item>
+        <item>5.0s</item>
+    </string-array>
+
+    <string-array name="tt_mode">
+        <item>Normal</item>
+        <item>Precision</item>
+    </string-array>
+
+    <string-array name="tt_low">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="tt_txco">
+        <item>40M</item>
+        <item>38.4M</item>
+        <item>30.72M</item>
+    </string-array>
+</resources>

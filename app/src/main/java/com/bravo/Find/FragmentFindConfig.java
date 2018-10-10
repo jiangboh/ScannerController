@@ -25,8 +25,8 @@ import static com.bravo.R.id.sb_AllFindTime;
 public class FragmentFindConfig extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentFindConfig";
 
-    public final static String TABLE_NAME = "DeviceFind";
-    public final static String tn_AllFindTime = "AllFindTime";
+    public static final String TABLE_NAME = "DeviceFind";
+    public static final String tn_AllFindTime = "AllFindTime";
 
     private int min = 5;
     private int allfindtime = 10;
