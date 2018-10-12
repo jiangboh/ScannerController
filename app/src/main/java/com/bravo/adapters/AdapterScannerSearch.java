@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bravo.R;
-import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 
 import java.util.ArrayList;
@@ -114,7 +113,7 @@ public class AdapterScannerSearch  extends BaseAdapter {
         holder.textViewImsi.setText(targetDataStructs.get(position).getImsi());
         //imei
         String strImei = targetDataStructs.get(position).getImei();
-        if (strImei == null || strImei.isEmpty() || DeviceDataStruct.MODE.LTE.equals(strImei)) {
+        if (strImei == null || strImei.isEmpty()) {
             holder.layout_imei.setVisibility(View.GONE);
         } else {
             holder.layout_imei.setVisibility(View.VISIBLE);

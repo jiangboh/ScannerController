@@ -76,7 +76,9 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
     private ListView TargetListView;
     private AdapterScanner adapterScanner;
-    String strCurTech;
+    //String strCurTech;
+    private int iMaxNum;
+    private boolean isDupRemo;
     @Override
     public void onResume() {
         super.onResume();
@@ -168,6 +170,13 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     }
 
     private void loadData() {
+        SharedPreferences sp = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
+        iMaxNum = sp.getInt(FragmentScannerConfig.tn_MaxNum,FragmentScannerConfig.DefultMaxNum);
+        Log.v("初始值：", String.valueOf(iMaxNum));
+        isDupRemo = sp.getBoolean(FragmentScannerConfig.tn_DupRemo,FragmentScannerConfig.DefultDupRemo);
+
+        AdapterScanner.setIsDupRemo(isDupRemo);
+        AdapterScanner.setMaxTotal(iMaxNum);
 
     }
 

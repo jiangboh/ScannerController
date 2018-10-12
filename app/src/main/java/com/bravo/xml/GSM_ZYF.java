@@ -346,16 +346,24 @@ public class GSM_ZYF {
             String imsi = "";
             for (int i = 0; i < len; i++)
             {
-                imsi = String.format("%s%s", imsi, item1.GetValueByString_Byte().toString());
+                if (len == 8) {//cdma esn
+                    imsi = String.format("%s%s", imsi, Integer.toHexString(item1.GetValueByString_Byte() & 0xFF));
+                } else {
+                    imsi = String.format("%s%s", imsi, item1.GetValueByString_Byte().toString());
+                }
             }
-            nDic.dic.put("imei", imsi.toString());
+            if (len == 8 ) {
+                nDic.dic.put("imei", "0x" + imsi.toString());
+            }else {
+                nDic.dic.put("imei", imsi.toString());
+            }
             addFlag |= 0x4;
         }
 
 
         int type2 = gdv.GetValueByString_Byte();
-        GetDataValue item2 = new GetDataValue(msg);
         msg = gdv.GetValueByString_String(30).toString();
+        GetDataValue item2 = new GetDataValue(msg);
         len = gdv.GetValueByString_Byte();
 
         if (type2 == 1)
@@ -383,9 +391,17 @@ public class GSM_ZYF {
             String imsi = "";
             for (int i = 0; i < len; i++)
             {
-                imsi = String.format("%s%s", imsi, item2.GetValueByString_Byte().toString());
+                if (len == 8) {//cdma esn
+                    imsi = String.format("%s%s", imsi, Integer.toHexString(item2.GetValueByString_Byte() & 0xFF));
+                } else {
+                    imsi = String.format("%s%s", imsi, item2.GetValueByString_Byte().toString());
+                }
             }
-            nDic.dic.put("imei", imsi.toString());
+            if (len == 8 ) {
+                nDic.dic.put("imei", "0x" + imsi.toString());
+            }else {
+                nDic.dic.put("imei", imsi.toString());
+            }
             addFlag |= 0x4;
         }
 
@@ -420,9 +436,17 @@ public class GSM_ZYF {
             String imsi = "";
             for (int i = 0; i < len; i++)
             {
-                imsi = String.format("%s%s", imsi, item3.GetValueByString_Byte().toString());
+                if (len == 8) {//cdma esn
+                    imsi = String.format("%s%s", imsi, Integer.toHexString(item3.GetValueByString_Byte() & 0xFF));
+                } else {
+                    imsi = String.format("%s%s", imsi, item3.GetValueByString_Byte().toString());
+                }
             }
-            nDic.dic.put("imei", imsi.toString());
+            if (len == 8 ) {
+                nDic.dic.put("imei", "0x" + imsi.toString());
+            }else {
+                nDic.dic.put("imei", imsi.toString());
+            }
             addFlag |= 0x4;
         }
 

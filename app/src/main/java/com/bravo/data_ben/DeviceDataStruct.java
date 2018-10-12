@@ -19,19 +19,20 @@ public class DeviceDataStruct {
 
     public static class MODE {
         public static final String NOMODE = "NOMODE";
-        public static final String LTE = "LTE";
+        public static final String LTE_TDD = "LTE_TDD";
+        public static final String LTE_FDD = "LTE_FDD";
         public static final String WCDMA = "WCDMA";
         public static final String GSM = "GSM";
-        public static final String GSM_V2 = "GSM_ZYF";
+        public static final String GSM_V2 = "GSM_V2";
         public static final String CDMA = "CDMA";
     }
 
     public static String String2Mode(String mode)
     {
         if (mode.equalsIgnoreCase("lte_fdd"))
-            return MODE.LTE;
+            return MODE.LTE_FDD;
         else if (mode.equalsIgnoreCase("lte_tdd"))
-            return MODE.LTE;
+            return MODE.LTE_TDD;
         else if (mode.equalsIgnoreCase("wcdma"))
             return MODE.WCDMA;
         else if (mode.equalsIgnoreCase("gsm"))
@@ -52,12 +53,46 @@ public class DeviceDataStruct {
     private String FullName;
     private Long LastTime;
     private Long detail;
+    private boolean status_sctp;
+    private boolean status_s1;
+    private boolean status_gps;
+    private boolean status_cell;
+    private boolean status_sync;
+    private boolean status_licens;
+    private boolean status_online;
+    private boolean status_wSelf;
+    private boolean status_redio2;
+    private boolean status_radio;
+
     private String version;
     private ArrayList<Msg_Body_Struct> msgList = new ArrayList<>();
     private int iState = OFF_LINE;
 
     public DeviceDataStruct() {
 
+    }
+
+    private class AP_STATUS_LTE
+    {
+        public static final int SCTP = 0x80000000;
+        public static final int S1 = 0x40000000;
+        public static final int GPS = 0x20000000;
+        public static final int CELL = 0x10000000;
+        public static final int SYNC = 0x8000000;
+        public static final int LICENS = 0x4000000;
+        public static final int RADIO = 0x2000000;
+        public static final int OnLine = 0x1000000;
+        public static final int wSelfStudy = 0x800000;
+
+        public static final int RADIO2 = 0x1;
+    }
+
+    private boolean GetStatus(long detail,int status)
+    {
+        if ((detail & status) == status)
+            return true;
+
+        return false;
     }
 
     public DeviceDataStruct xmlToBean(FindDeviceInfo fdi) {
@@ -81,20 +116,17 @@ public class DeviceDataStruct {
         DeviceDataStruct deviceInfo = new DeviceDataStruct();
 
         String sn = FindMsgStruct.GetMsgStringValueInList("sn",msg.dic,"");
-        String mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.LTE);
-        if (mode.equals(DeviceDataStruct.MODE.NOMODE))
-        {
-            Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中Mode类型错误。",sn,ip,port));
-            return null;
-        }
+        String mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
+
         mode = mode.replace("-","_");
-        if (mode.equals("LTE_FDD") || mode.equals("LTE_TDD")) {
-            mode = MODE.LTE;
+        if (MODE.NOMODE.equals(String2Mode(mode))) {
+            Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中Mode类型(%s)错误。",sn,ip,port,mode));
+            return null;
         }
 
         deviceInfo.setIp(ip);
         deviceInfo.setPort(port);
-        deviceInfo.setMode(mode);
+        deviceInfo.setMode(String2Mode(mode));
         deviceInfo.setSN(sn);
         deviceInfo.setLastTime( System.currentTimeMillis());
         deviceInfo.setFullName(FindMsgStruct.GetMsgStringValueInList("fullname",msg.dic,""));
@@ -120,6 +152,17 @@ public class DeviceDataStruct {
 
     public void setDetail(Long detail) {
         this.detail = detail;
+
+        this.status_sctp = GetStatus(detail,AP_STATUS_LTE.SCTP);
+        this.status_s1 = GetStatus(detail,AP_STATUS_LTE.S1);
+        this.status_gps = GetStatus(detail,AP_STATUS_LTE.GPS);
+        this.status_cell = GetStatus(detail,AP_STATUS_LTE.CELL);
+        this.status_sync = GetStatus(detail,AP_STATUS_LTE.SYNC);
+        this.status_licens = GetStatus(detail,AP_STATUS_LTE.LICENS);
+        this.status_radio = GetStatus(detail,AP_STATUS_LTE.RADIO);
+        this.status_online = GetStatus(detail,AP_STATUS_LTE.OnLine);
+        this.status_wSelf = GetStatus(detail,AP_STATUS_LTE.wSelfStudy);
+        this.status_redio2 = GetStatus(detail,AP_STATUS_LTE.RADIO2);
     }
 
     public String getVersion() {
@@ -192,6 +235,46 @@ public class DeviceDataStruct {
 
     public int getiState() {
         return iState;
+    }
+
+    public boolean isStatus_sctp() {
+        return status_sctp;
+    }
+
+    public boolean isStatus_s1() {
+        return status_s1;
+    }
+
+    public boolean isStatus_gps() {
+        return status_gps;
+    }
+
+    public boolean isStatus_cell() {
+        return status_cell;
+    }
+
+    public boolean isStatus_sync() {
+        return status_sync;
+    }
+
+    public boolean isStatus_licens() {
+        return status_licens;
+    }
+
+    public boolean isStatus_online() {
+        return status_online;
+    }
+
+    public boolean isStatus_wSelf() {
+        return status_wSelf;
+    }
+
+    public boolean isStatus_redio2() {
+        return status_redio2;
+    }
+
+    public boolean isStatus_radio() {
+        return status_radio;
     }
 
     public ArrayList<Msg_Body_Struct> getMsgList() {

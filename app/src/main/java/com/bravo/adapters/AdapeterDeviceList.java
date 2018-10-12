@@ -91,16 +91,17 @@ public class AdapeterDeviceList extends BaseAdapter {
     }
 
     public void dataChanged(DeviceDataStruct dds) {
-       /* int index = DeviceFragmentStruct.inListIndex(dds.getSN());
+       int index = DeviceFragmentStruct.inListIndex(dds.getSN());
         if (-1 == index)
         {
-            DeviceFragmentStruct.addList(dds);
-            iCurFindTotal++;
+            //DeviceFragmentStruct.addList(dds);
+            //iCurFindTotal++;
         }
         else
         {
             DeviceFragmentStruct.ChangeDetail(index,dds.getDetail());
-        }*/
+        }
+
         iCurFindTotal = DeviceFragmentStruct.getSize();
         updataTotal();
     }
@@ -118,10 +119,11 @@ public class AdapeterDeviceList extends BaseAdapter {
             holder.addImage = (TextView) convertView.findViewById(R.id.addImageView);
             holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
             holder.fullname_layout = (LinearLayout)convertView.findViewById(R.id.fullname_layout);
+            holder.LastTime_layout = (LinearLayout)convertView.findViewById(R.id.layout_LastTime);
 
             holder.SN = (TextView) convertView.findViewById(R.id.sn);
             holder.FullName = (TextView) convertView.findViewById(R.id.fullname);
-            holder.NameMode = (TextView) convertView.findViewById(R.id.name_mode);
+            holder.LastTime = (TextView) convertView.findViewById(R.id.LastTime);
             holder.Mode = (TextView) convertView.findViewById(R.id.mode);
             holder.Ip = (TextView) convertView.findViewById(R.id.ip);
             holder.Port = (TextView) convertView.findViewById(R.id.port);
@@ -133,22 +135,47 @@ public class AdapeterDeviceList extends BaseAdapter {
         DeviceDataStruct dds = DeviceFragmentStruct.getDevice(position);
         holder.SN.setText(dds.getSN());
         holder.FullName.setText(dds.getFullName());
-        holder.NameMode.setText("LastTime:");
-        holder.Mode.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(dds.getLastTime()));
+        holder.Mode.setText(dds.getMode());
+        holder.LastTime.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(dds.getLastTime()));
         holder.Ip.setText(dds.getIp());
         holder.Port.setText(String.valueOf(dds.getPort()));
 
         String mode = dds.getMode();
-        if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.LTE)) {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
+        if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.LTE_TDD) || mode.equalsIgnoreCase(DeviceDataStruct.MODE.LTE_FDD)) {
+            if (dds.isStatus_cell()) {
+                if (dds.isStatus_radio()) {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_normal));
+                } else {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_redio_off));
+                }
+            } else {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_fail));
+            }
         } else if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.WCDMA) || mode.equalsIgnoreCase(DeviceDataStruct.MODE.CDMA)) {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_default));
+            if (dds.isStatus_cell()) {
+                if (dds.isStatus_radio()) {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_normal));
+                } else {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_redio_off));
+                }
+            } else {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_3g_fail));
+            }
         } else if (mode.equalsIgnoreCase(DeviceDataStruct.MODE.GSM) || mode.equalsIgnoreCase(DeviceDataStruct.MODE.GSM_V2)) {
-            holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_default));
+            if (dds.isStatus_cell()) {
+                if (dds.isStatus_radio()) {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_normal));
+                } else {
+                    holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_redio_off));
+                }
+            } else {
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_2g_fail));
+            }
         } else {
             //holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
         }
 
+        holder.LastTime_layout.setVisibility(View.VISIBLE);
         holder.imageView.setVisibility(View.VISIBLE);
         holder.addImage.setVisibility(View.GONE);
 
@@ -160,11 +187,12 @@ public class AdapeterDeviceList extends BaseAdapter {
         ImageView imageView;
         TextView SN;
         TextView FullName;
-        TextView NameMode;
+        TextView LastTime;
         TextView Mode;
         TextView Ip;
         TextView Port;
         LinearLayout fullname_layout;
+        LinearLayout LastTime_layout;
     }
 
     public void DeviceListTarget(DeviceDataStruct deviceDataStruct) {

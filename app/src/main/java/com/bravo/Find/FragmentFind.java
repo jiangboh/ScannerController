@@ -135,7 +135,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     }
 
     private void loadData() {
-        SharedPreferences sp = context.getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(FragmentFindConfig.TABLE_NAME, MODE_PRIVATE);
         AllFindTime = sp.getInt(FragmentFindConfig.tn_AllFindTime,10);
     }
 

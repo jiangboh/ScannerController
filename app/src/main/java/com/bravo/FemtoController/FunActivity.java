@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bravo.BuildConfig;
 import com.bravo.Find.FragmentFind;
@@ -33,7 +36,10 @@ import com.bravo.femto.FragmentTarget;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
+import com.bravo.scanner.FragmentScannerConfig;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.CommunicationService;
+import com.bravo.socket_service.EventBusMsgConstant;
 import com.bravo.status.Basic_Fragment;
 import com.bravo.status.Cell_Fragment;
 import com.bravo.status.HwMonitor_Fragment;
@@ -43,6 +49,9 @@ import com.bravo.system.Upgrade_Fragment;
 import com.bravo.test.Terminal_Fragmen;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
+import com.bravo.xml.HandleRecvXmlMsg;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,6 +67,27 @@ public class FunActivity extends BaseActivity {
             R.drawable.circle_menu_test_selector};
     private ImageView selectedIV;
     private OneBtnHintDialog connHintDialog;
+
+    // 用来计算返回键的点击间隔时间
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                //弹出提示，可以有多种方式
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                //参数用作状态码；根据惯例，非 0 的状态码表示异常终止。
+                //System.exit(0);
+            }
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
 
     private Handler handler = new Handler(){
         @Override
@@ -196,6 +226,19 @@ public class FunActivity extends BaseActivity {
                     "        Band:" + SharePreferenceUtils.getInstance(this).getString("status_notif_band" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0"));
         */
         connHintDialog = new OneBtnHintDialog(this, R.style.dialog_style);
+
+        Intent intent = new Intent(this,CommunicationService.class);
+        startService(intent);
+        Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
+        startService(intent1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+        EventBus.getDefault().post(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
+        EventBus.getDefault().post(EventBusMsgConstant.STOP_SERVICE);
     }
 
     private void onStatusClicked(){
@@ -382,19 +425,19 @@ public class FunActivity extends BaseActivity {
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("实时显示");
-        //menuList.add("捕号配置");
+        menuList.add("捕号配置");
         //menuList.add("数据搜索");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
-        //fragments.add(new FragmentFindConfig());
+        fragments.add(new FragmentScannerConfig());
         //fragments.add(new FragmentScannerSearch());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_broadcast_selector);
-        //iconsResId.add(R.drawable.icon_config_selector);
+        iconsResId.add(R.drawable.icon_config_selector);
         //iconsResId.add(R.drawable.icon_scan_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 

@@ -12,6 +12,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 /**
@@ -48,8 +49,9 @@ public class SocketUDP {
             public void run() {
                 try {
                     if (!msg.isEmpty()) {
+                        String msg_utf8 = URLEncoder.encode(msg,"UTF-8");
                         //Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
-                        byte[] buf = msg.getBytes();
+                        byte[] buf = msg_utf8.getBytes();
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)
                         DatagramPacket dataGramPacket = new DatagramPacket(buf, buf.length, address, serverPort);
@@ -89,8 +91,10 @@ public class SocketUDP {
                         try {
                             socket.receive(packet);
                             //把接收到的data转换为String字符串
-                            String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"UTF-8");
-                            //Logs.w(TAG, "接收到的UDP数据为：" + result,"receivedUdpData",true,true);
+                            String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"GBK");
+                            //Logs.w(TAG, "接收到的UDP数据为：" + utf,"receivedUdpData",true,true);
+                            //String result = URLEncoder.encode(utf,"GBK");
+                            //Logs.w(TAG, "接收到的UDP数据为GBK：" + result ,"receivedUdpData",true,true);
                             //EventBus.getDefault().post(new EventBusMsgSendUDPMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                             EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                         } catch (Exception e) {

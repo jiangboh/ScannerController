@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F2F2"
+    android:paddingTop="10dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp">
+
+    <!--MaxNum-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+        <!--AllFindTime-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_16"
+            android:paddingLeft="8dp"
+            android:text="最大显示IMSI数量:"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <SeekBar
+            android:id="@+id/sb_MaxNum"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:max="20000" />
+
+        <TextView
+            android:id="@+id/tx_MaxNum"
+            android:layout_width="0dp"
+            android:textColor="@color/colorItemText"
+            android:layout_height="wrap_content"
+            android:text="20000个"
+            android:gravity="right"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"/>
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
+    <!--MaxNum-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+        <!--AllFindTime-->
+        <CheckBox
+            android:id="@+id/ck_DupRemo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_16"
+            android:text="去掉重复IMSI"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
+</LinearLayout>
+

@@ -19,6 +19,8 @@ import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
  * Created by admin on 2018-9-19.
  */
 
+
+
 public class HandleRecvXmlMsg {
     private final String TAG = "HandleRecvXmlMsg";
     Context mContext;
@@ -84,7 +86,7 @@ public class HandleRecvXmlMsg {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
             Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getPort(),dds.getMode(),msg.type));
-            if (dds.getMode().equals(DeviceDataStruct.MODE.LTE) || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                 new LTE(mContext).HandleMsg(dds,msg);
             } else if (dds.getMode().equals(DeviceDataStruct.MODE.CDMA) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
                 new GSM_ZYF(mContext).HandleMsg(dds,msg);

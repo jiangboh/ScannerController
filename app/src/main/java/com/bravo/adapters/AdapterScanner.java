@@ -31,6 +31,7 @@ public class AdapterScanner extends BaseAdapter {
     private Long changedTime = System.currentTimeMillis();
     private TextView tvTotal;
     private static int MAX_TOTAL = 15000;
+    private static boolean isDupRemo = true;
 
     /*public AdapterScanner(Context context) {
         this.mContext = context;
@@ -39,6 +40,14 @@ public class AdapterScanner extends BaseAdapter {
         this.tvTotal = txView;
         this.mContext = context;
         this.listView = listView;
+    }
+
+    public static void setMaxTotal(int maxTotal) {
+        MAX_TOTAL = maxTotal;
+    }
+
+    public static void setIsDupRemo(boolean isDupRemo) {
+        AdapterScanner.isDupRemo = isDupRemo;
     }
 
     @Override
@@ -68,11 +77,14 @@ public class AdapterScanner extends BaseAdapter {
             Log.d(TAG, "Imsi为空！");
             return;
         }
-        //Log.d(TAG, "去重时数组中的数量 = " + targetDataStructs.size());
-        for (int i = 0; i < targetDataStructs.size(); i++) {
-            if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
-                //Log.d(TAG,"Imsi重复");
-                return;
+
+        if(isDupRemo) { //去重
+            //Log.d(TAG, "去重时数组中的数量 = " + targetDataStructs.size());
+            for (int i = 0; i < targetDataStructs.size(); i++) {
+                if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
+                    //Log.d(TAG,"Imsi重复");
+                    return;
+                }
             }
         }
 

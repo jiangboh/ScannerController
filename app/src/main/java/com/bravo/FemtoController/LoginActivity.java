@@ -21,13 +21,8 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.log.Remote_Fragment;
-import com.bravo.socket_service.CommunicationService;
-import com.bravo.socket_service.EventBusMsgConstant;
 import com.bravo.utils.FileUtils;
 import com.bravo.utils.SharePreferenceUtils;
-import com.bravo.xml.HandleRecvXmlMsg;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -150,10 +145,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void initData(Bundle savedInstanceState) {
         Log.d(TAG,"initData");
-        Intent intent = new Intent(this,CommunicationService.class);
-        startService(intent);
-        Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
-        startService(intent1);
     }
 
     private void requestPermission(){
@@ -222,8 +213,6 @@ public class LoginActivity extends BaseActivity {
     protected void onDestroy() {
         Log.d(TAG,"onDestroy");
         super.onDestroy();
-        EventBus.getDefault().post(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
-        EventBus.getDefault().post(EventBusMsgConstant.STOP_SERVICE);
         SharePreferenceUtils.getInstance(mContext).setString("account", account.getText().toString());
         SharePreferenceUtils.getInstance(mContext).setString("password", password.getText().toString());
 //        Intent intent = new Intent(this, tukTukService.class);
@@ -234,10 +223,12 @@ public class LoginActivity extends BaseActivity {
 
     private void StartFemtoActivity() {
         String check = "bravo";
+        //String check = "";
         if ((account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals(check))){
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FunActivity");
             startActivityWithAnimation(intent);
+            finish();
         } /*else if (account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals("Test")) {
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FemtoListActivity");
