@@ -15,7 +15,7 @@ public class Logs {
     private static final int ERROR = 5;
     private static final int NOTHING = 6;
 
-    private static int LEVEL = VERBOSE;//
+    private static int LEVEL = INFO;//
     private static String LOGNAME = "Log";//
 
     private static String customTagPrefix = "";  // 自定义Tag的前缀，可以是作者名
@@ -40,13 +40,20 @@ public class Logs {
         Logs.LOGNAME = LOGNAME;
     }
 
+    public static int getLEVEL() {
+        if (Utils.isDebugVersion()) {
+            return VERBOSE;
+        }
+        return LEVEL;
+    }
+
     public static void d(String tag, String logMsg){
-        if (LEVEL > DEBUG) return;
+        if (getLEVEL() > DEBUG) return;
         Log.d(tag,logMsg);
     }
 
     public static void d(String tag,String logMsg,boolean needSave){
-        if (LEVEL > DEBUG) return;
+        if (getLEVEL() > DEBUG) return;
         Log.d(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()) , logMsg,LOGNAME);
@@ -60,7 +67,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void d(String tag,String logMsg,String fileName,boolean needSave){
-        if (LEVEL > DEBUG) return;
+        if (getLEVEL() > DEBUG) return;
         Log.d(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName);
@@ -74,7 +81,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void d(String tag,String logMsg,boolean addition,boolean needSave){
-        if (LEVEL > DEBUG) return;
+        if (getLEVEL() > DEBUG) return;
         Log.d(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg,LOGNAME,addition);
@@ -89,7 +96,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void d(String tag,String logMsg,String fileName,boolean addition,boolean needSave){
-        if (LEVEL > DEBUG) return;
+        if (getLEVEL() > DEBUG) return;
         Log.d(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName, addition);
@@ -97,12 +104,12 @@ public class Logs {
     }
 
     public static void i(String tag,String logMsg){
-        if (LEVEL > INFO) return;
+        if (getLEVEL() > INFO) return;
         Log.i(tag,logMsg);
     }
 
     public static void i(String tag,String logMsg,boolean needSave){
-        if (LEVEL > INFO) return;
+        if (getLEVEL() > INFO) return;
         Log.i(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()) , logMsg,LOGNAME);
@@ -116,7 +123,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void i(String tag,String logMsg,String fileName,boolean needSave){
-        if (LEVEL > INFO) return;
+        if (getLEVEL() > INFO) return;
         Log.i(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName);
@@ -130,7 +137,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void i(String tag,String logMsg,boolean addition,boolean needSave){
-        if (LEVEL > INFO) return;
+        if (getLEVEL() > INFO) return;
         Log.i(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg,LOGNAME,addition);
@@ -145,7 +152,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void i(String tag,String logMsg,String fileName,boolean addition,boolean needSave){
-        if (LEVEL > INFO) return;
+        if (getLEVEL() > INFO) return;
         Log.i(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName, addition);
@@ -153,12 +160,12 @@ public class Logs {
     }
 
     public static void e(String tag,String logMsg){
-        if (LEVEL > ERROR) return;
+        if (getLEVEL() > ERROR) return;
         Log.e(tag,logMsg);
     }
 
     public static void e(String tag,String logMsg,boolean needSave){
-        if (LEVEL > ERROR) return;
+        if (getLEVEL() > ERROR) return;
         Log.e(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()) , logMsg,LOGNAME);
@@ -172,7 +179,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void e(String tag,String logMsg,String fileName,boolean needSave){
-        if (LEVEL > ERROR) return;
+        if (getLEVEL() > ERROR) return;
         Log.e(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName);
@@ -186,7 +193,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void e(String tag,String logMsg,boolean addition,boolean needSave){
-        if (LEVEL > ERROR) return;
+        if (getLEVEL() > ERROR) return;
         Log.e(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg,LOGNAME,addition);
@@ -201,7 +208,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void e(String tag,String logMsg,String fileName,boolean addition,boolean needSave){
-        if (LEVEL > ERROR) return;
+        if (getLEVEL() > ERROR) return;
         Log.e(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName, addition);
@@ -209,12 +216,12 @@ public class Logs {
     }
 
     public static void w(String tag,String logMsg){
-        if (LEVEL > WARN) return;
+        if (getLEVEL() > WARN) return;
         Log.w(tag,logMsg);
     }
 
     public static void w(String tag,String logMsg,boolean needSave){
-        if (LEVEL > WARN) return;
+        if (getLEVEL() > WARN) return;
         Log.w(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()) , logMsg,LOGNAME);
@@ -228,7 +235,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void w(String tag,String logMsg,String fileName,boolean needSave){
-        if (LEVEL > WARN) return;
+        if (getLEVEL() > WARN) return;
         Log.w(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName);
@@ -242,7 +249,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void w(String tag,String logMsg,boolean addition,boolean needSave){
-        if (LEVEL > WARN) return;
+        if (getLEVEL() > WARN) return;
         Log.w(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg,LOGNAME,addition);
@@ -257,7 +264,7 @@ public class Logs {
      * @param needSave 是否需要存到sdCard
      */
     public static void w(String tag,String logMsg,String fileName,boolean addition,boolean needSave){
-        if (LEVEL > WARN) return;
+        if (getLEVEL() > WARN) return;
         Log.w(tag,logMsg);
         if(needSave){
             LogsManager.getInstance().saveData(generateTag(getCallerStackTraceElement()), logMsg, fileName, addition);

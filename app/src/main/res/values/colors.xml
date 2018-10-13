@@ -24,4 +24,6 @@
     <color name="colorHalfDialogTitle">#AA00b4ff</color>
     <color name="colorChartMain">#7ac8f1</color>
     <color name="colorErrorMsgBg">#E9E9E9</color>
+    <color name="colorStatusFail">#FFB5B5</color>
+    <color name="colorStatusOk">#BBFFBB</color>
 </resources>

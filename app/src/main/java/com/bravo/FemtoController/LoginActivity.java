@@ -23,6 +23,7 @@ import com.bravo.log.Remote_Fragment;
 import com.bravo.utils.FileUtils;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
+import com.bravo.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class LoginActivity extends BaseActivity {
     private EditText account, password;
     private ImageView clearAccount, clearPassword;
 //    private BlueToothReceiver receiver;
+
 
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 2;
 
@@ -120,7 +122,11 @@ public class LoginActivity extends BaseActivity {
             PackageManager pm = getPackageManager();
             PackageInfo pi = pm.getPackageInfo(this.getPackageName(), 0);
             TextView textView = (TextView) findViewById(R.id.version);
-            textView.setText(pi.versionName + "." + pi.versionCode);
+            if (Utils.isDebugVersion()) {
+                textView.setText(pi.versionName + "." + pi.versionCode + "_D");
+            } else {
+                textView.setText(pi.versionName + "." + pi.versionCode);
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -222,22 +228,28 @@ public class LoginActivity extends BaseActivity {
 
 
     private void StartFemtoActivity() {
-        //String check = "bravo";
-        String check = "";
-        if ((account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals(check))){
+        String check = "bravo";
+        if (Utils.isDebugVersion()) {
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FunActivity");
             startActivityWithAnimation(intent);
             finish();
-        } /*else if (account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals("Test")) {
+        } else {
+            if ((account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals(check))) {
+                Intent intent = new Intent();
+                intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FunActivity");
+                startActivityWithAnimation(intent);
+                finish();
+            } /*else if (account.getText().toString().trim().equals(check) && password.getText().toString().trim().equals("Test")) {
             Intent intent = new Intent();
             intent.setClassName("com.bravo.FemtoController", "com.bravo.FemtoController.FemtoListActivity");
             startActivityWithAnimation(intent);
-        } */else {
-            //CustomToast.showToast(this, "account or password  incorrect");
-            CustomToast.showToast(this, "用户名或密码错误");
+        } */ else {
+                //CustomToast.showToast(this, "account or password  incorrect");
+                CustomToast.showToast(this, "用户名或密码错误");
+            }
+            SharePreferenceUtils.getInstance(mContext).setString("account", account.getText().toString());
+            SharePreferenceUtils.getInstance(mContext).setString("password", password.getText().toString());
         }
-        SharePreferenceUtils.getInstance(mContext).setString("account", account.getText().toString());
-        SharePreferenceUtils.getInstance(mContext).setString("password", password.getText().toString());
     }
 }

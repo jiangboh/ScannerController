@@ -13,10 +13,10 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.bravo.BuildConfig;
 import com.bravo.parse_generate_xml.ErrorNotif;
 
 import java.io.BufferedReader;
@@ -34,6 +34,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    public static final String BUILD_TYPE_STR = BuildConfig.BUILD_TYPE;
+
     private static final String TAG = "utils";
 
     public static LinkedHashMap<String,ArrayList<ErrorNotif>> errors = new LinkedHashMap<>();
@@ -604,5 +607,11 @@ public class Utils {
                 ((ipAddress >> 8 ) & 0xFF) + "." +
                 ((ipAddress >> 16 ) & 0xFF) + "." +
                 ( ipAddress >> 24 & 0xFF) ;
+    }
+
+    public static Boolean isDebugVersion()
+    {
+        return BUILD_TYPE_STR.equals("debug");
+
     }
 }

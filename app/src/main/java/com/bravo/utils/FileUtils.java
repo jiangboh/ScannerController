@@ -34,7 +34,7 @@ public class FileUtils {
 	public static final long MB = KB * 1024;
 	public static final long GB = MB * 1024;
 
-	private final String BASE_DIR = "SmartController";
+	private final String BASE_DIR = "ScannerController";
 	private final String LOG_DIR = "Logs/";
 	private final String FILE_DIR = "File/";
 	private Context context;

@@ -34,12 +34,14 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "Boolean", "ENVIRONMENT", "true"
             buildConfigField 'String', 'versionDateTime', '\"'+releaseTime()+'\"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
             debuggable true
+            buildConfigField "Boolean", "ENVIRONMENT", "false"
             buildConfigField 'String', 'versionDateTime', '\"'+releaseTime()+'\"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_round_corner_bg"
+    android:orientation="vertical">
+
+    《!--hint-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="设备信息"
+        android:textColor="@color/colordialogtitle"
+        android:textSize="@dimen/font_size_18"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+    <!--fullname-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="设备全名:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_fullname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <!--sn-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="SN:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_sn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <!--devType-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="设备类型:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_devType"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <!--ip-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="Ip地址:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_ip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <!--version-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="版本:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_version"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+
+    <!--LastTime-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="最后消息时间:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+
+        <EditText
+            android:id="@+id/sInfo_LastTime"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:focusable="false"
+            android:textColor="@color/colordialogvalue"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+    <!--title-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/font_size_40"
+        android:gravity="center"
+        android:text="状态信息"
+        android:textColor="@color/colordialogtitle"
+        android:textSize="@dimen/font_size_18"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+    <!--redio-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sInfo_redio_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="载波0射频:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_redio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--redi1-->
+    <LinearLayout
+        android:id="@+id/redio1_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="载波1射频:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_redio_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--sctp-->
+    <LinearLayout
+        android:id="@+id/sctp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="SCTP状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_sctp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--s1-->
+    <LinearLayout
+        android:id="@+id/s1_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="S1状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_s1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--gps-->
+    <LinearLayout
+        android:id="@+id/gps_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="GPS状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_gps"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+
+    <!--cell-->
+    <LinearLayout
+        android:id="@+id/cell_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="小区状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_cell"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--sync-->
+    <LinearLayout
+        android:id="@+id/sync_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="同步状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_sync"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--Licenss-->
+    <LinearLayout
+        android:id="@+id/licenss_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="Licenss状态:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_licenss"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+    <!--wSelfStudy-->
+    <LinearLayout
+        android:id="@+id/wSelfStudy_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="白名单自学习:"
+                android:textColor="@color/colordialogtext"
+                android:textSize="@dimen/font_size_14" />
+
+            <EditText
+                android:id="@+id/sInfo_wSelfStudy"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@android:color/transparent"
+                android:focusable="false"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:textColor="@color/colordialogvalue"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+    <!--button-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/sInfo_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_one_btn_selected_bg"
+            android:text="确  定"
+            android:textAllCaps="false"
+            android:textColor="#00b4ff"
+            android:textSize="@dimen/font_size_18" />
+    </LinearLayout>
+</LinearLayout>

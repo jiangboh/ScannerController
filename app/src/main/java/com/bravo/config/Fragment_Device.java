@@ -13,6 +13,7 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.dialog.DialogDeviceInfo;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.Logs;
 
@@ -77,7 +78,8 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                           long arg3, String strMsg) {
-
+                DeviceDataStruct deviceDataStruct = adapterList.getItem(arg2);
+                new DialogDeviceInfo(context,deviceDataStruct).show();
             }
         });
     }
