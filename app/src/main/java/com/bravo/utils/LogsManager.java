@@ -63,7 +63,7 @@ public class LogsManager {
         File file = new File(fileUtils.getLogCacheDir() + File.separator + logDirName);
         file.mkdir();
         file = new File(file,fileName+".txt");
-        saveData(file,"\n"+SimpleDateUtils.formatTime("yyyy-MM-dd HH:mm:ss")+"\n"+logMsg
+        saveData(file,"\n"+SimpleDateUtils.formatTime("yyyy-MM-dd HH:mm:ss")+"\n"+ tag + "\n" + logMsg
                 + "\n" + "—————————————————————————————",addition);
     }
 

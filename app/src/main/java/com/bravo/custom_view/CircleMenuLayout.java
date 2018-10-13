@@ -462,7 +462,7 @@ public class CircleMenuLayout extends ViewGroup
 			 */
 			float end = getAngle(x, y);
 
-			// Log.e("TAG", "start = " + start + " , end =" + end);
+			// Logs.e("TAG", "start = " + start + " , end =" + end);
 			// 如果是一、四象限，则直接end-start，角度值都是正值
 			if (getQuadrant(x, y) == 1 || getQuadrant(x, y) == 4)
 			{
@@ -487,7 +487,7 @@ public class CircleMenuLayout extends ViewGroup
 			float anglePerSecond = mTmpAngle * 1000
 					/ (System.currentTimeMillis() - mDownTime);
 
-			// Log.e("TAG", anglePrMillionSecond + " , mTmpAngel = " +
+			// Logs.e("TAG", anglePrMillionSecond + " , mTmpAngel = " +
 			// mTmpAngle);
 			if(!isFling){
 
@@ -697,7 +697,7 @@ public class CircleMenuLayout extends ViewGroup
 			if ((int) Math.abs(angelPerSecond) < 20)
 			{
 				double temp = (mStartAngle + 30d) % 60;
-//				Log.d("123456","mStartAngle == " + mStartAngle);
+//				Logs.d("123456","mStartAngle == " + mStartAngle);
 				if(((int)temp) == 0){
 					ImageView iv = (ImageView)findViewById(R.id.id_circle_center_iv);
 					selecteEffectImage(iv,getTopViewPosition());
@@ -747,7 +747,7 @@ public class CircleMenuLayout extends ViewGroup
 			isFling = true;
 
 			double temp = (mStartAngle + 30d) % 60;
-//				Log.d("123456","mStartAngle == " + mStartAngle);
+//				Logs.d("123456","mStartAngle == " + mStartAngle);
 			if(((int)temp) == 0) {
 				ImageView iv = (ImageView)findViewById(R.id.id_circle_center_iv);
 				selecteEffectImage(iv, getTopViewPosition());
@@ -804,14 +804,14 @@ public class CircleMenuLayout extends ViewGroup
 			}else if(Math.abs(scrollAngle) == 60){
 				speed = 5;
 			}
-			/*Log.d("123456","clickedPos == " + clickedPos + "  selectedPos == "
+			/*Logs.d("123456","clickedPos == " + clickedPos + "  selectedPos == "
 					+ selectedPos+"   距离为：" + scrollAngle);*/
 		}
 
 		public void run()
 		{
 			isFling = true;
-//				Log.d("123456","mStartAngle == " + mStartAngle);
+//				Logs.d("123456","mStartAngle == " + mStartAngle);
 			if(Math.abs(scrollAngle%360) == 0) {
 				ImageView iv = (ImageView)findViewById(R.id.id_circle_center_iv);
 				selecteEffectImage(iv, getTopViewPosition());

@@ -18,7 +18,6 @@ package com.bravo.pull_to_refresh;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ import android.widget.ListAdapter;
 import com.bravo.R;
 import com.bravo.pull_to_refresh.internal.EmptyViewMethodAccessor;
 import com.bravo.pull_to_refresh.internal.IndicatorLayout;
+import com.bravo.utils.Logs;
 
 public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extends PullToRefreshBase<T> implements
         OnScrollListener {
@@ -104,8 +104,8 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
                                final int totalItemCount) {
 
 		if (DEBUG) {
-			Log.d(LOG_TAG, "First Visible: " + firstVisibleItem + ". Visible Count: " + visibleItemCount
-					+ ". Total Items:" + totalItemCount);
+			Logs.d(LOG_TAG, "First Visible: " + firstVisibleItem + ". Visible Count: " + visibleItemCount
+					+ ". Total Items:" + totalItemCount,true);
 		}
 
 		/**
@@ -376,7 +376,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 		if (null == adapter || adapter.isEmpty()) {
 			if (DEBUG) {
-				Log.d(LOG_TAG, "isFirstItemVisible. Empty View.");
+				Logs.d(LOG_TAG, "isFirstItemVisible. Empty View.",true);
 			}
 			return true;
 
@@ -405,7 +405,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 		if (null == adapter || adapter.isEmpty()) {
 			if (DEBUG) {
-				Log.d(LOG_TAG, "isLastItemVisible. Empty View.");
+				Logs.d(LOG_TAG, "isLastItemVisible. Empty View.");
 			}
 			return true;
 		} else {
@@ -413,7 +413,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 			final int lastVisiblePosition = mRefreshableView.getLastVisiblePosition();
 
 			if (DEBUG) {
-				Log.d(LOG_TAG, "isLastItemVisible. Last Item Position: " + lastItemPosition + " Last Visible Pos: "
+				Logs.d(LOG_TAG, "isLastItemVisible. Last Item Position: " + lastItemPosition + " Last Visible Pos: "
 						+ lastVisiblePosition);
 			}
 

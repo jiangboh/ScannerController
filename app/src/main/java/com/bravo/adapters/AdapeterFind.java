@@ -1,7 +1,6 @@
 package com.bravo.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
+import com.bravo.utils.Logs;
 import com.bravo.xml.Msg_Body_Struct;
 
 import org.greenrobot.eventbus.EventBus;
@@ -122,8 +122,8 @@ public class AdapeterFind  extends BaseAdapter {
             holder.addImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "点击添加按钮。。。");
-                    Log.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort());
+                    Logs.d(TAG, "点击添加按钮。。。");
+                    Logs.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort());
 
                     Msg_Body_Struct text = new Msg_Body_Struct(0, Msg_Body_Struct.SetUDPServerIp);
                     text.dic.put("ip", getWifiIp(mContext));

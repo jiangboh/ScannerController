@@ -140,7 +140,7 @@ public class Logger {
 
     /**
      * Print log for define method. When information is too long, the Logger can also complete printing. The
-     * equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code Logger.print("i",
+     * equivalent of "{@code android.util.Logs.i("Tag", "Message")}" "{@code Logger.print("i",
      * "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".
@@ -185,7 +185,7 @@ public class Logger {
 
     /**
      * Print log for define method. When information is too long, the Logger can also complete printing. The
-     * equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code Logger.print("i",
+     * equivalent of "{@code android.util.Logs.i("Tag", "Message")}" "{@code Logger.print("i",
      * "Tag", "Message")}".
      *
      * @param method such as "{@code v, i, d, w, e, wtf}".
@@ -198,7 +198,7 @@ public class Logger {
 
     /**
      * Print log for define method. When information is too long, the Logger can also complete printing. The
-     * equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code Logger.print("i",
+     * equivalent of "{@code android.util.Logs.i("Tag", "Message")}" "{@code Logger.print("i",
      * "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".

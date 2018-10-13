@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +34,6 @@ import com.bravo.femto.FragmentCellScan;
 import com.bravo.femto.FragmentTarget;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
-import com.bravo.log.Remote_Fragment;
 import com.bravo.scanner.FragmentScannerConfig;
 import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.CommunicationService;
@@ -183,8 +181,8 @@ public class FunActivity extends BaseActivity {
                 Logs.w("RecordOnClick", "点击设备管理按钮", "Record_Event", true);
                 break;
             case 2:
-                CustomToast.showToast(this, "功能开发进行中，敬请期待...");
-                //onLogClicked();
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                onLogClicked();
                 Logs.w("RecordOnClick", "点击日志输出按钮", "Record_Event", true);
                 break;
             case 3:
@@ -235,7 +233,7 @@ public class FunActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy");
+        Logs.d(TAG, "onDestroy");
         super.onDestroy();
         EventBus.getDefault().post(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
         EventBus.getDefault().post(EventBusMsgConstant.STOP_SERVICE);
@@ -334,21 +332,21 @@ public class FunActivity extends BaseActivity {
     private void onLogClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("Remote");
-        menuList.add("Local");
+        //menuList.add("Remote");
+        menuList.add("本地日志");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.icon_remote_selector);
+        //iconsResId.add(R.drawable.icon_remote_selector);
         iconsResId.add(R.drawable.icon_local_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
-        fragments.add(new Remote_Fragment());
+        //fragments.add(new Remote_Fragment());
         fragments.add(new Local_Fragment());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
 
-        intent.putExtra(RevealAnimationActivity.TITLE,"Log");
+        intent.putExtra(RevealAnimationActivity.TITLE,"日志输出");
         startActivityWithAnimation(intent);
     }
 

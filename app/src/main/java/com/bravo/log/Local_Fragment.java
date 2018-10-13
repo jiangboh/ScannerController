@@ -94,7 +94,7 @@ public class Local_Fragment extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemLongClick(AdapterView<?> parent, View view, int position, long id, String strMsg) {
                 final String fileAbsPath = fileAbsoluteNames.get(position);
-//                Log.d("123456","长点击的FileName == " + fileName + "  绝对路径为：" + fileAbsPath);
+//                Logs.d("123456","长点击的FileName == " + fileName + "  绝对路径为：" + fileAbsPath);
                 if(fileAbsPath.endsWith(".txt")||fileAbsPath.endsWith(".log")){
                     OpenOrDownLoadDialog openOrDownLoadDialog = new OpenOrDownLoadDialog(context,R.style.dialog_style);
                     openOrDownLoadDialog.setClickListener(new OpenOrDownLoadDialog.BtnClickListener() {

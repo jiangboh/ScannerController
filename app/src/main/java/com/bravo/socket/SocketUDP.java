@@ -50,7 +50,7 @@ public class SocketUDP {
                 try {
                     if (!msg.isEmpty()) {
                         String msg_utf8 = URLEncoder.encode(msg,"UTF-8");
-                        //Log.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
+                        //Logs.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
                         byte[] buf = msg_utf8.getBytes();
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)

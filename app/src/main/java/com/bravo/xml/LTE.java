@@ -37,7 +37,7 @@ public class LTE {
 
             targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi", msg.dic, ""));
             targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType", msg.dic, 0));
-            //Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
+            //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
             targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei", msg.dic, ""));
             targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi", msg.dic, ""));
             targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp", msg.dic, 0));

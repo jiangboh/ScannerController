@@ -19,7 +19,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -613,12 +612,12 @@ public class FemtoListActivity extends BaseActivity implements View.OnClickListe
                 CustomToast.showToast(FemtoListActivity.this, "Connect Femto failure");
                 break;
             case EventBusMsgConstant.TCP_CONNECT_ALREADY:
-                Log.d(TAG, "EventBusMsgConstant.TCP_CONNECT_ALREADY");
+                Logs.d(TAG, "EventBusMsgConstant.TCP_CONNECT_ALREADY");
                 bConnectState = true;
                 bDialogState = false;//lmj 2017 7 25
                 break;
             case EventBusMsgConstant.TCP_CONNECT_SUCCESS:
-                Log.d(TAG, "EventBusMsgConstant.TCP_CONNECT_SUCCESS");
+                Logs.d(TAG, "EventBusMsgConstant.TCP_CONNECT_SUCCESS");
                 bConnectState = true;
                 bDialogState = false;
                 break;
@@ -638,7 +637,7 @@ public class FemtoListActivity extends BaseActivity implements View.OnClickListe
             WifiAP mWifiAP = new WifiAP(mContext);
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION) && !mWifiAP.isApEnabled() && !mBluetoothAdapter.isEnabled()) {//wifi连接上与否
-                //Log.e(TAG, "网络状态改变");
+                //Logs.e(TAG, "网络状态改变");
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if (info.getState().equals(NetworkInfo.State.DISCONNECTED)) {
                     EventBus.getDefault().post(EventBusMsgConstant.CLEAR_ALL_SOCKET);

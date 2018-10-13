@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.bravo.R;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.utils.Logs;
 
 /**
  * Created by admin on 2018-9-27.
@@ -41,7 +41,7 @@ public class DialogScannerInfo extends Dialog {
     }
 
     protected void onCreate(final Bundle savedInstanceState) {
-        Log.d(TAG,"onCreate");
+        Logs.d(TAG,"onCreate",true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_scanner_info);
 

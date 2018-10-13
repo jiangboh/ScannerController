@@ -76,7 +76,7 @@ public class AdapterScannerSearch  extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        //Log.e(TAG,"position=" + position);
+        //Logs.e(TAG,"position=" + position);
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();

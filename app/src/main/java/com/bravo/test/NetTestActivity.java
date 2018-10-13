@@ -7,11 +7,11 @@ import android.net.Network;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.bravo.FemtoController.BaseActivity;
 import com.bravo.R;
+import com.bravo.utils.Logs;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,7 +37,7 @@ public class NetTestActivity extends BaseActivity {
     }
     @TargetApi(21)
     public void onClick(View v){
-        Log.d("123456","11111111111！！！");
+        Logs.d("123456","11111111111！！！");
         NetworkRequest.Builder builder = new NetworkRequest.Builder();
         builder.addCapability(NET_CAPABILITY_INTERNET);
         //强制使用蜂窝数据网络-移动数据
@@ -51,7 +51,7 @@ public class NetTestActivity extends BaseActivity {
         connectivityManager.requestNetwork(build, new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
-                Log.d("123456","获得移动通信许可！！！" + network.toString());
+                Logs.d("123456","获得移动通信许可！！！" + network.toString());
                 connectivityManager.setProcessDefaultNetwork(network);
                 requestData(network);
             }
@@ -62,9 +62,9 @@ public class NetTestActivity extends BaseActivity {
                 try {
                     connectivityManager.unregisterNetworkCallback(this);
                 } catch (SecurityException e) {
-                    Log.d("123456", "Failed to unregister network callback");
+                    Logs.d("123456", "Failed to unregister network callback");
                 }
-                Log.d("123456","onLost()" + network.toString());
+                Logs.d("123456","onLost()" + network.toString(),true);
             }
 
         });
@@ -75,7 +75,7 @@ public class NetTestActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d("123456", "开启线程访问网络！！！！！！！！！！");
+                Logs.d("123456", "开启线程访问网络！！！！！！！！！！",true);
                 try {
                     OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && network != null) {
@@ -89,14 +89,14 @@ public class NetTestActivity extends BaseActivity {
                     Response response = null;
                     response = client.newCall(request).execute();//得到Response 对象
                     if (response.isSuccessful()) {
-                        Log.d("123456","response.code()=="+response.code());
-                        Log.d("123456","response.message()=="+response.message());
-                        Log.d("123456","res=="+response.body().string());
+                        Logs.d("123456","response.code()=="+response.code(),true);
+                        Logs.d("123456","response.message()=="+response.message(),true);
+                        Logs.d("123456","res=="+response.body().string(),true);
                         //此时的代码执行在子线程，修改UI的操作请使用handler跳转到UI线程。
 
                     }
                 } catch (Exception e) {
-                    Log.d("123456","Exception =="+ e.getMessage());
+                    Logs.d("123456","Exception =="+ e.getMessage(),true);
                     e.printStackTrace();
                 }
             }

@@ -685,11 +685,11 @@ public class BcastCommonApi {
 //                }
 //            }
 //        } catch (SocketException e) {
-//            Log.e("", "获取本地ip地址失败");
+//            Logs.e("", "获取本地ip地址失败");
 //            e.printStackTrace();
 //        }
 //
-//        Log.i(TAG, "本机IP:" + ipaddress);
+//        Logs.i(TAG, "本机IP:" + ipaddress);
 //        return ipaddress;
 //    }
 

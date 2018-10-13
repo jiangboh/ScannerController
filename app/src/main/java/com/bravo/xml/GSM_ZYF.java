@@ -1,12 +1,12 @@
 package com.bravo.xml;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -171,19 +171,19 @@ public class GSM_ZYF {
             msg_data = msg_data.replace(" ", "");
             if (!NoEmpty(msg_data))
             {
-                Log.e(TAG, "收到XML消息格式错误，XML中data字段为空！");
+                Logs.e(TAG, "收到XML消息格式错误，XML中data字段为空！");
                 return;
             }
             if (msg_data.length() < MsgHadeLen)
             {
-                Log.e(TAG, "收到XML消息格式错误，XML中data字段长度过短！");
+                Logs.e(TAG, "收到XML消息格式错误，XML中data字段长度过短！");
                 return;
             }
 
             recv = DecodeGsmMsg(true,msg_data);
             if (recv == null)
             {
-                Log.e(TAG, "收到XML消息格式错误！");
+                Logs.e(TAG, "收到XML消息格式错误！");
                 return;
             }
 
@@ -229,7 +229,7 @@ public class GSM_ZYF {
         }
         else
         {
-            Log.w(TAG, "HandleGsmMsg收到的Ap消息类型错误！");
+            Logs.w(TAG, "HandleGsmMsg收到的Ap消息类型错误！");
         }
     }
     
@@ -247,7 +247,7 @@ public class GSM_ZYF {
         int bProtocolSap = gdv.GetValueByString_Byte();
         if (bProtocolSap != (int)GSM && bProtocolSap != (int)CDMA)
         {
-            Log.e(TAG, String.format("解析GSM_V2消息格式错误，bProtocolSap为%d,字段错误！", bProtocolSap));
+            Logs.e(TAG, String.format("解析GSM_V2消息格式错误，bProtocolSap为%d,字段错误！", bProtocolSap));
             return null;
         }
         recv.bProtocolSap = bProtocolSap;
@@ -258,7 +258,7 @@ public class GSM_ZYF {
         int bMsgType = gdv.GetValueByString_Byte();
         if (bMsgType != INITIAL_MSG && bMsgType !=SUCC_OUTCOME && bMsgType != UNSUCC_OUTCOME )
         {
-            Log.e(TAG, String.format("解析GSM_V2消息格式错误，bMsgType%d，不在定义中！", bMsgType));
+            Logs.e(TAG, String.format("解析GSM_V2消息格式错误，bMsgType%d，不在定义中！", bMsgType));
             return null;
         }
         recv.bMsgType = bMsgType;
@@ -266,7 +266,7 @@ public class GSM_ZYF {
         int bCellIdx = gdv.GetValueByString_Byte();
         if (bCellIdx != (int)Sys1 && bCellIdx != (int)Sys2)
         {
-            Log.e(TAG, String.format("解析GSM_V2消息格式错误，bCellIdx为%d,字段错误！", bCellIdx));
+            Logs.e(TAG, String.format("解析GSM_V2消息格式错误，bCellIdx为%d,字段错误！", bCellIdx));
             return null;
         }
         recv.bCellIdx = bCellIdx;
@@ -275,14 +275,14 @@ public class GSM_ZYF {
         recv.wMsgLen -= MsgHadeLen;//去掉消息头后的净数据长度
         if (recv.wMsgLen < 0)
         {
-            Log.e(TAG, "解析GSM消息格式错误，wMsgLen字段错误！");
+            Logs.e(TAG, "解析GSM消息格式错误，wMsgLen字段错误！");
             return null;
         }
 
         recv.wSqn = gdv.GetValueByString_U16();
         if (recv.wSqn < 0)
         {
-            Log.e(TAG,"解析GSM消息格式错误，wSqn字段错误！");
+            Logs.e(TAG,"解析GSM消息格式错误，wSqn字段错误！");
             return null;
         }
 
@@ -295,7 +295,7 @@ public class GSM_ZYF {
             recv.data = gdv.GetValueByString_String(recv.wMsgLen * 2);
             if (!NoEmpty(recv.data))
             {
-                Log.e(TAG,"解析GSM消息格式错误，data字段错误！");
+                Logs.e(TAG,"解析GSM消息格式错误，data字段错误！");
                 return null;
             }
         }
@@ -480,7 +480,7 @@ public class GSM_ZYF {
 
         targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi", nDic.dic, ""));
         targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType", nDic.dic, 0));
-        //Log.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
+        //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
         targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei", nDic.dic, ""));
         targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi", nDic.dic, ""));
         targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp", nDic.dic, 0));

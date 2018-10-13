@@ -40,10 +40,10 @@ public class WifiAP {
         try {
             Method method = wifiManager.getClass().getMethod("getWifiApState");
             int i = (Integer) method.invoke(wifiManager);
-            Log.d(TAG, "wifi state:  " + i);
+            Logs.d(TAG, "wifi state:  " + i);
             return i;
         } catch (Exception e) {
-            Log.d(TAG, "Cannot get WiFi AP state" + e);
+            Logs.d(TAG, "Cannot get WiFi AP state" + e);
             return WIFI_AP_STATE_FAILED;
         }
     }
@@ -94,7 +94,7 @@ public class WifiAP {
                             splitted[3].toUpperCase().indexOf(MATCH_ADDRESS2.toUpperCase()) != -1 ||
                             splitted[5].equals("bt-pan")) {
                     /*if (StartPing(splitted[0]) && splitted[3].toUpperCase().indexOf(MATCH_ADDRESS.toUpperCase()) != -1) {*/
-//                        Log.d(TAG, line);
+//                        Logs.d(TAG, line);
                         FemtoDataStruct femtoDataStruct = new FemtoDataStruct();
                         femtoDataStruct.setSSID(splitted[0]);
                         femtoDataStruct.setIPAddress(splitted[0]);

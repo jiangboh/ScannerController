@@ -541,11 +541,11 @@ public class AutomaticTestActivity extends BaseActivity {
                 break;
             case EventBusMsgConstant.TCP_CONNECT_ALREADY:
                 bconnStatus = true;
-                Log.d(TAG, "EventBusMsgConstant.TCP_CONNECT_ALREADY");
+                Logs.d(TAG, "EventBusMsgConstant.TCP_CONNECT_ALREADY");
                 break;
             case EventBusMsgConstant.TCP_CONNECT_SUCCESS:
                 bconnStatus = true;
-                //Log.d(TAG, "EventBusMsgConstant.TCP_CONNECT_SUCCESS");
+                //Logs.d(TAG, "EventBusMsgConstant.TCP_CONNECT_SUCCESS");
                 break;
             case EventBusMsgConstant.TCP_RECONNECT_FAILED:
                 bconnStatus = false;

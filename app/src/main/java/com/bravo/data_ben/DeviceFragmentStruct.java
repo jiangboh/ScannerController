@@ -1,6 +1,6 @@
 package com.bravo.data_ben;
 
-import android.util.Log;
+import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -24,7 +24,7 @@ public class DeviceFragmentStruct {
     public static void StartCheckApTimer(int time)
     {
        if (timer == null) {
-           Log.d(TAG,"启动定时检查在线状态线程。。。");
+           Logs.d(TAG,"启动定时检查在线状态线程。。。");
            timer = new Timer();
            timer.schedule(new MyTimer(),0, time);
        }
@@ -41,10 +41,10 @@ public class DeviceFragmentStruct {
             try {
                 for(int i=dList.size()-1;i>=0;i--)
                 {
-                    Log.d(TAG,String.format("设备最后条消息离现在已有(%d)秒 时间！",(curTime - dList.get(i).getLastTime() )/1000));
+                    Logs.d(TAG,String.format("设备最后条消息离现在已有(%d)秒 时间！",(curTime - dList.get(i).getLastTime() )/1000));
                     if ((curTime - dList.get(i).getLastTime())/1000 > diff)
                     {
-                        Log.d(TAG,String.format("设备%s[%s:%d]下线了！",dList.get(i).getSN(),dList.get(i).getIp(),dList.get(i).getPort()));
+                        Logs.d(TAG,String.format("设备%s[%s:%d]下线了！",dList.get(i).getSN(),dList.get(i).getIp(),dList.get(i).getPort()));
                         dList.remove(i);
                         del = true;
                     }

@@ -4,14 +4,15 @@ package com.bravo.FemtoController;
  * Created by Jack.liao on 2017/9/7.
  */
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.bravo.utils.Logs;
+
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 
 public class ScanDeviceTool {
 
@@ -32,7 +33,7 @@ public class ScanDeviceTool {
     public void scan(String strGateway, Context context) {
         mLocAddress = strGateway;
         if (TextUtils.isEmpty(mLocAddress)) {
-            Log.e(TAG, "扫描失败，请检查wifi网络");
+            Logs.e(TAG, "扫描失败，请检查wifi网络");
             return;
         }
         CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors();

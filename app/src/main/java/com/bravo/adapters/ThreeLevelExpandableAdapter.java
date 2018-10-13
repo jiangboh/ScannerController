@@ -123,7 +123,7 @@ public abstract class ThreeLevelExpandableAdapter extends BaseExpandableListAdap
 //				}
 //					return convertView;
 //			} else {
-//            Log.e("lmj", "mFatherGroupPosition=" + mFatherGroupPosition + ",mChildGroupPosition" + mChildGroupPosition);
+//            Logs.e("lmj", "mFatherGroupPosition=" + mFatherGroupPosition + ",mChildGroupPosition" + mChildGroupPosition);
             return getSecondLevleView(mFatherGroupPosition, mChildGroupPosition, isExpanded, convertView, parent);
         }
 

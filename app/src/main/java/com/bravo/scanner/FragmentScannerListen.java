@@ -147,7 +147,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                     TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
                     new DialogScannerInfo(context,targetDataStruct).show();
                     //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
-                    Log.d(TAG,"点击：" + targetDataStruct.getImsi());
+                    Logs.d(TAG,"点击：" + targetDataStruct.getImsi());
                 }
             });
         }catch (Exception e) {

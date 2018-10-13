@@ -72,23 +72,23 @@ public class AdapterScanner extends BaseAdapter {
     //添加imsi到列表
     public static void AddScannerImsi(TargetDataStruct tds) {
         String strImsi = tds.getImsi();
-        //Log.d(TAG, "iCurAuthTotal = " + strImsi);
+        //Logs.d(TAG, "iCurAuthTotal = " + strImsi);
         if (TextUtils.isEmpty(strImsi)) {
-            Log.d(TAG, "Imsi为空！");
+            Logs.d(TAG, "Imsi为空！");
             return;
         }
 
         if(isDupRemo) { //去重
-            //Log.d(TAG, "去重时数组中的数量 = " + targetDataStructs.size());
+            //Logs.d(TAG, "去重时数组中的数量 = " + targetDataStructs.size());
             for (int i = 0; i < targetDataStructs.size(); i++) {
                 if (strImsi.equals(targetDataStructs.get(i).getImsi())) {
-                    //Log.d(TAG,"Imsi重复");
+                    //Logs.d(TAG,"Imsi重复");
                     return;
                 }
             }
         }
 
-        //Log.d(TAG, "判断后数组中的数量 = " + targetDataStructs.size());
+        //Logs.d(TAG, "判断后数组中的数量 = " + targetDataStructs.size());
         iCurAuthTotal++;
         tds.setCount(iCurAuthTotal);
         targetDataStructs.add(tds);
@@ -121,12 +121,12 @@ public class AdapterScanner extends BaseAdapter {
         updateTotal();
 
         int len = getCount();
-        //Log.d(TAG, "添加前删除个数：" + len );
+        //Logs.d(TAG, "添加前删除个数：" + len );
         for (int i = MAX_TOTAL; i < len ; i++) {
-            //Log.d(TAG, "添加前删除。。。" );
+            //Logs.d(TAG, "添加前删除。。。" );
             targetDataStructs.remove(0);
         }
-        //Log.d(TAG, "添加前删除个数：" + getCount());
+        //Logs.d(TAG, "添加前删除个数：" + getCount());
     }
 
     //刷新界面
@@ -134,7 +134,7 @@ public class AdapterScanner extends BaseAdapter {
         if (tvTotal != null) {
             tvTotal.setText(String.valueOf(iCurAuthTotal));
         }
-        //Log.d(TAG, "刷新时个数：" + getCount());
+        //Logs.d(TAG, "刷新时个数：" + getCount());
         //this.notifyDataSetChanged(getCount() - 1);
         this.notifyDataSetChanged();
     }
@@ -143,7 +143,7 @@ public class AdapterScanner extends BaseAdapter {
     {
         if (iCurAuthTotal > MAX_TOTAL)
         {
-            //Log.d(TAG, "删除。。。" );
+            //Logs.d(TAG, "删除。。。" );
             targetDataStructs.remove(0);
             notifyDataSetChanged();
         }
@@ -173,17 +173,17 @@ public class AdapterScanner extends BaseAdapter {
         int firstVisiblePosition = listView.getFirstVisiblePosition();
         int lastVisiblePosition = listView.getLastVisiblePosition();
 
-        //Log.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition  +";p=" + position);
+        //Logs.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition  +";p=" + position);
 
         if (lastVisiblePosition - firstVisiblePosition < 1)
         {
             notifyDataSetChanged();
         } else {
             if (iCurAuthTotal > MAX_TOTAL) {
-                //Log.d(TAG, "刷新：" + position);
+                //Logs.d(TAG, "刷新：" + position);
                 for (int i = firstVisiblePosition; i <= lastVisiblePosition; i++) {
                     View item = listView.getChildAt(firstVisiblePosition - i);
-                    //Log.d(TAG, "局部刷新:f=" + (i+1));
+                    //Logs.d(TAG, "局部刷新:f=" + (i+1));
                     getView(i + 1, item, listView);
                 }
             }
@@ -196,14 +196,14 @@ public class AdapterScanner extends BaseAdapter {
         int lastVisiblePosition = listView.getLastVisiblePosition();
 
         int len = lastVisiblePosition - firstVisiblePosition + 1;
-        //Log.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition + ";len=" + len +";p=" + position);
+        //Logs.d(TAG, "局部刷新:f=" + firstVisiblePosition + ";l=" + lastVisiblePosition + ";len=" + len +";p=" + position);
         if (len <= 1) {
             notifyDataSetChanged();
         } else {
             //if (lastVisiblePosition != (position-1) ) return;
             *//*for (int i = firstVisiblePosition; i <= lastVisiblePosition; i++) {
                 View item = listView.getChildAt(firstVisiblePosition - i);
-                //Log.d(TAG, "局部刷新:f=" + (i+1));
+                //Logs.d(TAG, "局部刷新:f=" + (i+1));
                 getView(i+1, item, listView);
             }*//*
         }
@@ -227,7 +227,7 @@ public class AdapterScanner extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        //Log.e(TAG,"position=" + position);
+        //Logs.e(TAG,"position=" + position);
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();

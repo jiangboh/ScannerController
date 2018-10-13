@@ -121,13 +121,13 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void RecvMsgHandle(EventBusMsgRecvXmlMsg RecvMsg) {
-        //Log.d(TAG,"收到UDP消息。");
+        //Logs.d(TAG,"收到UDP消息。");
         try {
             new HandleRecvXmlMsg(this).HandleRecvMsg(RecvMsg);
         }
         catch (Exception e)
         {
-            Log.d(TAG,String.format("处理设备[%s:%d]消息出错。",RecvMsg.getIp(),RecvMsg.getPort()));
+            Logs.d(TAG,String.format("处理设备[%s:%d]消息出错。",RecvMsg.getIp(),RecvMsg.getPort()));
         }
     }
 
@@ -271,7 +271,7 @@ public class CommunicationService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "关闭各种Socket连接!");
+        Logs.i(TAG, "关闭各种Socket连接!");
         unregisteAllSocket(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
         if(socketUdp != null){
             socketUdp.stopReceive();

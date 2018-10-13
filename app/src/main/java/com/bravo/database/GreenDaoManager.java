@@ -2,9 +2,9 @@ package com.bravo.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.bravo.FemtoController.ProxyApplication;
+import com.bravo.utils.Logs;
 
 /**
  * Created by Jack.liao on 2017/1/6.
@@ -54,7 +54,7 @@ public class GreenDaoManager {
         }
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
+            Logs.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
             MigrationHelper.migrate(db, AdjacentCellDao.class, BcastHistoryDao.class, FemtoListDao.class, TargetUserDao.class, UserDao.class, SnifferHistoryDao.class);
         }
     }

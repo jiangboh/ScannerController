@@ -207,9 +207,9 @@ public class SocketTCP {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Log.d(TAG,"执行timer注册！！！");
+                Logs.d(TAG,"执行timer注册！！！");
                 if("SUCCESS".equals(SharePreferenceUtils.getInstance(context).getString("registe",null))){
-                    Log.d(TAG,"注册成功！！！");
+                    Logs.d(TAG,"注册成功！！！");
                     initSocket(ipAddress,port,str);
                 }else{
                     EventBus.getDefault().post(EventBusMsgConstant.REGISTER_FAILED);

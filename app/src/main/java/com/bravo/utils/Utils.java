@@ -160,7 +160,7 @@ public class Utils {
             isr.close();
             br.close();
         } catch (IOException e) {
-            Log.d(TAG,"ping baidu 异常："+e.getMessage());
+            Logs.d(TAG,"ping baidu 异常："+e.getMessage());
         }
         return res;
 
@@ -430,7 +430,7 @@ public class Utils {
         if (null != runningTaskInfos) {
             cmpNameTemp = runningTaskInfos.get(0).topActivity.getClassName()
                     .toString();
-           /* Log.w("123456", "栈顶Activity名字为：" + cmpNameTemp
+           /* Logs.w("123456", "栈顶Activity名字为：" + cmpNameTemp
                     + "  要判断的Activity名字为：" + cmdName);*/
         }
         if (null == cmpNameTemp)
@@ -524,7 +524,7 @@ public class Utils {
     public static boolean isIgnoreError(ErrorNotif errorNotif){
         if(ignoreErrors.size() > 0){
             for(ErrorNotif en : ignoreErrors){
-//                Log.d("123456","忽略的ErrorMsg == " + en.toString());
+//                Logs.d("123456","忽略的ErrorMsg == " + en.toString());
                 if(en.getIpAddress().equals(errorNotif.getIpAddress())
                         && en.getErrorCode().equals(errorNotif.getErrorCode())
                         && en.getDetails().equals(errorNotif.getDetails())){

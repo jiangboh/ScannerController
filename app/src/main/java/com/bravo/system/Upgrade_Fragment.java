@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.HttpAuthHandler;
 import android.webkit.ValueCallback;
@@ -17,6 +16,7 @@ import android.widget.EditText;
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
 import com.bravo.fragments.RevealAnimationBaseFragment;
+import com.bravo.utils.Logs;
 import com.bravo.wifi.WifiAP;
 import com.bravo.wifi.WifiAdmin;
 
@@ -174,7 +174,7 @@ public class Upgrade_Fragment extends RevealAnimationBaseFragment implements Vie
                 return;
             Uri result = (intent == null || resultCode != RESULT_OK) ? null
                     : intent.getData();
-            Log.d("123456","Uri == " + result);
+            Logs.d("123456","Uri == " + result,true);
             if (result != null) {
                 mUploadMessageForAndroid5.onReceiveValue(new Uri[] { result });
             }else{

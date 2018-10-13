@@ -3,7 +3,6 @@ package com.bravo.wifi;
 /**
  * Created by Jack.liao on 2016/8/17.
  */
-import java.util.List;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -13,7 +12,10 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
-import android.util.Log;
+
+import com.bravo.utils.Logs;
+
+import java.util.List;
 
 public class WifiAdmin {
     private final static String TAG = "WifiAdmin";
@@ -92,7 +94,7 @@ public class WifiAdmin {
     public StringBuffer lookUpScan(){
         StringBuffer sb = new StringBuffer();
         for(int i=0;i<mWifiList.size();i++){
-            //Log.e(TAG, sb.toString());
+            //Logs.e(TAG, sb.toString());
             sb.append("Index_" + new Integer(i + 1).toString() + ":");
             // 将ScanResult信息转换成一个字符串包
             // 其中把包括：BSSID、SSID、capabilities、frequency、level
@@ -153,9 +155,9 @@ public class WifiAdmin {
 
     //判定指定WIFI是否已经配置好,依据WIFI的地址BSSID,返回mWifiConfigurations item
     public int IsConfiguration(String SSID){
-        Log.d(TAG, "Ready connect SSID=" + SSID + ", mWifiConfigurations.size()=" + mWifiConfigurations.size());
+        Logs.d(TAG, "Ready connect SSID=" + SSID + ", mWifiConfigurations.size()=" + mWifiConfigurations.size());
         for(int i = 0; i < mWifiConfigurations.size(); i++){
-            Log.d(TAG, "mWifiConfigurations.get(" +i + ")" + ",SSID=" + mWifiConfigurations.get(i).SSID);
+            Logs.d(TAG, "mWifiConfigurations.get(" +i + ")" + ",SSID=" + mWifiConfigurations.get(i).SSID);
             if(mWifiConfigurations.get(i).SSID.equals(SSID)){//same address
                 return i;//mWifiConfigurations.get(i).networkId;
             }
@@ -175,7 +177,7 @@ public class WifiAdmin {
     }
 
     public int getSecurityMode(ScanResult result) {
-        Log.d(TAG, "result.capabilities=" + result.capabilities);
+        Logs.d(TAG, "result.capabilities=" + result.capabilities,true);
         if (result.capabilities.contains("WEP")) {
             return 1;
         } else if (result.capabilities.contains("PSK")) {

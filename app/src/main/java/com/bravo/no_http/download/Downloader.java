@@ -16,7 +16,6 @@
 package com.bravo.no_http.download;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bravo.no_http.Connection;
 import com.bravo.no_http.Headers;
@@ -34,6 +33,7 @@ import com.bravo.no_http.error.UnKnownHostError;
 import com.bravo.no_http.tools.HeaderUtil;
 import com.bravo.no_http.tools.IOUtils;
 import com.bravo.no_http.tools.NetUtil;
+import com.bravo.utils.Logs;
 
 import java.io.File;
 import java.io.IOException;
@@ -212,7 +212,7 @@ public class Downloader {
                             "Permissions: https://github.com/yanzhenjie/AndPermission.");
 
                 if (downloadRequest.isCanceled()) {
-                    Log.w("NoHttpDownloader", "Download request is canceled.");
+                    Logs.w("NoHttpDownloader", "Download request is canceled.");
                     downloadListener.onCancel(what);
                     return;
                 }
@@ -236,7 +236,7 @@ public class Downloader {
 
                 while (((len = serverStream.read(buffer)) != -1)) {
                     if (downloadRequest.isCanceled()) {
-                        Log.i("NoHttpDownloader", "Download request is canceled.");
+                        Logs.i("NoHttpDownloader", "Download request is canceled.");
                         downloadListener.onCancel(what);
                         break;
                     } else {

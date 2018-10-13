@@ -1,7 +1,6 @@
 package com.bravo.xml;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bravo.Find.FragmentFind;
 import com.bravo.config.Fragment_Device;
@@ -38,7 +37,7 @@ public class HandleRecvXmlMsg {
 
         Msg_Body_Struct msg = DecodeApXmlMessage(result);
         if (msg == null) {
-            Log.d(TAG,"解析消息出错:\n" + result);
+            Logs.d(TAG,"解析消息出错:\n" + result,true);
             return;
         }
 
@@ -62,7 +61,7 @@ public class HandleRecvXmlMsg {
             DeviceDataStruct deviceInfo = new DeviceDataStruct().xmlToBean(ip,port,msg);
             if (deviceInfo == null)
             {
-                Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中参数错误。",ip,port));
+                Logs.e(TAG,String.format("设备%s[%s:%d]心跳消息中参数错误。",ip,port),true);
                 return;
             }
             DeviceFragmentStruct.addList(deviceInfo);
@@ -80,12 +79,12 @@ public class HandleRecvXmlMsg {
         }
 
         if (index == -1) {
-            Logs.d(TAG,String.format("等待设备[%s:%d]心跳消息。",ip,port));
+            Logs.d(TAG,String.format("等待设备[%s:%d]心跳消息。",ip,port),true);
             return;
         } else {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             DeviceDataStruct dds = DeviceFragmentStruct.getDevice(index);
-            Log.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getPort(),dds.getMode(),msg.type));
+            Logs.d(TAG,String.format("设备[%s:%d]型号(%s),消息类型(%s)",dds.getIp(),dds.getPort(),dds.getMode(),msg.type),true);
             if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                 new LTE(mContext).HandleMsg(dds,msg);
             } else if (dds.getMode().equals(DeviceDataStruct.MODE.CDMA) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
@@ -93,7 +92,7 @@ public class HandleRecvXmlMsg {
             } else if (dds.getMode().equals(DeviceDataStruct.MODE.GSM)) {
                 new GSM_HJT(mContext).HandleMsg(dds,msg);
             } else {
-                Logs.e(TAG, String.format("设备类型(%s)为不支持的设备类型！", dds.getMode()));
+                Logs.e(TAG, String.format("设备类型(%s)为不支持的设备类型！", dds.getMode()),true);
             }
         }
     }

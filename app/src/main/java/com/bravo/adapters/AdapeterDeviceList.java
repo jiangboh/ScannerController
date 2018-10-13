@@ -2,7 +2,6 @@ package com.bravo.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.utils.Logs;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class AdapeterDeviceList extends BaseAdapter {
 
     private void updataTotal()
     {
-        Log.d(TAG,"刷新界面。。。");
+        Logs.d(TAG,"刷新界面。。。");
         if (device_Total != null) {
             device_Total.setText(String.valueOf(DeviceFragmentStruct.getSize()));
         }

@@ -16,11 +16,11 @@
 package com.bravo.pull_to_refresh;
 
 import android.annotation.TargetApi;
-import android.util.Log;
 import android.view.View;
 
 import com.bravo.pull_to_refresh.PullToRefreshBase.Mode;
 import com.bravo.pull_to_refresh.PullToRefreshBase.State;
+import com.bravo.utils.Logs;
 
 @TargetApi(9)
 public final class OverscrollHelper {
@@ -129,9 +129,9 @@ public final class OverscrollHelper {
 				final int newScrollValue = (deltaValue + scrollValue);
 
 				if (PullToRefreshBase.DEBUG) {
-					Log.d(LOG_TAG, "OverScroll. DeltaX: " + deltaX + ", ScrollX: " + scrollX + ", DeltaY: " + deltaY
+					Logs.d(LOG_TAG, "OverScroll. DeltaX: " + deltaX + ", ScrollX: " + scrollX + ", DeltaY: " + deltaY
 							+ ", ScrollY: " + scrollY + ", NewY: " + newScrollValue + ", ScrollRange: " + scrollRange
-							+ ", CurrentScroll: " + currentScrollValue);
+							+ ", CurrentScroll: " + currentScrollValue,true);
 				}
 
 				if (newScrollValue < (0 - fuzzyThreshold)) {
