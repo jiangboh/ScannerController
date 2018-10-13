@@ -32,7 +32,7 @@ public class SocketUDP {
         try {
             //socket = new DatagramSocket(8001 + new Random().nextInt(1000));
             socket = new DatagramSocket(port);
-            Logs.d(TAG,"启动UDP监听，监听端口：" + port);
+            Logs.d(TAG,"启动UDP监听，监听端口：" + port,true);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -59,16 +59,16 @@ public class SocketUDP {
                     }
                     else
                     {
-                        Logs.e(TAG,"发送UDP消息内容为空!");
+                        Logs.e(TAG,"发送UDP消息内容为空!",true);
                     }
                 } catch (UnknownHostException e) {
-                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage(),true);
                     e.printStackTrace();
                 } catch (SocketException e) {
-                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage(),true);
                     e.printStackTrace();
                 } catch (IOException e) {
-                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage());
+                    Logs.e(TAG,"发送UDP消息异常：" + e.getMessage(),true);
                     e.printStackTrace();
                 }
 
@@ -83,7 +83,7 @@ public class SocketUDP {
         new Thread(){
             @Override
             public void run() {
-                Logs.d(TAG,"启动UDP消息接收线程，监听端口：" + port);
+                Logs.d(TAG,"启动UDP消息接收线程，监听端口：" + port,true);
                 try {
                     byte data[] = new byte[8 * 1024];
                     DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -99,13 +99,13 @@ public class SocketUDP {
                             EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Logs.d(TAG, "接收UDP消息异常：" + e.getMessage());
+                            Logs.d(TAG, "接收UDP消息异常：" + e.getMessage(),true);
                         }
                     }
                     socket.close();
                     socket = null;
                 } catch (Exception e) {
-                    Logs.d(TAG,"接收UDP消息异常：" + e.getMessage());
+                    Logs.d(TAG,"接收UDP消息异常：" + e.getMessage(),true);
                     e.printStackTrace();
                     socket.close();
                     socket = null;
@@ -122,7 +122,7 @@ public class SocketUDP {
      *@return void
      **/
     public void stopReceive(){
-        Logs.d(TAG,"暂停UDP消息接，监听端口：" + port);
+        Logs.d(TAG,"暂停UDP消息接，监听端口：" + port,true);
         stopReceive = true;
     }
 

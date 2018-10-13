@@ -37,7 +37,6 @@ import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.bravo.R.drawable.btn_scan_normal;
-import static com.bravo.socket_service.CommunicationService.TABLE_NAME;
 import static com.bravo.socket_service.CommunicationService.udpBroadCastPortArray;
 import static com.bravo.utils.Utils.getWifiBroadcastIp;
 import static com.bravo.utils.Utils.getWifiIp;
@@ -73,7 +72,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onResume() {
-        Logs.d(TAG,"onResume");
+        Logs.d(TAG,"onResume",true);
         super.onResume();
         loadData();
         if (!EventBus.getDefault().isRegistered(this))
@@ -93,12 +92,12 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void initView() {
-        Logs.d(TAG,"initView");
+        Logs.d(TAG,"initView",true);
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        Logs.d(TAG,"initData");
+        Logs.d(TAG,"initData",true);
         findImageViewLayout= (LinearLayout)contentView.findViewById(R.id.FindImageViewLayout);
         findImageViewLayout.setVisibility(View.GONE);
 
@@ -125,7 +124,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Logs.d(TAG,"onCreate");
+        Logs.d(TAG,"onCreate",true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_find);
     }
@@ -158,7 +157,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         @Override
         public void run() {
             StartFindNum ++;
-            Logs.d(TAG,"StartFindNum=" + StartFindNum);
+            Logs.d(TAG,"StartFindNum=" + StartFindNum,true);
 
             BroadCast();
             if (StartFindNum > AllFindTime)
@@ -192,7 +191,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     private void SwitchView(boolean bFind)
     {
         Message message = new Message();
-        Logs.d(TAG,"SwitchView,bFind=" + bFind);
+        Logs.d(TAG,"SwitchView,bFind=" + bFind,true);
         if (bFind)
         {
             isFind = true;
@@ -218,7 +217,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Logs.d(TAG,"what=" + msg.what);
+            Logs.d(TAG,"what=" + msg.what,true);
             switch (msg.what) {
                 case FIND_START:
                     residualTime.setText("搜索剩余" + (AllFindTime) + "秒");
@@ -255,7 +254,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
-        Logs.d(TAG,"onPause");
+        Logs.d(TAG,"onPause",true);
         saveData();
         isOpen = false;
         super.onPause();
@@ -263,24 +262,24 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Override
     public void onStop() {
-        Logs.d(TAG,"onStop");
+        Logs.d(TAG,"onStop",true);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG,"onDestroy");
+        Logs.d(TAG,"onDestroy",true);
         super.onDestroy();
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetAttach(FindDeviceInfo fdi) {
-        Logs.d(TAG,"接收到广播回应消息");
+        Logs.d(TAG,"接收到广播回应消息",true);
         if (!isFind)
         {
-            Logs.d(TAG,"不是设备搜索接收时间！");
+            Logs.d(TAG,"不是设备搜索接收时间！",true);
             return;
         }
 
@@ -289,7 +288,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetAttach(Msg_Body_Struct mbs) {
-        Logs.d(TAG,"接收到设备上线消息");
+        Logs.d(TAG,"接收到设备上线消息",true);
         FindDeviceInfo fdi = FindDeviceInfo.xmlToBean(mbs);
         DeviceDataStruct dds = new DeviceDataStruct();
         dds.setSN(fdi.getSN());

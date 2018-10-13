@@ -2,7 +2,6 @@ package com.bravo.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +73,7 @@ public class AdapterScanner extends BaseAdapter {
         String strImsi = tds.getImsi();
         //Logs.d(TAG, "iCurAuthTotal = " + strImsi);
         if (TextUtils.isEmpty(strImsi)) {
-            Logs.d(TAG, "Imsi为空！");
+            Logs.d(TAG, "Imsi为空！",true);
             return;
         }
 
@@ -114,7 +113,7 @@ public class AdapterScanner extends BaseAdapter {
             try {
                 AddScannerImsi(tdsList.get(i));
             }catch (Exception e) {
-                Logs.e(TAG,"出错：" + e.getMessage());
+                Logs.e(TAG,"出错：" + e.getMessage(),true);
             }
         }
 

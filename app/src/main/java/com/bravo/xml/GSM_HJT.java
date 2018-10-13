@@ -188,7 +188,7 @@ private class MsgSendStruct {
             recv = DecodeGsmMsg(true,msg_data);
             if (recv == null)
             {
-                Logs.e(TAG, "收到XML消息格式错误！");
+                Logs.e(TAG, "收到XML消息格式错误！",true);
                 return;
             }
 
@@ -197,7 +197,7 @@ private class MsgSendStruct {
         }
         else
         {
-            Logs.e(TAG, String.format("不支持的XML消息%s！",msgBody.type));
+            Logs.e(TAG, String.format("不支持的XML消息%s！",msgBody.type),true);
         }
     }
 
@@ -262,7 +262,7 @@ private class MsgSendStruct {
         }
         else
         {
-            Logs.w(TAG, "HandleGsmMsg收到的Ap消息类型错误！");
+            Logs.w(TAG, "HandleGsmMsg收到的Ap消息类型错误！",true);
         }
     }
 
@@ -281,7 +281,7 @@ private class MsgSendStruct {
         recv.head = gdv.GetValueByString_String(4);
         if (!recv.head.equals("AAAA"))
         {
-            Logs.e(TAG, "解析GSM消息格式错误，head字段错误！");
+            Logs.e(TAG, "解析GSM消息格式错误，head字段错误！",true);
             return null;
         }
 
@@ -289,14 +289,14 @@ private class MsgSendStruct {
         recv.addr = gdv.GetValueByString_Byte();
         if (recv.addr != 0)
         {
-            Logs.e(TAG, "解析GSM消息格式错误，addr字段不为0(设备发)！");
+            Logs.e(TAG, "解析GSM消息格式错误，addr字段不为0(设备发)！",true);
             return null;
         }
         //Byte sys = Convert.ToByte(msg_data.Substring(6, 2),16);
         int sys = gdv.GetValueByString_Byte();
         if ((sys != 0) && (sys != 1))
         {
-            Logs.e(TAG, "解析GSM消息格式错误，sys字段不为0或1(0表示系统1或通道1或射频1，1表示系统2或通道2或射频2)！");
+            Logs.e(TAG, "解析GSM消息格式错误，sys字段不为0或1(0表示系统1或通道1或射频1，1表示系统2或通道2或射频2)！",true);
             return null;
         }
         recv.sys = sys;
@@ -307,7 +307,7 @@ private class MsgSendStruct {
         {
             if (type < Gsm_Recv_Msg_Type.SEND_REQ_CNF || type > Gsm_Recv_Msg_Type.SEND_MS_CALL_OPERATE)
             {
-                Logs.e(TAG, "解析GSM消息格式错误，type字段错误！");
+                Logs.e(TAG, "解析GSM消息格式错误，type字段错误！",true);
                 return null;
             }
         }
@@ -315,7 +315,7 @@ private class MsgSendStruct {
         {
             if (type < Gsm_Send_Msg_Type.RECV_SYS_PARA || type > Gsm_Send_Msg_Type.RECV_SMS_OPTION)
             {
-                Logs.e(TAG, "解析GSM消息格式错误，type字段错误！");
+                Logs.e(TAG, "解析GSM消息格式错误，type字段错误！",true);
                 return null;
             }
         }
@@ -326,7 +326,7 @@ private class MsgSendStruct {
         recv.data_length -= 6;//-6为去掉hardware_id和message_id后的净数据长度
         if (recv.data_length < 0)
         {
-            Logs.e(TAG, "解析GSM消息格式错误，data_length字段错误！");
+            Logs.e(TAG, "解析GSM消息格式错误，data_length字段错误！",true);
             return null;
         }
 
@@ -335,7 +335,7 @@ private class MsgSendStruct {
         recv.hardware_id = gdv.GetValueByString_U32();
         if (recv.hardware_id <= 0)
         {
-            Logs.e(TAG, "解析GSM消息格式错误，hardware_id字段错误！");
+            Logs.e(TAG, "解析GSM消息格式错误，hardware_id字段错误！",true);
             return null;
         }
 

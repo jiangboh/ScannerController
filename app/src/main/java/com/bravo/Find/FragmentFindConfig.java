@@ -87,20 +87,20 @@ public class FragmentFindConfig extends RevealAnimationBaseFragment {
 
    @Override
     public void onPause() {
-        Logs.d(TAG, "onPause***************");
+        Logs.d(TAG, "onPause",true);
         saveData();
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Logs.d(TAG, "onStop***************");
+        Logs.d(TAG, "onStop",true);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG, "onDestroy***************");
+        Logs.d(TAG, "onDestroy",true);
         super.onDestroy();
 
     }

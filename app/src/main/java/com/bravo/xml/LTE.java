@@ -57,7 +57,7 @@ public class LTE {
 
             return;
         } else {
-            Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type));
+            Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
     }
 }

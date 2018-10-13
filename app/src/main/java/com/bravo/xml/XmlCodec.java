@@ -173,7 +173,7 @@ public class XmlCodec {
         }
         catch (Exception ex)
         {
-            Logs.e(TAG,"封装XML出错。出错原因：" + ex.getMessage().toString());
+            Logs.e(TAG,"封装XML出错。出错原因：" + ex.getMessage().toString(),true);
             return null;
         }
     }
@@ -252,7 +252,7 @@ public class XmlCodec {
             Document doc = builder.parse(is);//包含整个xnl内容的 Document对象
             root = doc.getDocumentElement();//得到 根节点
         } catch(Exception e){
-            Logs.e(TAG,"加载Xml消息结构出错。");
+            Logs.e(TAG,"加载Xml消息结构出错。",true);
             return null;
         }
 
@@ -277,7 +277,7 @@ public class XmlCodec {
 
         if (MsgTypeNode == null)
         {
-            Logs.e(TAG,"在Xml消息中未找到消息类型节点。");
+            Logs.e(TAG,"在Xml消息中未找到消息类型节点。",true);
             return null;
         }
 

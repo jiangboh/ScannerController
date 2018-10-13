@@ -92,7 +92,7 @@ public class AdapterBcastHistory extends BaseAdapter {
         } else {
             viewHolder.tvEndTime.setText("null");
         }
-        Logs.d(TAG, "lmj Load->" + bcastHistories.get(position).toString());
+        Logs.d(TAG, "lmj Load->" + bcastHistories.get(position).toString(),true);
         List<User> users = null;
         String Unique = bcastHistories.get(position).getFemtoSn() + bcastHistories.get(position).getBand() + bcastHistories.get(position).getTech() + /*bcastHistories.get(position).getChannel() + */bcastHistories.get(position).getCid();
         if (bcastHistories.get(position).getEndtime() != null && bcastHistories.get(position).getStatrtime() < bcastHistories.get(position).getEndtime()) {

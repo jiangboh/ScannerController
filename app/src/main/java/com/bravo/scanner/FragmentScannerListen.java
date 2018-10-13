@@ -147,11 +147,11 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                     TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
                     new DialogScannerInfo(context,targetDataStruct).show();
                     //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
-                    Logs.d(TAG,"点击：" + targetDataStruct.getImsi());
+                    Logs.d(TAG,"点击：" + targetDataStruct.getImsi(),true);
                 }
             });
         }catch (Exception e) {
-            Logs.e(TAG,"点击界面出错：" + e.getMessage());
+            Logs.e(TAG,"点击界面出错：" + e.getMessage(),true);
         }
     }
 
@@ -232,7 +232,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
                     new Timer().schedule(new SendEndTimer(), 100);
                 }catch (Exception e) {
-                    Logs.e(TAG,"刷新界面出错：" + e.getMessage());
+                    Logs.e(TAG,"刷新界面出错：" + e.getMessage(),true);
                 }
                 targetDataStructs.clear();
             }
@@ -302,7 +302,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
-        Logs.d(TAG,"onPause");
+        Logs.d(TAG,"onPause",true);
         saveData();
         isOpen = false;
         super.onPause();
@@ -310,14 +310,14 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
     @Override
     public void onStop() {
-        Logs.d(TAG,"onStop");
+        Logs.d(TAG,"onStop",true);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG,"onDestroy");
+        Logs.d(TAG,"onDestroy",true);
         super.onDestroy();
         switchBcastTimer(false);
 

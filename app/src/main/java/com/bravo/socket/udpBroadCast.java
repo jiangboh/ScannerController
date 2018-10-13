@@ -77,15 +77,15 @@ public  class udpBroadCast extends Thread {
                         String result = new String(dp.getData(), dp.getOffset(), dp.getLength(), "UTF-8");
                         //BTSOnline btsOnline = BTSOnline.xmlToBean(result);
                         try {
-                            Logs.w(TAG, "接收到的UDP广播数据为：" + result);
+                            Logs.w(TAG, "接收到的UDP广播数据为：" + result,true);
                             HandleMsg(result);
                         } catch (Exception e) {
-                            Logs.e(TAG, "处理收到的消息出错：" + e.getMessage());
+                            Logs.e(TAG, "处理收到的消息出错：" + e.getMessage(),true);
                         }
                     }
                 }
             } catch (Exception e) {
-                Logs.e(TAG, "接收处理收到的消息出错：" + e.getMessage());
+                Logs.e(TAG, "接收处理收到的消息出错：" + e.getMessage(),true);
             }
         }
         ms.close();
@@ -97,11 +97,11 @@ public  class udpBroadCast extends Thread {
         Msg_Body_Struct msg = DecodeApXmlMessage(result);
         if (msg == null) return;
 
-        Logs.d(TAG,"接收消息id：" + msg.msgId);
-        Logs.d(TAG,"接收消息类型：" + msg.type);
+        Logs.d(TAG,"接收消息id：" + msg.msgId,true);
+        Logs.d(TAG,"接收消息类型：" + msg.type,true);
         for (Map.Entry<String, Object> kvp : msg.dic.entrySet())
         {
-            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue());
+            Logs.d(TAG,"接收消息内容=" + kvp.getKey() + "；值=" + kvp.getValue(),true);
         }
 
         //EventBus.getDefault().post(new EventBusMsgDevResponse(dp.getAddress().getHostAddress(), dp.getPort(), btsOnline));

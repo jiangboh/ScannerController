@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.FemtoController.TranslucentActivity;
@@ -127,13 +126,14 @@ public class CommunicationService extends Service {
         }
         catch (Exception e)
         {
-            Logs.d(TAG,String.format("处理设备[%s:%d]消息出错。",RecvMsg.getIp(),RecvMsg.getPort()));
+            Logs.d(TAG,String.format("处理设备[%s:%d]消息出错。",RecvMsg.getIp(),RecvMsg.getPort()),true);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpMsg(EventBusMsgSendUDPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "\n发送的UDP数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "\n发送的UDP数据为："
+                + msgType.toString(),"Record_Event",true,true);
         if (socketUdp != null) {
             socketUdp.send(msgType.getIpAddress(), msgType.getPort(), msgType.getMsg());
         }
@@ -141,7 +141,8 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendTcpMsg(EventBusMsgSendTCPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的TCP数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的TCP数据为："
+                + msgType.toString(),"Record_Event",true,true);
         socketTCP.sendData(msgType.getIpAddress(),msgType.getPort(),msgType.getMsg());
     }
 
@@ -154,7 +155,8 @@ public class CommunicationService extends Service {
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpBroadcast(EventBusMsgSendUDPBroadcastMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为：" + msgType.toString(),"Record_Event",true,true);
+        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为："
+                + msgType.toString(),"Record_Event",true,true);
         sendBradcast(msgType.getMsg(),msgType.getPort());
     }
 
@@ -271,7 +273,7 @@ public class CommunicationService extends Service {
 
     @Override
     public void onDestroy() {
-        Logs.i(TAG, "关闭各种Socket连接!");
+        Logs.i(TAG, "关闭各种Socket连接!",true);
         unregisteAllSocket(EventBusMsgConstant.UNREGISTE_ALL_SOCKET);
         if(socketUdp != null){
             socketUdp.stopReceive();

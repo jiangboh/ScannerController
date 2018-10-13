@@ -98,7 +98,7 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
 
     @Override
     public void onPause() {
-        Logs.d(TAG,"onPause");
+        Logs.d(TAG,"onPause",true);
         saveData();
         isOpen = false;
         super.onPause();
@@ -106,27 +106,27 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
 
     @Override
     public void onStop() {
-        Logs.d(TAG,"onStop");
+        Logs.d(TAG,"onStop",true);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Logs.d(TAG,"onDestroy");
+        Logs.d(TAG,"onDestroy",true);
         super.onDestroy();
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetAttach(DeviceDataStruct dds) {
-        Logs.d(TAG,"接收心跳消息。");
+        Logs.d(TAG,"接收心跳消息。",true);
         adapterList.dataChanged(dds);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetRemove(int index) {
-        Logs.d(TAG,"接收心跳消息。");
+        Logs.d(TAG,"接收心跳消息。",true);
         adapterList.removeTarget();
     }
 }

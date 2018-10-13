@@ -122,8 +122,8 @@ public class AdapeterFind  extends BaseAdapter {
             holder.addImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Logs.d(TAG, "点击添加按钮。。。");
-                    Logs.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort());
+                    Logs.d(TAG, "点击添加按钮。。。",true);
+                    Logs.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort(),true);
 
                     Msg_Body_Struct text = new Msg_Body_Struct(0, Msg_Body_Struct.SetUDPServerIp);
                     text.dic.put("ip", getWifiIp(mContext));
