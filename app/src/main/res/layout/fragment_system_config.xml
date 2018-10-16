@@ -8,48 +8,7 @@
     android:paddingLeft="2dp"
     android:paddingRight="2dp">
 
-    <!--MaxNum-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_heigh"
-        android:orientation="horizontal">
-        <!--AllFindTime-->
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_14"
-            android:paddingLeft="8dp"
-            android:text="最大显示IMSI数量"
-            android:textColor="@color/colorItemText"
-            android:layout_gravity="center"
-            android:layout_weight="2.0"/>
-
-        <SeekBar
-            android:id="@+id/sb_MaxNum"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:max="20000" />
-
-        <TextView
-            android:id="@+id/tx_MaxNum"
-            android:layout_width="0dp"
-            android:textColor="@color/colorItemText"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_14"
-            android:text="20000个"
-            android:gravity="right"
-            android:layout_gravity="center"
-            android:layout_weight="0.8"/>
-    </LinearLayout>
-
-    <View
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorItemLine"
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"/>
-
-    <!--去重-->
+    <!--监听端口-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_heigh"
@@ -60,19 +19,23 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_14"
             android:paddingLeft="8dp"
-            android:text="去掉重复IMSI"
+            android:text="UDP监听端口"
             android:textColor="@color/colorItemText"
             android:layout_gravity="center"
             android:layout_weight="2.0"/>
 
         <!--AllFindTime-->
-        <CheckBox
-            android:id="@+id/ck_DupRemo"
+        <EditText
+            android:id="@+id/tv_LisenPort"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_16"
-            android:text=""
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="2dp"
+            android:text="14721"
+            android:singleLine="true"
+            android:numeric="integer"
             android:textColor="@color/colorItemText"
+            android:background="@null"
             android:layout_gravity="center"
             android:layout_weight="2.8"/>
 
@@ -84,5 +47,50 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
+    <!--MaxNum-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+        <!--AllFindTime-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="8dp"
+            android:text="AP下线时间"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <SeekBar
+            android:id="@+id/sb_MaxTime"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-10dp"
+            android:layout_weight="2.2"
+            android:max="600" />
+
+        <TextView
+            android:id="@+id/tx_MaxTime"
+            android:layout_width="0dp"
+            android:textColor="@color/colorItemText"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:text="200秒"
+            android:gravity="right"
+            android:layout_gravity="center"
+            android:layout_weight="0.6"/>
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
+
+
 </LinearLayout>
+
 

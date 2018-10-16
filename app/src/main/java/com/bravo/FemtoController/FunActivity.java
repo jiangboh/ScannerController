@@ -1,6 +1,7 @@
 package com.bravo.FemtoController;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +18,7 @@ import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.Fragment_Device;
+import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.config.GSM_Fragment;
 import com.bravo.config.General_Fragment;
 import com.bravo.config.LTE_Fragment;
@@ -195,8 +197,9 @@ public class FunActivity extends BaseActivity {
                 Logs.w("RecordOnClick", "点击捕号显示按钮", "Record_Event", true);
                 break;
             case 4:
-                CustomToast.showToast(this, "功能开发进行中，敬请期待...");
+                //CustomToast.showToast(this, "功能开发进行中，敬请期待...");
                 //onSystemClicked();
+                onSystemConfigClicked();
                 Logs.w("RecordOnClick", "点击系统配置按钮", "Record_Event", true);
                 break;
             case 5:
@@ -223,10 +226,20 @@ public class FunActivity extends BaseActivity {
        ((TextView) findViewById(R.id.tv_tech_band)).setText("Tech:" + SharePreferenceUtils.getInstance(this).getString("status_notif_tech" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0  ") +
                     "        Band:" + SharePreferenceUtils.getInstance(this).getString("status_notif_band" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "0"));
         */
-        connHintDialog = new OneBtnHintDialog(this, R.style.dialog_style);
+        //connHintDialog = new OneBtnHintDialog(this, R.style.dialog_style);
+
+        SharedPreferences sp = getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        int offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
+        int udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
+
+        Logs.d(TAG, "offLineTime="+offLineTime);
+        Logs.d(TAG, "udpPort="+ udpPort);
 
         Intent intent = new Intent(this,CommunicationService.class);
+        intent.putExtra("offLineTime",offLineTime);
+        intent.putExtra("ListenPort",udpPort);
         startService(intent);
+
         Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
         startService(intent1);
     }
@@ -417,6 +430,24 @@ public class FunActivity extends BaseActivity {
 
         /*Intent intent = new Intent(this,NetTestActivity.class);
         startActivityWithAnimation(intent);*/
+    }
+
+    private void onSystemConfigClicked(){
+        Intent intent = new Intent(mContext,RevealAnimationActivity.class);
+        ArrayList<String> menuList = new ArrayList<String>();
+        menuList.add("系统配置");
+        intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
+
+        ArrayList<Integer> iconsResId = new ArrayList<Integer>();
+        iconsResId.add(R.drawable.icon_config_selector);
+        intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
+
+        ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
+        fragments.add(new Fragment_SystemConfig());
+        intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
+
+        intent.putExtra(RevealAnimationActivity.TITLE,"系统配置");
+        startActivityWithAnimation(intent);
     }
 
     private void onScannerClicked(){

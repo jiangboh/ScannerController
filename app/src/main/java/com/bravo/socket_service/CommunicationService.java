@@ -11,6 +11,7 @@ import android.text.TextUtils;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.FemtoController.TranslucentActivity;
+import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.parse_generate_xml.ErrorNotif;
 import com.bravo.parse_generate_xml.udp.UnregisterClient;
@@ -47,28 +48,24 @@ public class CommunicationService extends Service {
     private SocketTCP socketTCP;
     //private udpBroadCast udpBroadCast;
     public static final int[] udpBroadCastPortArray = {50001,50003,50004};
-    public static final int udpPort = 14721;
+    //private int udpPort = 14721;
+    //private int offLineTime = 20;
     //private int lteServerPort = 14786;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Logs.d(TAG,"onBind");
         return null;
     }
 
     @Override
     public void onCreate() {
+        Logs.d(TAG,"onCreate");
         //保存启动参数
         saveData();
 
-        socketUdp = new SocketUDP(this,udpPort);
-        socketUdp.startReceive();
-        //socketTCP = new SocketTCP(this);
-
-        //udpBroadCast = new udpBroadCast(this, udpBroadCastPort_lte);
-
-        //10秒检测一次Ap在线状态
-        DeviceFragmentStruct.StartCheckApTimer(10000);
+        //loadData();
 
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -77,12 +74,33 @@ public class CommunicationService extends Service {
 //        errorMsgTest();
     }
 
+    @Override
+     public int onStartCommand(Intent intent, int flags, int startId) {
+        Logs.d(TAG,"onStartCommand");
+        int offLineTime = intent.getIntExtra("offLineTime",Fragment_SystemConfig.DefultMaxNum);
+        int udpPort = intent.getIntExtra("ListenPort",Fragment_SystemConfig.DefultPort);
+
+        socketUdp = new SocketUDP(this,udpPort);
+        socketUdp.startReceive();
+        //10秒检测一次Ap在线状态
+        DeviceFragmentStruct.StartCheckApTimer(10000,offLineTime);
+
+        return super.onStartCommand(intent, flags, startId);
+     }
+
+
     private void saveData()
     {
-        SharedPreferences preferences = getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(CommunicationService.TABLE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(tn_StartTime, System.currentTimeMillis());
+        editor.putLong(CommunicationService.tn_StartTime, System.currentTimeMillis());
         editor.commit();
+    }
+
+    private void loadData() {
+        SharedPreferences sp = getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        //offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
+        //udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
     }
 
     private void errorMsgTest(){

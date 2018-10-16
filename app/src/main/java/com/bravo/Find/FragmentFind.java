@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
 import com.bravo.adapters.AdapeterFind;
+import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
@@ -22,7 +23,6 @@ import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
-import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPBroadcastMsg;
 import com.bravo.utils.Logs;
 import com.bravo.xml.Msg_Body_Struct;
@@ -67,6 +67,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     private AdapeterFind adapterFind;
 
     private Boolean isFind = false;
+    private int udpPort;
 
     private int AllFindTime ; //搜索时间
 
@@ -136,13 +137,16 @@ public class FragmentFind extends RevealAnimationBaseFragment {
     private void loadData() {
         SharedPreferences sp = context.getSharedPreferences(FragmentFindConfig.TABLE_NAME, MODE_PRIVATE);
         AllFindTime = sp.getInt(FragmentFindConfig.tn_AllFindTime,10);
+
+        SharedPreferences sp1 = context.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        udpPort = sp1.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
     }
 
     private void BroadCast()
     {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.BroadCast);
         msg.dic.put("ip",getWifiIp(context));
-        msg.dic.put("port", CommunicationService.udpPort);
+        msg.dic.put("port", udpPort);
         String sendText = EncodeApXmlMessage(msg);
         //发送广播
         for(int i =0;i<udpBroadCastPortArray.length;i++) {

@@ -1,6 +1,7 @@
 package com.bravo.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.custom_view.CustomToast;
 import com.bravo.data_ben.DeviceDataStruct;
-import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
 import com.bravo.xml.Msg_Body_Struct;
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.bravo.utils.Utils.getWifiIp;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
@@ -37,15 +39,20 @@ public class AdapeterFind  extends BaseAdapter {
     private int iCurFindTotal = 0;
     private boolean findList = true;
     private TextView tvTotal;
+    private int udpPort;
 
     public AdapeterFind(Context context,boolean findList) {
         this.findList = findList;
         this.mContext = context;
+        SharedPreferences sp1 = context.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        udpPort = sp1.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
         //iCurPosition = -1;
     }
 
     public AdapeterFind(Context context, TextView txView) {
         this.mContext = context;
+        SharedPreferences sp1 = context.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        udpPort = sp1.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
         //iCurPosition = -1;
     }
 
@@ -128,7 +135,7 @@ public class AdapeterFind  extends BaseAdapter {
 
                     Msg_Body_Struct text = new Msg_Body_Struct(0, Msg_Body_Struct.SetUDPServerIp);
                     text.dic.put("ip", getWifiIp(mContext));
-                    text.dic.put("port", CommunicationService.udpPort);
+                    text.dic.put("port", udpPort);
                     String sendText = EncodeApXmlMessage(text);
 
                     EventBusMsgSendUDPMsg msg = new EventBusMsgSendUDPMsg(

@@ -20,10 +20,12 @@ public class DeviceFragmentStruct {
     private static ArrayList<DeviceDataStruct> dList =  new ArrayList<>();
     private static Lock lock = new ReentrantLock();
     private static Timer timer = null;
+    private static int offLienTime = 20;
 
-    public static void StartCheckApTimer(int time)
+    public static void StartCheckApTimer(int time,int offTime)
     {
-       if (timer == null) {
+        offLienTime = offTime;
+        if (timer == null) {
            Logs.d(TAG,"启动定时检查在线状态线程。。。");
            timer = new Timer();
            timer.schedule(new MyTimer(),0, time);
@@ -35,13 +37,14 @@ public class DeviceFragmentStruct {
         public void run() {
             // 需要做的事
             boolean del = false;
-            int diff = 20;//秒
+            int diff = offLienTime;//秒
             Long curTime = System.currentTimeMillis();
             lock.lock();
             try {
                 for(int i=dList.size()-1;i>=0;i--)
                 {
-                    Logs.d(TAG,String.format("设备最后条消息离现在已有(%d)秒 时间！",(curTime - dList.get(i).getLastTime() )/1000));
+                    Logs.d(TAG,String.format("设备最后条消息离现在已有(%d)秒时间！(%d)秒收到不消息，认为设备下线。",
+                            (curTime - dList.get(i).getLastTime() )/1000,diff));
                     if ((curTime - dList.get(i).getLastTime())/1000 > diff)
                     {
                         Logs.d(TAG,String.format("设备%s[%s:%d]下线了！",dList.get(i).getSN(),dList.get(i).getIp(),dList.get(i).getPort()));
