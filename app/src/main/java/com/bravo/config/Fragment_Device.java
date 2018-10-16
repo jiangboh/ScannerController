@@ -16,6 +16,7 @@ import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.dialog.DialogDeviceInfo;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.Logs;
+import com.bravo.xml.HandleRecvXmlMsg;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -71,15 +72,16 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
         TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
             @Override
             public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
-
+                new HandleRecvXmlMsg(context,adapterList.getItem(position)).SetDeviceReboot();
             }
         });
+
         TargetListView.setOnItemClickListener(new RecordOnItemClick() {
             @Override
             public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                           long arg3, String strMsg) {
-                DeviceDataStruct deviceDataStruct = adapterList.getItem(arg2);
-                new DialogDeviceInfo(context,deviceDataStruct).show();
+                //DeviceDataStruct deviceDataStruct = adapterList.getItem(arg2);
+                new DialogDeviceInfo(context,adapterList.getItem(arg2)).show();
             }
         });
     }

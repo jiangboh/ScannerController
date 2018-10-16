@@ -29,6 +29,11 @@ public class Msg_Body_Struct
     public static final String gsm_msg_recv = "gsm_msg_recv";
     public static final String straight_msg = "straight_msg";
 
+    public static final String activate_nodeb_request = "activate_nodeb_request";
+
+    public static final String set_parameter_request = "set_parameter_request";
+    public static final String set_param_response = "set_param_response";
+
     public Msg_Body_Struct(int id,String type)
     {
         this.msgId = id;

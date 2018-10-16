@@ -6,12 +6,15 @@ import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by admin on 2018-10-9.
@@ -22,8 +25,8 @@ public class GSM_HJT {
 
     private final int MsgHadeLen = 12;
 
-    private static final int Sys1 = 0;
-    private static final int Sys2 = 1;
+    public static final int Sys1 = 0;
+    public static final int Sys2 = 1;
 
     private static final int GSM = 241;
     private static final int CDMA = 242;
@@ -162,6 +165,50 @@ private class MsgSendStruct {
         public String data;		//消息数据
     }
 
+    /// <summary>
+    /// 发送给设备的消息结构
+    /// </summary>
+    private class gsm_msg_send
+    {
+        public String head;            //头部标识 0xAAAA
+        public String addr;            //地址，1表示设备收
+        public int sys;     //系统号，0表示系统1或通道1或射频1，1表示系统2或通道2或射频2
+        public int type; //消息类型
+        public int data_length;      //消息数据长度   [数据长度是消息ID和消息数据长度的总和]
+        public int message_id;     //消息ID         [是上位机每发一个消息的递增序号，可以总是填充全0]
+        public String data;	        //消息数据
+
+        public gsm_msg_send(int type, int sys,String data)
+        {
+            this.head = "AAAA";
+            this.addr = "01";
+            this.sys = sys;
+            this.type = type;
+            this.message_id = 0;
+            this.data_length = (int)(2 + (data.replace(" ", "").length() / 2));
+            this.data = data;
+        }
+            public gsm_msg_send(int type, int sys,int id,String data)
+        {
+            this.head = "AAAA";
+            this.addr = "01";
+            this.sys = sys;
+            this.type = type;
+            this.message_id = id;
+            this.data_length = (int)(2 + (data.replace(" ","").length()/2));
+            this.data = data;
+        }
+    }
+
+    /// <summary>
+    /// 射频参数数据结构
+    /// </summary>
+    private class RecvRfOption
+    {
+        public int rfEnable;
+        public int rfFreq;
+        public int rfPwr;
+    }
 
     private boolean NoEmpty(String str)
     {
@@ -423,7 +470,7 @@ private class MsgSendStruct {
 
 
 
-private class GetDataValue {
+    private class GetDataValue {
     String MsgData;
 
     public GetDataValue(String MsgData)
@@ -500,4 +547,64 @@ private class GetDataValue {
         return;
     }
 }
+
+    /// <summary>
+    /// 向AP发送消息
+    /// </summary>
+    /// <param name="apToKen">AP信息</param
+    /// <param name="msg">GSM文档格式的消息内容，十六进制“AA AA 01 00 15 0E 55 66 00 4B 00 54 02 2A 00 00 00 00 00 00”</param>
+    private void Send2ap_GSM(String ip,int port, gsm_msg_send sendMsg)
+    {
+        String data = String.format("%s%s%02X%02X%02X%04X%s",
+                sendMsg.head,
+                sendMsg.addr,
+                sendMsg.sys,
+                sendMsg.type,
+                sendMsg.data_length,
+                sendMsg.message_id,
+                sendMsg.data);
+
+        //在两个字符间加上空格
+        String sendData = data.replaceAll ("(.{2})", "$1 ").toUpperCase();
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.straight_msg);
+        msg.dic.put("data",sendData.trim());
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,EncodeApXmlMessage(msg));
+        EventBus.getDefault().post(ebmsm);
+
+        return;
+    }
+
+    public void SetApRedio(String ip,int port, int sys, boolean isOn)
+    {
+        int rfEnable = 0;
+        if (isOn) {
+            rfEnable = 1;
+        } else {
+            rfEnable = 0;
+        }
+        int rfFreq = 0x4B;
+        int rfPwr = 0x0A;
+        String data = String.format("%02X%04X%02X",rfEnable,rfFreq,rfPwr);
+        Send2ap_GSM(ip,port, new gsm_msg_send(Gsm_Send_Msg_Type.RECV_RF_PARA,sys, data));
+    }
+
+    public void SetApParameter(String ip,int port,String ...args) {
+        if ((args.length % 2) != 0) {
+            Logs.w(TAG,"输入参数的键值对不匹配！");
+            return;
+        }
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_parameter_request);
+        for(int i=0;i<args.length;i+=2) {
+            msg.dic.put("paramName", args[i]);
+            msg.dic.put("paramValue", args[i+1]);
+        }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
 }

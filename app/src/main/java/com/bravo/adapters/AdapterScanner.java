@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.utils.Logs;
 
@@ -218,6 +219,7 @@ public class AdapterScanner extends BaseAdapter {
         TextView attachtime;
         LinearLayout layout_tmsi;
         LinearLayout layout_imei;
+        TextView textViewImeiName;
         TextView textViewImei;
         TextView textViewTmsi;
         TextView textViewCount;
@@ -237,6 +239,7 @@ public class AdapterScanner extends BaseAdapter {
             holder.textViewConntime = ((TextView) convertView.findViewById(R.id.conntime));
             holder.layout_imei = (LinearLayout) convertView.findViewById(R.id.layout_imei);
             holder.textViewImei = ((TextView) convertView.findViewById(R.id.imei));
+            holder.textViewImeiName = ((TextView) convertView.findViewById(R.id.name_imei));
             holder.textViewCount = ((TextView) convertView.findViewById(R.id.scanner_count));
             holder.iv_user_icon = ((ImageView) convertView.findViewById(R.id.user_icon));
             holder.layout_name = ((LinearLayout) convertView.findViewById(R.id.layout_name));
@@ -248,6 +251,12 @@ public class AdapterScanner extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        if(targetDataStructs.get(position).getDeviceType().equals(DeviceDataStruct.MODE.CDMA))
+        {
+            holder.textViewImeiName.setText("ESN:");
+        } else {
+            holder.textViewImeiName.setText("IMEI:");
+        }
         //userType
         int iUserType = targetDataStructs.get(position).getiUserType();
         if (iUserType == TargetDataStruct.BLACK_IMSI)

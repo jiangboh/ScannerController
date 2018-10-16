@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
@@ -122,7 +123,7 @@ public class AdapeterFind  extends BaseAdapter {
             holder.addImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Logs.d(TAG, "点击添加按钮。。。",true);
+                    Logs.d(TAG, "点击添加设备按钮",true);
                     Logs.d(TAG, "ip=" + deviceDataStructs.get(position).getIp() + ";" + deviceDataStructs.get(position).getPort(),true);
 
                     Msg_Body_Struct text = new Msg_Body_Struct(0, Msg_Body_Struct.SetUDPServerIp);
@@ -136,6 +137,8 @@ public class AdapeterFind  extends BaseAdapter {
                             sendText);
 
                     EventBus.getDefault().post(msg);
+
+                    CustomToast.showToast(mContext, "点击添加设备按钮");
                 }
             });
 

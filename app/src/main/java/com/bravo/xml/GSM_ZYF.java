@@ -6,12 +6,15 @@ import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
  * Created by admin on 2018-9-28.
@@ -22,8 +25,8 @@ public class GSM_ZYF {
 
     private final int MsgHadeLen = 12;
 
-    private static final int Sys1 = 0;
-    private static final int Sys2 = 1;
+    public static final int Sys1 = 0;
+    public static final int Sys2 = 1;
 
     private static final int GSM = 241;
     private static final int CDMA = 242;
@@ -78,7 +81,7 @@ public class GSM_ZYF {
             this.bCellIdx = sys;
             this.wMsgLen = (int) (MsgHadeLen + (data.replace(" ", "").length() / 2));
             this.wSqn = 0;
-            this.dwTimeStamp = System.currentTimeMillis();
+            this.dwTimeStamp = System.currentTimeMillis()/1000;
             this.data = data;
         }
 
@@ -576,4 +579,90 @@ private class GetDataValue {
         return;
     }
 }
+
+    /// <summary>
+    /// 获取保留字段
+    /// </summary>
+    /// <param name="len">保留字段长度</param>
+    /// <returns></returns>
+    private String getReservedString(int len)
+    {
+        return String.format("%0" + len * 2 + "s", "0");
+    }
+
+    /// <summary>
+    /// 向AP发送消息
+    /// </summary>
+    /// <param name="apToKen">AP信息</param
+    /// <param name="msg">GSM文档格式的消息内容，十六进制“AA AA 01 00 15 0E 55 66 00 4B 00 54 02 2A 00 00 00 00 00 00”</param>
+    private void Send2ap_GSM(String ip,int port, MsgSendStruct sendMsg)
+    {
+        String data = String.format("%02X%02X%02X%02X%04X%04X%08X%s",
+                sendMsg.bProtocolSap ,
+                sendMsg.bMsgId,
+                sendMsg.bMsgType,
+                sendMsg.bCellIdx,
+                sendMsg.wMsgLen,
+                sendMsg.wSqn,
+                sendMsg.dwTimeStamp,
+                sendMsg.data);
+
+        //在两个字符间加上空格
+        String sendData = data.replaceAll ("(.{2})", "$1 ").toUpperCase();
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.straight_msg);
+        msg.dic.put("data",sendData.trim());
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,EncodeApXmlMessage(msg));
+        EventBus.getDefault().post(ebmsm);
+
+        return;
+    }
+
+    private void Send2ap_CONTROL_FAP_RADIO_ON_MSG(String ip,int port, int sys)
+    {
+        Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_RADIO_ON_MSG, sys, ""));
+    }
+
+    private void Send2ap_CONTROL_FAP_RADIO_OFF_MSG(String ip,int port,int sys)
+    {
+        Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_RADIO_OFF_MSG, sys, ""));
+    }
+
+    private void Send2ap_CONTROL_FAP_REBOOT_MSG(String ip,int port, int sys,int flag)
+    {
+        String data = String.format("%02X%s", flag,getReservedString(3));
+        Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_REBOOT_MSG, sys,data));
+    }
+
+    public void SetApRedio(String ip,int port,int sys,boolean isOn) {
+        if (isOn) {
+            Send2ap_CONTROL_FAP_RADIO_ON_MSG(ip, port, sys);
+        } else {
+            Send2ap_CONTROL_FAP_RADIO_OFF_MSG(ip, port, sys);
+        }
+    }
+    public void SetApReboot(String ip,int port,int flag) {
+        Send2ap_CONTROL_FAP_REBOOT_MSG(ip,port,GSM_ZYF.Sys1,flag);
+        Send2ap_CONTROL_FAP_REBOOT_MSG(ip,port,GSM_ZYF.Sys2,flag);
+        return;
+    }
+
+    public void SetApParameter(String ip,int port,String ...args) {
+        if ((args.length % 2) != 0) {
+            Logs.w(TAG,"输入参数的键值对不匹配！");
+            return;
+        }
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_parameter_request);
+        for(int i=0;i<args.length;i+=2) {
+            msg.dic.put("paramName", args[i]);
+            msg.dic.put("paramValue", args[i+1]);
+        }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
 }

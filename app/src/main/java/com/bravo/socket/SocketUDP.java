@@ -12,7 +12,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 /**
@@ -49,9 +48,9 @@ public class SocketUDP {
             public void run() {
                 try {
                     if (!msg.isEmpty()) {
-                        String msg_utf8 = URLEncoder.encode(msg,"UTF-8");
+                        //String msg_utf8 = URLEncoder.encode(msg,"UTF-8");
                         //Logs.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
-                        byte[] buf = msg_utf8.getBytes();
+                        byte[] buf = msg.getBytes();
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)
                         DatagramPacket dataGramPacket = new DatagramPacket(buf, buf.length, address, serverPort);

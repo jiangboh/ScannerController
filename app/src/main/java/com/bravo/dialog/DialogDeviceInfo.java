@@ -2,18 +2,23 @@ package com.bravo.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.utils.Logs;
+import com.bravo.utils.Utils;
+import com.bravo.xml.HandleRecvXmlMsg;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -26,6 +31,8 @@ public class DialogDeviceInfo extends Dialog {
     private final String TAG = "DialogDeviceInfo";
     private Context context;
     private DeviceDataStruct dds;
+
+    private boolean isEditMode = false;
 
     private LinearLayout layout_sctp;
     private LinearLayout layout_s1;
@@ -53,10 +60,20 @@ public class DialogDeviceInfo extends Dialog {
     private EditText sInfo_version ;
     private EditText sInfo_lastTime;
 
+    private Button b_redio;
+    private Button b_redio1;
+    private Button b_fullname;
+
     public DialogDeviceInfo(@NonNull Context context, DeviceDataStruct dds) {
         super(context);
         this.context = context;
         this.dds = dds;
+    }
+
+    private void setButtonImage(Button button,Drawable drawable)
+    {
+        drawable.setBounds(0, 0,drawable.getMinimumWidth(), drawable.getMinimumHeight()); //设置边界
+        button.setCompoundDrawables(null,null,drawable,null);
     }
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -72,6 +89,37 @@ public class DialogDeviceInfo extends Dialog {
         layout_redio1 = (LinearLayout)findViewById(R.id.redio1_layout);
         layout_licenss = (LinearLayout)findViewById(R.id.licenss_layout);
 
+        b_redio = (Button) findViewById(R.id.bInfo_redio);
+        //监听button事件
+        b_redio.setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                cancel();
+                if (dds.isStatus_radio()) {
+                    new HandleRecvXmlMsg(context,dds).SetDeviceRedio(0,false);
+                    CustomToast.showToast(context, "已向AP发送【关闭射频】命令");
+                } else {
+                    new HandleRecvXmlMsg(context,dds).SetDeviceRedio(0,true);
+                    CustomToast.showToast(context, "已向AP发送【打开射频】命令");
+                }
+            }
+        });
+
+        b_redio1 = (Button) findViewById(R.id.bInfo_redio1);
+        b_redio1.setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                cancel();
+                if (dds.isStatus_radio()) {
+                    new HandleRecvXmlMsg(context,dds).SetDeviceRedio(1,false);
+                    CustomToast.showToast(context, "已向AP发送【关闭射频】命令");
+                } else {
+                    new HandleRecvXmlMsg(context,dds).SetDeviceRedio(1,true);
+                    CustomToast.showToast(context, "已向AP发送【打开射频】命令");
+                }
+            }
+        });
+
         sInfo_redio_name = (TextView) findViewById(R.id.sInfo_redio_name);
         if (dds.getMode().equals(DeviceDataStruct.MODE.GSM) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)){
             sInfo_redio_name.setText("载波0射频:");
@@ -83,9 +131,15 @@ public class DialogDeviceInfo extends Dialog {
         if (dds.isStatus_radio()) {
             sInfo_redio0.setText("打开");
             sInfo_redio0.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
+            //b_redio.setText("关闭");
+            //b_redio.setBackgroundColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusFail));
+            setButtonImage(b_redio,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_redio_off));
         } else {
             sInfo_redio0.setText("关闭");
             sInfo_redio0.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusFail));
+            //b_redio.setText("打开");
+            //b_redio.setBackgroundColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
+            setButtonImage(b_redio,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_redio_on));
         }
 
         sInfo_redio1 = (EditText) findViewById(R.id.sInfo_redio_1);
@@ -93,9 +147,15 @@ public class DialogDeviceInfo extends Dialog {
             if (dds.isStatus_redio2()) {
                 sInfo_redio1.setText("打开");
                 sInfo_redio1.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
+                //b_redio1.setText("关闭");
+                //b_redio1.setBackgroundColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusFail));
+                setButtonImage(b_redio1,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_redio_off));
             } else {
                 sInfo_redio1.setText("关闭");
                 sInfo_redio1.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusFail));
+                //b_redio1.setText("打开");
+                //b_redio1.setBackgroundColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
+                setButtonImage(b_redio1,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_redio_on));
             }
             layout_redio1.setVisibility(View.VISIBLE);
         } else {
@@ -203,6 +263,38 @@ public class DialogDeviceInfo extends Dialog {
 
         sInfo_fullname = (EditText) findViewById(R.id.sInfo_fullname);
         sInfo_fullname.setText(dds.getFullName());
+
+        b_fullname = (Button) findViewById(R.id.bInfo_fullname);
+        isEditMode = false;
+        setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
+        b_fullname.setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                if (!isEditMode) {
+                    isEditMode = true;
+                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit_ok));
+
+                    sInfo_fullname.setFocusable(true);
+                    sInfo_fullname.setFocusableInTouchMode(true);
+                    sInfo_fullname.requestFocus();
+                    sInfo_fullname.setSelection(sInfo_fullname.getText().length());
+                    Utils.showSoftInput(context,sInfo_fullname);
+                } else {  //设置全名完成
+                    isEditMode = false;
+                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
+
+                    sInfo_fullname.setFocusable(false);
+                    sInfo_fullname.setFocusableInTouchMode(false);
+                    sInfo_fullname.clearFocus();
+                    Utils.hidenSoftInput(context,sInfo_fullname);
+
+                    cancel();
+                    new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_FULL_NAME",sInfo_fullname.getText().toString().trim());
+                    CustomToast.showToast(context, "已向AP发送【设置全名】命令");
+                }
+            }
+        });
+
         sInfo_sn = (EditText) findViewById(R.id.sInfo_sn);
         sInfo_sn.setText(dds.getSN());
         sInfo_ip = (EditText) findViewById(R.id.sInfo_ip);
