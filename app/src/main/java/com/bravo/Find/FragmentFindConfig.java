@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.OneBtnHintDialog;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
@@ -43,8 +44,10 @@ public class FragmentFindConfig extends RevealAnimationBaseFragment {
         ((RevealAnimationActivity) context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
-                saveData();
-                openDialog();
+                if (saveData()) {
+                    //openDialog();
+                    CustomToast.showToast(context, "设备搜索配置成功");
+                }
             }
         });
 
@@ -129,12 +132,14 @@ public class FragmentFindConfig extends RevealAnimationBaseFragment {
         tv_allFindTime.setText(String.valueOf(allfindtime)+"秒");
     }
 
-    private void saveData() {
+    private boolean saveData() {
         SharedPreferences preferences = context.getSharedPreferences(TABLE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(tn_AllFindTime, allfindtime);
         Log.v("保存值：", String.valueOf(allfindtime));
         editor.commit();
+
+        return true;
     }
 
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
 import com.bravo.adapters.AdapterScanner;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.OneBtnHintDialog;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
@@ -51,8 +52,10 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         ((RevealAnimationActivity) context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
-                saveData();
-                openDialog();
+                if (saveData()) {
+                    //openDialog();
+                    CustomToast.showToast(context, "捕号配置成功");
+                }
             }
         });
 
@@ -150,7 +153,7 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         ck_DupRemo.setChecked(isDupRemo);
     }
 
-    private void saveData() {
+    private boolean saveData() {
         SharedPreferences preferences = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(FragmentScannerConfig.tn_MaxNum, iMaxNum);
@@ -160,6 +163,8 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
 
         AdapterScanner.setIsDupRemo(isDupRemo);
         AdapterScanner.setMaxTotal(iMaxNum);
+
+        return true;
     }
 
 }
