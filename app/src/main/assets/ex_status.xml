@@ -16,15 +16,15 @@
 			<kernel-ver>K-8.0.0</kernel-ver>
 			<uboot-ver>U-9.0.0</uboot-ver>
 		</sw-ver>
-		<mode>CNE</mode>
+		<bootmode>CNE</bootmode>
 		<up-time>1494018405</up-time>
 		<cell-sel-alg>688</cell-sel-alg>
 	</basic>
 	<wifi>
-		<mode>WIFI-CLIENT</mode>
+		<bootmode>WIFI-CLIENT</bootmode>
 		<channel>1650</channel>
 		<ssid>liaominjie</ssid>
-		<security-mode>WPA-PSK</security-mode>
+		<security-bootmode>WPA-PSK</security-bootmode>
 		<encryption-algorithm>TKIP/AES AUTO</encryption-algorithm>
 		<passkey>Magnet123456</passkey>
 	</wifi>
@@ -50,8 +50,8 @@
 		<battery-level>99%</battery-level>
 		<battery-charging>TRUE</battery-charging>
 		<radio>
-			<tx-s>{INT:tx for scanner mode(CNE)}</tx-s>
-			<tx-f>{INT:tx for femto mode(CN)}</tx-f>
+			<tx-s>{INT:tx for scanner bootmode(CNE)}</tx-s>
+			<tx-f>{INT:tx for femto bootmode(CN)}</tx-f>
 		</radio>
 	</hw>
 	<kpi></kpi>

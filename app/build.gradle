@@ -23,6 +23,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
+
     defaultConfig {
         applicationId "com.bravo.FemtoController"
         minSdkVersion 15

@@ -465,7 +465,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	/**
 	 * @param enable Whether Pull-To-Refresh should be used
-	 * @deprecated This simple calls setMode with an appropriate mode based on
+	 * @deprecated This simple calls setBootmode with an appropriate mode based on
 	 *             the passed value.
 	 */
 	public final void setPullToRefreshEnabled(boolean enable) {

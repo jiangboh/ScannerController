@@ -1,6 +1,7 @@
 package com.bravo.data_ben;
 
 import com.bravo.utils.Logs;
+import com.bravo.xml.LTE_GeneralPara;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,8 +44,8 @@ public class DeviceFragmentStruct {
             try {
                 for(int i=dList.size()-1;i>=0;i--)
                 {
-                    Logs.d(TAG,String.format("设备最后条消息离现在已有(%d)秒时间！(%d)秒收到不消息，认为设备下线。",
-                            (curTime - dList.get(i).getLastTime() )/1000,diff));
+                    //Logs.d(TAG,String.format("设备最后条消息离现在已有(%d)秒时间！(%d)秒收到不消息，认为设备下线。",
+                    //        (curTime - dList.get(i).getLastTime() )/1000,diff));
                     if ((curTime - dList.get(i).getLastTime())/1000 > diff)
                     {
                         Logs.d(TAG,String.format("设备%s[%s:%d]下线了！",dList.get(i).getSN(),dList.get(i).getIp(),dList.get(i).getPort()));
@@ -155,6 +156,20 @@ public class DeviceFragmentStruct {
         }
     }
 
+    public static ArrayList<DeviceDataStruct> getList() {
+        ArrayList<DeviceDataStruct> rList = new ArrayList<DeviceDataStruct>();
+        lock.lock();
+        try {
+            for(int i = 0 ;i<dList.size();i++)
+            {
+                rList.add(dList.get(i));
+            }
+            return rList;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public static void addList(DeviceDataStruct deviceInfo) {
         int index = inListIndex(deviceInfo.getIp(),deviceInfo.getPort());
         lock.lock();
@@ -219,10 +234,32 @@ public class DeviceFragmentStruct {
         }
     }
 
-    public static ArrayList<DeviceDataStruct> getList() {
+    public static int ChangeGeneralPara(String ip,int  port,LTE_GeneralPara para) {
         lock.lock();
         try {
-            return dList;
+            for(int i = 0 ;i<dList.size();i++)
+            {
+                if (dList.get(i).getIp().equals(ip) && dList.get(i).getPort() == port)
+                {
+                    dList.get(i).setGeneralPara(para);
+                    return i;
+                }
+            }
+            return -1;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static ArrayList<String> getSnList() {
+        ArrayList<String> rList = new ArrayList<String>();
+        lock.lock();
+        try {
+            for(int i = 0 ;i<dList.size();i++)
+            {
+                rList.add(dList.get(i).getSN());
+            }
+            return rList;
         } finally {
             lock.unlock();
         }

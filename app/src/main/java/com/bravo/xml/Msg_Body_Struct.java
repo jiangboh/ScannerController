@@ -34,6 +34,9 @@ public class Msg_Body_Struct
     public static final String set_parameter_request = "set_parameter_request";
     public static final String set_param_response = "set_param_response";
 
+    public static final String get_general_para_request = "get_general_para_request";
+    public static final String get_general_para_response = "get_general_para_response";
+
     public Msg_Body_Struct(int id,String type)
     {
         this.msgId = id;

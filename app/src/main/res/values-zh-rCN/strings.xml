@@ -55,7 +55,7 @@
     <string name="title_activity_ttsetting">TTSettingActivity</string>
 
     <!--TUKTUK-->
-    <string name="mode">模式：</string>
+    <string name="bootmode">模式：</string>
     <string name="tts_switch">语音开关:</string>
     <string name="tt_signal">没信号</string>
     <string name="serial_number">序列号:</string>

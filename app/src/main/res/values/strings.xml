@@ -54,7 +54,7 @@
     <string name="title_activity_ttsetting">TTSettingActivity</string>
 
     <!--TUKTUK-->
-    <string name="mode">Mode：</string>
+    <string name="bootmode">Mode：</string>
     <string name="tts_switch">TTS Switch:</string>
     <string name="tt_signal">No Signal</string>
     <string name="serial_number">Serial Number:</string>

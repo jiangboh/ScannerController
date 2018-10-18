@@ -70,7 +70,7 @@ public class HandleRecvXmlMsg {
 
         //心跳消息
         if (msg.type.equalsIgnoreCase(Msg_Body_Struct.status_response)) {
-            DeviceDataStruct deviceInfo = new DeviceDataStruct().xmlToBean(ip, port, msg);
+            DeviceDataStruct deviceInfo = DeviceDataStruct.xmlToBean(ip, port, msg);
             if (deviceInfo == null) {
                 Logs.e(TAG, String.format("设备%s[%s:%d]心跳消息中参数错误。", ip, port), true);
                 return;
@@ -85,7 +85,21 @@ public class HandleRecvXmlMsg {
                 //更新设备搜索界面
                 EventBus.getDefault().post(msg);
             }
+            if (deviceInfo.isStatus_offline()) {
+                Logs.e(TAG, String.format("第一次启动，发送获取参数消息!"));
+                if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) ||
+                        deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) ||
+                        deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+                    new LTE(mContext).SendGeneralParaRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA) ||
+                        deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
 
+                } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+
+                } else {
+                    Logs.e(TAG, String.format("产品Mode为%s,目前不支持该类型!", deviceInfo.getMode()));
+                }
+            }
             return;
         }
 

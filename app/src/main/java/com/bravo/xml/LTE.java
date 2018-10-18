@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
@@ -63,7 +64,24 @@ public class LTE {
             }
 
             return;
-        } else {
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
+            LTE_GeneralPara gPara = new LTE_GeneralPara();
+            gPara.setBootmode(FindMsgStruct.GetMsgIntValueInList("bootMode", msg.dic, 1));
+            gPara.setManualfreq(FindMsgStruct.GetMsgIntValueInList("manualfreq", msg.dic, 1));
+            gPara.setEarfcndl(FindMsgStruct.GetMsgIntValueInList("earfcndl", msg.dic, 0));
+            gPara.setEarfcnul(FindMsgStruct.GetMsgIntValueInList("earfcnul", msg.dic, 0));
+            gPara.setBandwitch(FindMsgStruct.GetMsgIntValueInList("bandwidth", msg.dic, 5));
+            gPara.setCid(FindMsgStruct.GetMsgIntValueInList("cellid", msg.dic, 0));
+            gPara.setTac(FindMsgStruct.GetMsgIntValueInList("tac", msg.dic, 0));
+            String plmn = FindMsgStruct.GetMsgStringValueInList("primaryplmn", msg.dic, "46000");
+            gPara.setMcc(Integer.parseInt(plmn.substring(0,3)));
+            gPara.setMnc(Integer.parseInt(plmn.substring(3)));
+            gPara.setPower(FindMsgStruct.GetMsgIntValueInList("txpower", msg.dic, 0));
+            gPara.setPeriodtac(FindMsgStruct.GetMsgIntValueInList("periodtac", msg.dic, 0));
+            gPara.setEarfcnlist(FindMsgStruct.GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
+
+            DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
+        }  else {
             Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
     }
@@ -110,6 +128,17 @@ public class LTE {
             msg.dic.put("paramName", args[i]);
             msg.dic.put("paramValue", args[i+1]);
         }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendGeneralParaRequest(String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_general_para_request);
+        msg.dic.put("timeout",0);
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

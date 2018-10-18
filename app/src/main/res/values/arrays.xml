@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="mode">
+    <string-array name="workmode">
+        <item>自动</item>
+        <item>手动</item>
+    </string-array>
+
+    <string-array name="bootmode">
         <item>CN</item>
         <item>CNE</item>
     </string-array>
@@ -72,6 +77,7 @@
     <string-array name="bandwidth">
         <item>5</item>
         <item>10</item>
+        <item>15</item>
         <item>20</item>
     </string-array>
 

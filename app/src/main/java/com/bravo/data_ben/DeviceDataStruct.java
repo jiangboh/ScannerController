@@ -3,9 +3,8 @@ package com.bravo.data_ben;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
 import com.bravo.xml.FindMsgStruct;
+import com.bravo.xml.LTE_GeneralPara;
 import com.bravo.xml.Msg_Body_Struct;
-
-import java.util.ArrayList;
 
 /**
  * Created by admin on 2018-9-17.
@@ -27,8 +26,7 @@ public class DeviceDataStruct {
         public static final String CDMA = "CDMA";
     }
 
-    public static String String2Mode(String mode)
-    {
+    public static String String2Mode(String mode) {
         if (mode.equalsIgnoreCase("lte_fdd"))
             return MODE.LTE_FDD;
         else if (mode.equalsIgnoreCase("lte_tdd"))
@@ -59,21 +57,33 @@ public class DeviceDataStruct {
     private boolean status_cell;
     private boolean status_sync;
     private boolean status_licens;
-    private boolean status_online;
+    private boolean status_offline;
     private boolean status_wSelf;
     private boolean status_redio2;
     private boolean status_radio;
 
     private String version;
-    private ArrayList<Msg_Body_Struct> msgList = new ArrayList<>();
+    private Object generalPara = null;
+
     private int iState = OFF_LINE;
 
+    public DeviceDataStruct(String mode) {
+        if (mode.equals(DeviceDataStruct.MODE.LTE_TDD)
+                || mode.equals(DeviceDataStruct.MODE.LTE_FDD)
+                || mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+            generalPara = new LTE_GeneralPara();
+        } else if (mode.equals(DeviceDataStruct.MODE.CDMA)
+                || mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
+            generalPara = new LTE_GeneralPara();
+        } else if (mode.equals(DeviceDataStruct.MODE.GSM)) {
+            generalPara = new LTE_GeneralPara();
+        }
+    }
     public DeviceDataStruct() {
-
+            generalPara = new LTE_GeneralPara();
     }
 
-    private class AP_STATUS_LTE
-    {
+    private class AP_STATUS_LTE  {
         public static final int SCTP = 0x80000000;
         public static final int S1 = 0x40000000;
         public static final int GPS = 0x20000000;
@@ -87,8 +97,7 @@ public class DeviceDataStruct {
         public static final int RADIO2 = 0x1;
     }
 
-    private boolean GetStatus(long detail,int status)
-    {
+    private boolean GetStatus(long detail,int status) {
         if ((detail & status) == status)
             return true;
 
@@ -96,7 +105,7 @@ public class DeviceDataStruct {
     }
 
     public DeviceDataStruct xmlToBean(FindDeviceInfo fdi) {
-        DeviceDataStruct deviceDataStruct = new DeviceDataStruct();
+        DeviceDataStruct deviceDataStruct = new DeviceDataStruct(fdi.getMode());
         deviceDataStruct.setSN(fdi.getSN());
         deviceDataStruct.setFullName(fdi.getFullName());
         deviceDataStruct.setMode(fdi.getMode());
@@ -112,8 +121,8 @@ public class DeviceDataStruct {
         return deviceDataStruct;
     }
 
-    public DeviceDataStruct xmlToBean(String ip,int port,Msg_Body_Struct msg) {
-        DeviceDataStruct deviceInfo = new DeviceDataStruct();
+    public static DeviceDataStruct xmlToBean(String ip,int port,Msg_Body_Struct msg) {
+        DeviceDataStruct deviceInfo;
 
         String sn = FindMsgStruct.GetMsgStringValueInList("sn",msg.dic,"");
         String mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
@@ -124,6 +133,7 @@ public class DeviceDataStruct {
             return null;
         }
 
+        deviceInfo = new DeviceDataStruct(String2Mode(mode));
         deviceInfo.setIp(ip);
         deviceInfo.setPort(port);
         deviceInfo.setMode(String2Mode(mode));
@@ -160,7 +170,7 @@ public class DeviceDataStruct {
         this.status_sync = GetStatus(detail,AP_STATUS_LTE.SYNC);
         this.status_licens = GetStatus(detail,AP_STATUS_LTE.LICENS);
         this.status_radio = GetStatus(detail,AP_STATUS_LTE.RADIO);
-        this.status_online = GetStatus(detail,AP_STATUS_LTE.OnLine);
+        this.status_offline = GetStatus(detail,AP_STATUS_LTE.OnLine);
         this.status_wSelf = GetStatus(detail,AP_STATUS_LTE.wSelfStudy);
         this.status_redio2 = GetStatus(detail,AP_STATUS_LTE.RADIO2);
     }
@@ -261,8 +271,8 @@ public class DeviceDataStruct {
         return status_licens;
     }
 
-    public boolean isStatus_online() {
-        return status_online;
+    public boolean isStatus_offline() {
+        return status_offline;
     }
 
     public boolean isStatus_wSelf() {
@@ -277,62 +287,11 @@ public class DeviceDataStruct {
         return status_radio;
     }
 
-    public ArrayList<Msg_Body_Struct> getMsgList() {
-        return msgList;
+    public Object getGeneralPara() {
+        return generalPara;
     }
 
-    public void setMsgList(ArrayList<Msg_Body_Struct> msgList) {
-        this.msgList = msgList;
+    public void setGeneralPara(Object generalPara) {
+        this.generalPara = generalPara;
     }
-
-
-    /*@Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(Ip);
-        dest.writeString(SN);
-        dest.writeInt(iState);
-        dest.writeInt(Port);
-        dest.writeString(Mode);
-        dest.writeString(FullName);
-        dest.writeLong(LastTime);
-        dest.writeInt(detail);
-        dest.writeString(version);
-        dest.writeArray(msgList);
-    }
-
-    public static final Creator<DeviceDataStruct> CREATOR = new Creator<DeviceDataStruct>()
-    {
-        @Override
-        public DeviceDataStruct[] newArray(int size)
-        {
-            return new DeviceDataStruct[size];
-        }
-
-        @Override
-        public DeviceDataStruct createFromParcel(Parcel in)
-        {
-            return new DeviceDataStruct(in);
-        }
-    };
-
-    public DeviceDataStruct(Parcel in) {
-        SN = in.readString();
-        FullName = in.readString();
-        Ip = in.readString();
-        Port = in.readInt();
-        detail = in.readInt();
-        Mode = in.readString();
-
-        version = in.readString();
-        iState = in.readInt();
-        LastTime = in.readLong();
-        msgList = in.readArrayList();
-    }*/
-
-
 }

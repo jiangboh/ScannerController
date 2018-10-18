@@ -1,7 +1,6 @@
 package com.bravo.FemtoController;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +16,7 @@ import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
-import com.bravo.config.Fragment_Device;
+import com.bravo.config.Fragment_DeviceBaseSet;
 import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.config.GSM_Fragment;
 import com.bravo.config.General_Fragment;
@@ -228,16 +227,7 @@ public class FunActivity extends BaseActivity {
         */
         //connHintDialog = new OneBtnHintDialog(this, R.style.dialog_style);
 
-        SharedPreferences sp = getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
-        int offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
-        int udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
-
-        Logs.d(TAG, "offLineTime="+offLineTime);
-        Logs.d(TAG, "udpPort="+ udpPort);
-
         Intent intent = new Intent(this,CommunicationService.class);
-        intent.putExtra("offLineTime",offLineTime);
-        intent.putExtra("ListenPort",udpPort);
         startService(intent);
 
         Intent intent1 = new Intent(this,HandleRecvXmlMsg.class);
@@ -498,16 +488,18 @@ public class FunActivity extends BaseActivity {
     private void onSetDeviceClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("在线设备");
+        //menuList.add("在线设备");
+        menuList.add("基本配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
-        fragments.add(new Fragment_Device());
-        //fragments.add(new Terminal_Fragmen());
+        //fragments.add(new Fragment_Device());
+        fragments.add(new Fragment_DeviceBaseSet());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.icon_femto_selected);
+        //iconsResId.add(R.drawable.icon_femto_selected);
+        iconsResId.add(R.drawable.icon_system_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "设备管理");

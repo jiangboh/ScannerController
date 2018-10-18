@@ -48,8 +48,8 @@ public class CommunicationService extends Service {
     private SocketTCP socketTCP;
     //private udpBroadCast udpBroadCast;
     public static final int[] udpBroadCastPortArray = {50001,50003,50004};
-    //private int udpPort = 14721;
-    //private int offLineTime = 20;
+    private int udpPort = 14721;
+    private int offLineTime = 20;
     //private int lteServerPort = 14786;
 
     @Nullable
@@ -65,7 +65,12 @@ public class CommunicationService extends Service {
         //保存启动参数
         saveData();
 
-        //loadData();
+        loadData();
+
+        socketUdp = new SocketUDP(this,udpPort);
+        socketUdp.startReceive();
+        //10秒检测一次Ap在线状态
+        DeviceFragmentStruct.StartCheckApTimer(10000,offLineTime);
 
         if (!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -73,21 +78,6 @@ public class CommunicationService extends Service {
         //错误警告测试
 //        errorMsgTest();
     }
-
-    @Override
-     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logs.d(TAG,"onStartCommand");
-        int offLineTime = intent.getIntExtra("offLineTime",Fragment_SystemConfig.DefultMaxNum);
-        int udpPort = intent.getIntExtra("ListenPort",Fragment_SystemConfig.DefultPort);
-
-        socketUdp = new SocketUDP(this,udpPort);
-        socketUdp.startReceive();
-        //10秒检测一次Ap在线状态
-        DeviceFragmentStruct.StartCheckApTimer(10000,offLineTime);
-
-        return super.onStartCommand(intent, flags, startId);
-     }
-
 
     private void saveData()
     {
@@ -150,8 +140,8 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpMsg(EventBusMsgSendUDPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "\n发送的UDP数据为："
-                + msgType.toString(),"Record_Event",true,true);
+        //Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort() + "\n发送的UDP数据为："
+        //        + msgType.toString(),"Record_Event",true,true);
         if (socketUdp != null) {
             socketUdp.send(msgType.getIpAddress(), msgType.getPort(), msgType.getMsg());
         }
@@ -159,8 +149,8 @@ public class CommunicationService extends Service {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendTcpMsg(EventBusMsgSendTCPMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的TCP数据为："
-                + msgType.toString(),"Record_Event",true,true);
+        //Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的TCP数据为："
+        //        + msgType.toString(),"Record_Event",true,true);
         socketTCP.sendData(msgType.getIpAddress(),msgType.getPort(),msgType.getMsg());
     }
 
@@ -173,8 +163,8 @@ public class CommunicationService extends Service {
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void sendUdpBroadcast(EventBusMsgSendUDPBroadcastMsg msgType){
-        Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为："
-                + msgType.toString(),"Record_Event",true,true);
+        //Logs.w(TAG, "IP=" + msgType.getIpAddress() + ",port=" + msgType.getPort()+ "\n发送的UDP广播数据为："
+        //       + msgType.toString(),"Record_Event",true,true);
         sendBradcast(msgType.getMsg(),msgType.getPort());
     }
 
