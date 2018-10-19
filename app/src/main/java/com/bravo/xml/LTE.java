@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
@@ -43,11 +44,11 @@ public class LTE {
             targetDataStruct.setFullName(dds.getFullName());
             targetDataStruct.setDeviceType(dds.getMode());
 
-            targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi", msg.dic, ""));
+            targetDataStruct.setImsi(GetMsgStringValueInList("imsi", msg.dic, ""));
             targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType", msg.dic, 0));
             //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
-            targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei", msg.dic, ""));
-            targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi", msg.dic, ""));
+            targetDataStruct.setImei(GetMsgStringValueInList("imei", msg.dic, ""));
+            targetDataStruct.setTmsi(GetMsgStringValueInList("tmsi", msg.dic, ""));
             targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp", msg.dic, 0));
             targetDataStruct.setbPositionStatus(true);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
@@ -68,17 +69,37 @@ public class LTE {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
             gPara.setBootmode(FindMsgStruct.GetMsgIntValueInList("bootMode", msg.dic, 1));
             gPara.setManualfreq(FindMsgStruct.GetMsgIntValueInList("manualfreq", msg.dic, 1));
+
             gPara.setEarfcndl(FindMsgStruct.GetMsgIntValueInList("earfcndl", msg.dic, 0));
             gPara.setEarfcnul(FindMsgStruct.GetMsgIntValueInList("earfcnul", msg.dic, 0));
             gPara.setBandwitch(FindMsgStruct.GetMsgIntValueInList("bandwidth", msg.dic, 5));
             gPara.setCid(FindMsgStruct.GetMsgIntValueInList("cellid", msg.dic, 0));
             gPara.setTac(FindMsgStruct.GetMsgIntValueInList("tac", msg.dic, 0));
-            String plmn = FindMsgStruct.GetMsgStringValueInList("primaryplmn", msg.dic, "46000");
+            String plmn = GetMsgStringValueInList("primaryplmn", msg.dic, "46000");
             gPara.setMcc(Integer.parseInt(plmn.substring(0,3)));
             gPara.setMnc(Integer.parseInt(plmn.substring(3)));
             gPara.setPower(FindMsgStruct.GetMsgIntValueInList("txpower", msg.dic, 0));
             gPara.setPeriodtac(FindMsgStruct.GetMsgIntValueInList("periodtac", msg.dic, 0));
-            gPara.setEarfcnlist(FindMsgStruct.GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
+
+            gPara.setEarfcnlist(GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
+
+            gPara.setOtherplmn(GetMsgStringValueInList("otherplmn", msg.dic, ""));
+            String[] periodFreq = FindMsgStruct.GetMsgStringValueInList("periodFreq", msg.dic, "").split(":");
+            if (periodFreq.length >= 2) {
+                gPara.setPeriodFreqTime(Integer.parseInt(periodFreq[0]));
+                gPara.setPeriodFreqFreq(periodFreq[1]);
+            }
+
+            gPara.setNtpServer(GetMsgStringValueInList("NTP", msg.dic, ""));
+            gPara.setNtppri(FindMsgStruct.GetMsgIntValueInList("ntppri", msg.dic, 0));
+            gPara.setGps_select(FindMsgStruct.GetMsgIntValueInList("gps_select", msg.dic, 0));
+            gPara.setBandoffset(GetMsgStringValueInList("Bandoffset", msg.dic, ""));
+
+            gPara.setSource(FindMsgStruct.GetMsgIntValueInList("source", msg.dic, 0));
+            gPara.setManualEnable(FindMsgStruct.GetMsgIntValueInList("ManualEnable", msg.dic, 0));
+            gPara.setManualEarfcn(FindMsgStruct.GetMsgIntValueInList("ManualEarfcn", msg.dic, 0));
+            gPara.setManualPci(FindMsgStruct.GetMsgIntValueInList("ManualPci", msg.dic, 0));
+            gPara.setManualBw(FindMsgStruct.GetMsgIntValueInList("ManualBw", msg.dic, 0));
 
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
         }  else {
@@ -147,4 +168,81 @@ public class LTE {
         return ;
     }
 
+    public void SetWorkMode(String ip,int port,LTE_GeneralPara para) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_work_mode);
+        msg.dic.put("boot",para.getBootmode());
+        msg.dic.put("manualFreq",para.getBootmode());
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SetConfiguration(String ip,int port,LTE_GeneralPara para) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_configuration);
+        msg.dic.put("euarfcn",para.getEarfcndl());
+        msg.dic.put("mcc",para.getMcc());
+        msg.dic.put("mnc",para.getMnc());
+        msg.dic.put("pci",para.getPci());
+        msg.dic.put("tac",para.getTac());
+        msg.dic.put("txpower",para.getPower());
+        msg.dic.put("periodTac",para.getPeriodtac());
+        msg.dic.put("bandwidth",para.getBandwitch());
+        msg.dic.put("cellid",para.getCid());
+        msg.dic.put("timeout",0);
+
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SetSonEarfcn(String ip,int port,LTE_GeneralPara para) {
+        String[] earfcn = para.getEarfcnlist().split(",");
+        if (earfcn.length <=0 ) return;
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_work_mode);
+        for(int i =0;i<earfcn.length;i++) {
+            msg.dic.put("earfcn", earfcn[i]);
+        }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SetSystemRequest(String ip,int port,LTE_GeneralPara para) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_system_request);
+        msg.dic.put("time/NTP",para.getNtpServer());
+        msg.dic.put("time/Pri",para.getNtppri());
+        msg.dic.put("GPS/Enable",para.getGps_select());
+        msg.dic.put("GPS/BandOffset",para.getBandoffset());
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SetSyncInfo(String ip,int port,LTE_GeneralPara para) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.Syncinfo_set);
+        msg.dic.put("CNMSyncpriority",para.getSource());
+        msg.dic.put("ManualEnable",para.getManualEnable());
+        msg.dic.put("Manualsyncinfo/ManualEarfcn",para.getManualEarfcn());
+        msg.dic.put("Manualsyncinfo/ManualPci",para.getManualPci());
+        msg.dic.put("Manualsyncinfo/ManualBw",para.getManualBw());
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/white_round_corner_bg"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
+        <ProgressBar
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="18dp"
+            android:indeterminateDrawable="@anim/progress_bar_anim"
+            android:indeterminateDuration="1000"
+            />
+        <TextView
+            android:id="@+id/progress_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="等待设备返回设置结果..."
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#444444"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:id="@+id/layout_deviceListen">
+
+        <!--list-->
+        <ListView
+            android:id="@+id/requselist"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#00000000"
+            android:dividerHeight="0dp"
+            android:transcriptMode="alwaysScroll"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent">
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>

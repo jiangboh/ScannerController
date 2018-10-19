@@ -7,6 +7,7 @@ package com.bravo.xml;
 public class LTE_GeneralPara {
     private int bootmode;
     private int manualfreq;
+
     private int earfcndl;
     private int earfcnul;
     private int pci;
@@ -17,7 +18,24 @@ public class LTE_GeneralPara {
     private int mnc;
     private int power;
     private int periodtac;
+
     private String Earfcnlist;
+
+    private String otherplmn;
+
+    private int periodFreqTime;
+    private String periodFreqFreq;
+
+    private String ntpServer;
+    private int ntppri;
+    private int gps_select;
+    private String Bandoffset;
+
+    private int source;
+    private int ManualEnable;
+    private int ManualEarfcn;
+    private int ManualPci;
+    private int ManualBw;
 
     public int getBootmode() {
         return bootmode;
@@ -121,5 +139,101 @@ public class LTE_GeneralPara {
 
     public void setEarfcnlist(String earfcnlist) {
         Earfcnlist = earfcnlist;
+    }
+
+    public String getOtherplmn() {
+        return otherplmn;
+    }
+
+    public void setOtherplmn(String otherplmn) {
+        this.otherplmn = otherplmn;
+    }
+
+    public int getPeriodFreqTime() {
+        return periodFreqTime;
+    }
+
+    public void setPeriodFreqTime(int periodFreqTime) {
+        this.periodFreqTime = periodFreqTime;
+    }
+
+    public String getPeriodFreqFreq() {
+        return periodFreqFreq;
+    }
+
+    public void setPeriodFreqFreq(String periodFreqFreq) {
+        this.periodFreqFreq = periodFreqFreq;
+    }
+
+    public String getNtpServer() {
+        return ntpServer;
+    }
+
+    public void setNtpServer(String ntpServer) {
+        this.ntpServer = ntpServer;
+    }
+
+    public int getNtppri() {
+        return ntppri;
+    }
+
+    public void setNtppri(int ntppri) {
+        this.ntppri = ntppri;
+    }
+
+    public int getGps_select() {
+        return gps_select;
+    }
+
+    public void setGps_select(int gps_select) {
+        this.gps_select = gps_select;
+    }
+
+    public String getBandoffset() {
+        return Bandoffset;
+    }
+
+    public void setBandoffset(String bandoffset) {
+        Bandoffset = bandoffset;
+    }
+
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
+    }
+
+    public int getManualEnable() {
+        return ManualEnable;
+    }
+
+    public void setManualEnable(int manualEnable) {
+        ManualEnable = manualEnable;
+    }
+
+    public int getManualEarfcn() {
+        return ManualEarfcn;
+    }
+
+    public void setManualEarfcn(int manualEarfcn) {
+        ManualEarfcn = manualEarfcn;
+    }
+
+    public int getManualPci() {
+        return ManualPci;
+    }
+
+    public void setManualPci(int manualPci) {
+        ManualPci = manualPci;
+    }
+
+    public int getManualBw() {
+        return ManualBw;
+    }
+
+    public void setManualBw(int manualBw) {
+        ManualBw = manualBw;
     }
 }

@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:paddingTop="10dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+    <!--monitor_ip-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/requestTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="@dimen/font_size_16"
+            android:text="Monitor IP:"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/requestResult"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:text="等待中"
+            android:gravity="center">
+        </TextView>
+    </LinearLayout>
+
+</FrameLayout>

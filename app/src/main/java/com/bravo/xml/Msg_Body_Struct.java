@@ -37,6 +37,12 @@ public class Msg_Body_Struct
     public static final String get_general_para_request = "get_general_para_request";
     public static final String get_general_para_response = "get_general_para_response";
 
+    public static final String set_work_mode = "set_work_mode";
+    public static final String set_configuration = "set_configuration";
+    public static final String set_system_request = "set_system_request";
+    public static final String Syncinfo_set = "Syncinfo_set";
+
+
     public Msg_Body_Struct(int id,String type)
     {
         this.msgId = id;
