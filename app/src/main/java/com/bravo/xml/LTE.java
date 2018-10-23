@@ -6,6 +6,7 @@ import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
@@ -15,6 +16,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.bravo.xml.FindMsgStruct.GetMsgIntValueInList;
 import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
@@ -27,6 +29,7 @@ public class LTE {
     private final int ACTIVE_START = 1;
     private final int ACTIVE_STOP = 2;
     private final int ACTIVE_REBOOT = 3;
+
 
     Context mContext;
 
@@ -45,11 +48,11 @@ public class LTE {
             targetDataStruct.setDeviceType(dds.getMode());
 
             targetDataStruct.setImsi(GetMsgStringValueInList("imsi", msg.dic, ""));
-            targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType", msg.dic, 0));
+            targetDataStruct.setiUserType(GetMsgIntValueInList("userType", msg.dic, 0));
             //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
             targetDataStruct.setImei(GetMsgStringValueInList("imei", msg.dic, ""));
             targetDataStruct.setTmsi(GetMsgStringValueInList("tmsi", msg.dic, ""));
-            targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp", msg.dic, 0));
+            targetDataStruct.setRsrp(GetMsgIntValueInList("rsrp", msg.dic, 0));
             targetDataStruct.setbPositionStatus(true);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
             targetDataStruct.setStrAttachtime(formatter.format(new Date()));
@@ -67,19 +70,27 @@ public class LTE {
             return;
         } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
-            gPara.setBootmode(FindMsgStruct.GetMsgIntValueInList("bootMode", msg.dic, 1));
-            gPara.setManualfreq(FindMsgStruct.GetMsgIntValueInList("manualfreq", msg.dic, 1));
+            String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
+            if (reportType.equals("report")) {
+                //发送心跳回复
+                //SendStatusRequest(dds.getIp(), dds.getPort());
+                //回复数据对齐完成
+                SendDataAlignOver(dds.getIp(),dds.getPort());
+            }
 
-            gPara.setEarfcndl(FindMsgStruct.GetMsgIntValueInList("earfcndl", msg.dic, 0));
-            gPara.setEarfcnul(FindMsgStruct.GetMsgIntValueInList("earfcnul", msg.dic, 0));
-            gPara.setBandwitch(FindMsgStruct.GetMsgIntValueInList("bandwidth", msg.dic, 5));
-            gPara.setCid(FindMsgStruct.GetMsgIntValueInList("cellid", msg.dic, 0));
-            gPara.setTac(FindMsgStruct.GetMsgIntValueInList("tac", msg.dic, 0));
+            gPara.setBootmode(GetMsgIntValueInList("bootMode", msg.dic, 1));
+            gPara.setManualfreq(GetMsgIntValueInList("manualfreq", msg.dic, 1));
+
+            gPara.setEarfcndl(GetMsgIntValueInList("earfcndl", msg.dic, 0));
+            gPara.setEarfcnul(GetMsgIntValueInList("earfcnul", msg.dic, 0));
+            gPara.setBandwitch(GetMsgIntValueInList("bandwidth", msg.dic, 5));
+            gPara.setCid(GetMsgIntValueInList("cellid", msg.dic, 0));
+            gPara.setTac(GetMsgIntValueInList("tac", msg.dic, 0));
             String plmn = GetMsgStringValueInList("primaryplmn", msg.dic, "46000");
             gPara.setMcc(Integer.parseInt(plmn.substring(0,3)));
             gPara.setMnc(Integer.parseInt(plmn.substring(3)));
-            gPara.setPower(FindMsgStruct.GetMsgIntValueInList("txpower", msg.dic, 0));
-            gPara.setPeriodtac(FindMsgStruct.GetMsgIntValueInList("periodtac", msg.dic, 0));
+            gPara.setPower(GetMsgIntValueInList("txpower", msg.dic, 0));
+            gPara.setPeriodtac(GetMsgIntValueInList("periodtac", msg.dic, 0));
 
             gPara.setEarfcnlist(GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
 
@@ -91,18 +102,83 @@ public class LTE {
             }
 
             gPara.setNtpServer(GetMsgStringValueInList("NTP", msg.dic, ""));
-            gPara.setNtppri(FindMsgStruct.GetMsgIntValueInList("ntppri", msg.dic, 0));
-            gPara.setGps_select(FindMsgStruct.GetMsgIntValueInList("gps_select", msg.dic, 0));
+            gPara.setNtppri(GetMsgIntValueInList("ntppri", msg.dic, 0));
+            gPara.setGps_select(GetMsgIntValueInList("gps_select", msg.dic, 0));
             gPara.setBandoffset(GetMsgStringValueInList("Bandoffset", msg.dic, ""));
 
-            gPara.setSource(FindMsgStruct.GetMsgIntValueInList("source", msg.dic, 0));
-            gPara.setManualEnable(FindMsgStruct.GetMsgIntValueInList("ManualEnable", msg.dic, 0));
-            gPara.setManualEarfcn(FindMsgStruct.GetMsgIntValueInList("ManualEarfcn", msg.dic, 0));
-            gPara.setManualPci(FindMsgStruct.GetMsgIntValueInList("ManualPci", msg.dic, 0));
-            gPara.setManualBw(FindMsgStruct.GetMsgIntValueInList("ManualBw", msg.dic, 0));
+            gPara.setSource(GetMsgIntValueInList("source", msg.dic, 0));
+            gPara.setManualEnable(GetMsgIntValueInList("ManualEnable", msg.dic, 0));
+            gPara.setManualEarfcn(GetMsgIntValueInList("ManualEarfcn", msg.dic, 0));
+            gPara.setManualPci(GetMsgIntValueInList("ManualPci", msg.dic, 0));
+            gPara.setManualBw(GetMsgIntValueInList("ManualBw", msg.dic, 0));
 
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
-        }  else {
+        }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_CELL_CONFIG, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_CELL_CONFIG, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_son_earfcn_response)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SON_CONFIG, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SON_CONFIG, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_system_response)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SYSTEM_SET, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SYSTEM_SET, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_param_response)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            String name = FindMsgStruct.GetMsgStringValueInList("paramName", msg.dic, "");
+            if (result == 0) {
+                if (name.equals("CFG_OTHER_PLMN")) {
+                    EventBus.getDefault().post(new WaitDialogData(
+                            HandleRecvXmlMsg.LTE_OTHER_PLMN, "", WaitDialogData.RUSULT_OK));
+                } else if (name.equals("CFG_PERIOD_FREQ")) {
+                    EventBus.getDefault().post(new WaitDialogData(
+                            HandleRecvXmlMsg.LTE_PERIOD_FREQ, "", WaitDialogData.RUSULT_OK));
+                }
+            } else {
+                if (name.equals("CFG_OTHER_PLMN")) {
+                    EventBus.getDefault().post(new WaitDialogData(
+                            HandleRecvXmlMsg.LTE_OTHER_PLMN, "", WaitDialogData.RUSULT_FAIL));
+                } else if (name.equals("CFG_PERIOD_FREQ")) {
+                    EventBus.getDefault().post(new WaitDialogData(
+                            HandleRecvXmlMsg.LTE_PERIOD_FREQ, "", WaitDialogData.RUSULT_FAIL));
+                }
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_work_mode_reponse)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_WORKE_MODE, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_WORKE_MODE, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.Syncinfo_set_response)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SYNC_SET, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_SYNC_SET, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } else {
             Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
     }
@@ -139,7 +215,7 @@ public class LTE {
         return ;
     }
 
-    public void SetApParameter(String ip,int port,String ...args) {
+    /*public void SetApParameter(String ip,int port,String ...args) {
         if ((args.length % 2) != 0) {
             Logs.w(TAG,"输入参数的键值对不匹配！");
             return;
@@ -155,11 +231,58 @@ public class LTE {
         EventBus.getDefault().post(ebmsm);
 
         return ;
+    }*/
+
+    public void SetApParameter(String ip,int port,String name,String value) {
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_parameter_request);
+        msg.dic.put("paramName", name);
+        msg.dic.put("paramValue", value);
+
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        if (name.equals("CFG_OTHER_PLMN")) {
+            EventBus.getDefault().post(new WaitDialogData(
+                    HandleRecvXmlMsg.LTE_OTHER_PLMN, "", WaitDialogData.SEND));
+        } else if (name.equals("CFG_PERIOD_FREQ")) {
+            EventBus.getDefault().post(new WaitDialogData(
+                    HandleRecvXmlMsg.LTE_PERIOD_FREQ, "", WaitDialogData.SEND));
+        }
+
+
+
+        return ;
     }
 
     public void SendGeneralParaRequest(String ip,int port) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_general_para_request);
         msg.dic.put("timeout",0);
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendStatusRequest(String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.status_request);
+        msg.dic.put("timeout",0);
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendDataAlignOver(String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.DataAlignOver);
+        msg.dic.put("ReturnCode",0);
+        msg.dic.put("ReturnStr","success");
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
@@ -177,10 +300,14 @@ public class LTE {
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
 
+        WaitDialogData wdd = new WaitDialogData(
+                HandleRecvXmlMsg.LTE_WORKE_MODE,"", WaitDialogData.SEND);
+        EventBus.getDefault().post(wdd);
+
         return ;
     }
 
-    public void SetConfiguration(String ip,int port,LTE_GeneralPara para) {
+    public void SetConfiguration(String ip,int port,String mode,LTE_GeneralPara para) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_configuration);
         msg.dic.put("euarfcn",para.getEarfcndl());
         msg.dic.put("mcc",para.getMcc());
@@ -189,14 +316,19 @@ public class LTE {
         msg.dic.put("tac",para.getTac());
         msg.dic.put("txpower",para.getPower());
         msg.dic.put("periodTac",para.getPeriodtac());
-        msg.dic.put("bandwidth",para.getBandwitch());
-        msg.dic.put("cellid",para.getCid());
+        if (!mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+            msg.dic.put("bandwidth", para.getBandwitch());
+            msg.dic.put("cellid", para.getCid());
+        }
         msg.dic.put("timeout",0);
 
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
+
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.LTE_CELL_CONFIG,"", WaitDialogData.SEND));
 
         return ;
     }
@@ -205,7 +337,7 @@ public class LTE {
         String[] earfcn = para.getEarfcnlist().split(",");
         if (earfcn.length <=0 ) return;
 
-        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_work_mode);
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_son_earfcn);
         for(int i =0;i<earfcn.length;i++) {
             msg.dic.put("earfcn", earfcn[i]);
         }
@@ -213,6 +345,9 @@ public class LTE {
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
+
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.LTE_SON_CONFIG,"", WaitDialogData.SEND));
 
         return ;
     }
@@ -228,6 +363,9 @@ public class LTE {
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
 
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.LTE_SYSTEM_SET,"", WaitDialogData.SEND));
+
         return ;
     }
 
@@ -242,6 +380,10 @@ public class LTE {
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
+
+        WaitDialogData wdd =new WaitDialogData(
+                HandleRecvXmlMsg.LTE_SYNC_SET,"", WaitDialogData.SEND);
+        EventBus.getDefault().post(wdd);
 
         return ;
     }

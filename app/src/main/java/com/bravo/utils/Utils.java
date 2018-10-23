@@ -39,9 +39,18 @@ public class Utils {
 
     private static final String TAG = "utils";
 
-    public static LinkedHashMap<String,ArrayList<ErrorNotif>> errors = new LinkedHashMap<>();
+    public static LinkedHashMap<String, ArrayList<ErrorNotif>> errors = new LinkedHashMap<>();
     public static ArrayList<ErrorNotif> ignoreErrors = new ArrayList<>();
     public static ArrayList<String> ips = new ArrayList<>();
+
+    public static void mySleep(int timer) {
+        try {
+            Thread.sleep(timer);//每隔1s执行一次
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 开启软键盘
      * @param context

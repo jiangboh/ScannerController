@@ -2,6 +2,7 @@ package com.bravo.data_ben;
 
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
+import com.bravo.utils.Utils;
 import com.bravo.xml.FindMsgStruct;
 import com.bravo.xml.LTE_GeneralPara;
 import com.bravo.xml.Msg_Body_Struct;
@@ -125,7 +126,12 @@ public class DeviceDataStruct {
         DeviceDataStruct deviceInfo;
 
         String sn = FindMsgStruct.GetMsgStringValueInList("sn",msg.dic,"");
-        String mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
+        String mode = MODE.NOMODE;
+        if (Utils.isDebugVersion()) {
+            mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.LTE_TDD);
+        } else {
+            mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
+        }
 
         mode = mode.replace("-","_");
         if (MODE.NOMODE.equals(String2Mode(mode))) {

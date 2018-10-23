@@ -66,6 +66,7 @@
 
                 <!--工作模式-->
                 <LinearLayout
+                    android:id="@+id/lte_work_mode"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -152,6 +153,7 @@
 
                 <!--小区配置-->
                 <LinearLayout
+                    android:id="@+id/lte_cell_config"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -498,6 +500,7 @@
 
                 <!--扫频信息-->
                 <LinearLayout
+                    android:id="@+id/lte_son_earfcn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -532,7 +535,7 @@
                             android:textSize="@dimen/font_size_14" />
 
                         <EditText
-                            android:id="@+id/lte_son_earfcn"
+                            android:id="@+id/lte_son_earfcn_list"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -552,6 +555,7 @@
 
                 <!--等效PLMN-->
                 <LinearLayout
+                    android:id="@+id/lte_other_plmn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -606,6 +610,7 @@
 
                 <!--周期变频-->
                 <LinearLayout
+                    android:id="@+id/lte_period_freq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -700,6 +705,7 @@
 
                 <!--系统配置-->
                 <LinearLayout
+                    android:id="@+id/lte_system_set"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
@@ -842,6 +848,7 @@
 
                 <!--同步设置-->
                 <LinearLayout
+                    android:id="@+id/lte_sync_info"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"

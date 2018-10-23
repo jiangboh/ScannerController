@@ -32,6 +32,17 @@ public class HandleRecvXmlMsg {
     Context mContext;
     private DeviceDataStruct deviceDataStruct;
 
+    public static final int LTE_CELL_CONFIG = 0;
+    public static final int LTE_SON_CONFIG = 1;
+    public static final int LTE_WORKE_MODE = 2;
+    public static final int LTE_OTHER_PLMN = 3;
+    public static final int LTE_PERIOD_FREQ = 4;
+    public static final int LTE_SYSTEM_SET = 5;
+    public static final int LTE_SYNC_SET = 6;
+    public static final int MAX_CONFIG = 7;
+
+
+
     public HandleRecvXmlMsg(Context context) {
         DeviceDataStruct deviceDataStruct = new DeviceDataStruct();
         this.mContext = context;
@@ -199,17 +210,17 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
-    public boolean SetDeviceParameter(String ...args) {
+    public boolean SetDeviceParameter(String name,String value) {
         String ip = deviceDataStruct.getIp();
         int port = deviceDataStruct.getPort();
 
         if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            new LTE(mContext).SetApParameter(ip, port, args);
+            new LTE(mContext).SetApParameter(ip, port, name,value);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
-            new GSM_ZYF(mContext).SetApParameter(ip, port, args);
+            new GSM_ZYF(mContext).SetApParameter(ip, port, name,value);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
-            new GSM_HJT(mContext).SetApParameter(ip, port, args);
+            new GSM_HJT(mContext).SetApParameter(ip, port, name,value);
         }
 
         return true;
