@@ -5,6 +5,8 @@ package com.bravo.xml;
  */
 
 public class LTE_GeneralPara {
+    private String sn;
+
     private int bootmode;
     private int manualfreq;
 
@@ -36,6 +38,14 @@ public class LTE_GeneralPara {
     private int ManualEarfcn;
     private int ManualPci;
     private int ManualBw;
+
+    public String getSn() {
+        return sn;
+    }
+
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
 
     public int getBootmode() {
         return bootmode;

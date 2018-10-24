@@ -72,8 +72,6 @@ public class LTE {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
             String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
             if (reportType.equals("report")) {
-                //发送心跳回复
-                //SendStatusRequest(dds.getIp(), dds.getPort());
                 //回复数据对齐完成
                 SendDataAlignOver(dds.getIp(),dds.getPort());
             }
@@ -113,6 +111,10 @@ public class LTE {
             gPara.setManualBw(GetMsgIntValueInList("ManualBw", msg.dic, 0));
 
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
+
+            gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
+            EventBus.getDefault().post(gPara);
+
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
@@ -339,7 +341,9 @@ public class LTE {
 
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_son_earfcn);
         for(int i =0;i<earfcn.length;i++) {
-            msg.dic.put("earfcn", earfcn[i]);
+            Name_DIC_Struct n_dic = new Name_DIC_Struct();
+            n_dic.dic.put("earfcn", earfcn[i]);
+            msg.n_dic.add(n_dic);
         }
         String sendText = EncodeApXmlMessage(msg);
 

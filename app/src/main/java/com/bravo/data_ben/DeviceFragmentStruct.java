@@ -170,18 +170,21 @@ public class DeviceFragmentStruct {
         }
     }
 
-    public static void addList(DeviceDataStruct deviceInfo) {
+    //添加新的设备返回true；更改设备返回false
+    public static boolean addList(DeviceDataStruct deviceInfo) {
+        boolean isAdd = false;
+
         int index = inListIndex(deviceInfo.getIp(),deviceInfo.getPort());
         lock.lock();
         try {
-            if (-1 == index)
+            if (-1 == index) {
+                isAdd = true;
                 dList.add(deviceInfo);
-            else
-            {
+            } else {
                 dList.get(index).setLastTime(System.currentTimeMillis());
                 dList.get(index).setDetail(deviceInfo.getDetail());
             }
-            return;
+            return isAdd;
         } finally {
             lock.unlock();
         }

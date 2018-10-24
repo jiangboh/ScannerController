@@ -92,8 +92,6 @@ public class SocketUDP {
                             //把接收到的data转换为String字符串
                             String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"GBK");
                             //Logs.w(TAG, "接收到的UDP数据为：" + result,true,true);
-                            //String result = URLEncoder.encode(utf,"GBK");
-                            //Logs.w(TAG, "接收到的UDP数据为GBK：" + result ,"receivedUdpData",true,true);
                             //EventBus.getDefault().post(new EventBusMsgSendUDPMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                             EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                         } catch (Exception e) {

@@ -92,8 +92,9 @@ public class DeviceDataStruct {
         public static final int SYNC = 0x8000000;
         public static final int LICENS = 0x4000000;
         public static final int RADIO = 0x2000000;
-        public static final int OnLine = 0x1000000;
+        //public static final int OffLine = 0x1000000;  //tcp上下线标志，android里不用
         public static final int wSelfStudy = 0x800000;
+        public static final int OffLine = 0x400000;
 
         public static final int RADIO2 = 0x1;
     }
@@ -176,7 +177,7 @@ public class DeviceDataStruct {
         this.status_sync = GetStatus(detail,AP_STATUS_LTE.SYNC);
         this.status_licens = GetStatus(detail,AP_STATUS_LTE.LICENS);
         this.status_radio = GetStatus(detail,AP_STATUS_LTE.RADIO);
-        this.status_offline = GetStatus(detail,AP_STATUS_LTE.OnLine);
+        this.status_offline = GetStatus(detail,AP_STATUS_LTE.OffLine);
         this.status_wSelf = GetStatus(detail,AP_STATUS_LTE.wSelfStudy);
         this.status_redio2 = GetStatus(detail,AP_STATUS_LTE.RADIO2);
     }

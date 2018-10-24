@@ -24,8 +24,8 @@
             android:gravity="center_vertical"
             android:paddingLeft="6dp"
             android:text="请选择设备:"
-            android:textColor="@color/colorItemText"
-            android:textSize="@dimen/font_size_14" />
+            android:textColor="@color/colorLeftMenuTextNormal"
+            android:textSize="@dimen/font_size_16" />
 
         <Spinner
             android:id="@+id/deviceSelect"
@@ -45,21 +45,24 @@
         android:layout_alignParentBottom="true"
         android:background="@color/colorItemLine" />
 
-    <ScrollView
-        android:id="@+id/view"
+
+    <!--lte配置-->
+    <LinearLayout
+        android:id="@+id/config_lte"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="1dp">
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <!--lte配置-->
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="1dp">
+
             <LinearLayout
-                android:id="@+id/config_lte"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -69,8 +72,8 @@
                     android:id="@+id/lte_work_mode"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
                     <!--工作模式-->
                     <TextView
                         android:layout_width="match_parent"
@@ -156,8 +159,8 @@
                     android:id="@+id/lte_cell_config"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
                     <!--小区配置-->
                     <TextView
                         android:layout_width="match_parent"
@@ -503,8 +506,8 @@
                     android:id="@+id/lte_son_earfcn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
                     <!--扫频信息-->
                     <TextView
                         android:layout_width="match_parent"
@@ -558,8 +561,8 @@
                     android:id="@+id/lte_other_plmn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
                     <!--多PLMN-->
                     <TextView
                         android:layout_width="match_parent"
@@ -613,8 +616,9 @@
                     android:id="@+id/lte_period_freq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/font_size_40"
@@ -664,6 +668,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -708,8 +713,9 @@
                     android:id="@+id/lte_system_set"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/font_size_40"
@@ -718,6 +724,7 @@
                         android:textColor="@color/colordialogtitle"
                         android:textSize="@dimen/font_size_16"
                         android:textStyle="bold" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -749,6 +756,7 @@
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -779,6 +787,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_16"></Spinner>
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -809,6 +818,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_16"></Spinner>
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -839,6 +849,7 @@
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -851,8 +862,9 @@
                     android:id="@+id/lte_sync_info"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/font_size_40"
@@ -861,6 +873,7 @@
                         android:textColor="@color/colordialogtitle"
                         android:textSize="@dimen/font_size_16"
                         android:textStyle="bold" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -891,6 +904,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_16"></Spinner>
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -921,6 +935,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_16"></Spinner>
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -952,6 +967,7 @@
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -983,6 +999,7 @@
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -1022,6 +1039,7 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -1030,54 +1048,99 @@
                 </LinearLayout>
 
             </LinearLayout>
+        </ScrollView>
 
-            <!--hjt配置-->
+    </LinearLayout>
+
+    <!--hjt配置-->
+    <LinearLayout
+        android:id="@+id/config_hjt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="1dp">
+
             <LinearLayout
-                android:id="@+id/config_hjt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <!--title-->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/font_size_30"
-                    android:gravity="center"
-                    android:text="3G基本信息"
-                    android:textColor="@color/colordialogtitle"
-                    android:textSize="@dimen/font_size_16"
-                    android:textStyle="bold" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#cccccc" />
+
 
             </LinearLayout>
+        </ScrollView>
 
-            <!--zyf配置-->
-            <LinearLayout
-                android:id="@+id/config_zyf"
-                android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/bcast_checkbox_bg"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/target_tab"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <!--title-->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/font_size_30"
-                    android:gravity="center"
-                    android:text="3G基本信息"
-                    android:textColor="@color/colordialogtitle"
-                    android:textSize="@dimen/font_size_16"
-                    android:textStyle="bold" />
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_left_selector"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="Uesr(0) / Target(0)"></RadioButton>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="#cccccc" />
+            <RadioButton
+                android:id="@+id/cell_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_right_selector"
+                android:button="@null"
 
-            </LinearLayout>
+                android:gravity="center"
+                android:text="Cell List(0)"></RadioButton>
+        </RadioGroup>
 
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
+
+    <!--zyf配置-->
+    <LinearLayout
+        android:id="@+id/config_zyf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--title-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/font_size_30"
+            android:gravity="center"
+            android:text="3G基本信息"
+            android:textColor="@color/colordialogtitle"
+            android:textSize="@dimen/font_size_16"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#cccccc" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

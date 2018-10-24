@@ -149,6 +149,8 @@ public class WaitDialog extends Dialog {
                 //super.recordOnClick(v, "Cancel Add Target Event");
             }
         });
+        b_ok.setEnabled(false);
+        b_ok.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorDialogOkDisable));
     }
 
     public void setList(ArrayList<WaitDialogData> dataList) {
@@ -194,7 +196,7 @@ public class WaitDialog extends Dialog {
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
             //Toast.makeText(mContext.getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-            return true;
+            //return true;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -202,7 +204,18 @@ public class WaitDialog extends Dialog {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ChangesSendStatus(WaitDialogData wdd) {
+        if (adapterReq == null) return;
         Logs.d(TAG,"接收到发送状态改变事件",true,true);
-       adapterReq.NotifyDataSetChanged(wdd);
+        adapterReq.NotifyDataSetChanged(wdd);
+        boolean allSend = true;
+        for (int i=0;i<adapterReq.dataList.size();i++) {
+            if (adapterReq.dataList.get(i).getiRusult() == WaitDialogData.WAIT_SEND) {
+                allSend = false;
+            }
+        }
+        if (allSend) {
+            b_ok.setEnabled(true);
+            b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
+        }
     }
 }

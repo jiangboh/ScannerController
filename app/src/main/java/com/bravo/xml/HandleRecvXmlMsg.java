@@ -42,7 +42,6 @@ public class HandleRecvXmlMsg {
     public static final int MAX_CONFIG = 7;
 
 
-
     public HandleRecvXmlMsg(Context context) {
         DeviceDataStruct deviceDataStruct = new DeviceDataStruct();
         this.mContext = context;
@@ -86,7 +85,9 @@ public class HandleRecvXmlMsg {
                 Logs.e(TAG, String.format("设备%s[%s:%d]心跳消息中参数错误。", ip, port), true);
                 return;
             }
-            DeviceFragmentStruct.addList(deviceInfo);
+
+            Boolean isAdd = DeviceFragmentStruct.addList(deviceInfo);
+
             if (Fragment_Device.isOpen) {
                 //更新设备列表界面
                 EventBus.getDefault().post(deviceInfo);
@@ -96,12 +97,16 @@ public class HandleRecvXmlMsg {
                 //更新设备搜索界面
                 EventBus.getDefault().post(msg);
             }
-            if (deviceInfo.isStatus_offline()) {
-                Logs.e(TAG, String.format("第一次启动，发送获取参数消息!"));
+            if (isAdd || deviceInfo.isStatus_offline()) {
+                Logs.e(TAG, String.format("第一次上线，发送获取参数消息!"));
                 if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) ||
                         deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) ||
                         deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                     new LTE(mContext).SendGeneralParaRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                    if (deviceInfo.isStatus_offline()) {
+                        //发送心跳回复
+                        new LTE(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                    }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA) ||
                         deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
 
