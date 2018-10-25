@@ -27,5 +27,5 @@
     <color name="colorStatusFail">#FFB5B5</color>
     <color name="colorStatusOk">#BBFFBB</color>
     <color name="colorDialogOkEnable">#750075</color>
-    <color name="colorDialogOkDisable">#16FFFFFF</color>
+    <color name="colorDialogOkDisable">#FFB5B5</color>
 </resources>

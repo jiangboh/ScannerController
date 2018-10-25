@@ -81,6 +81,7 @@ public class LTE {
 
             gPara.setEarfcndl(GetMsgIntValueInList("earfcndl", msg.dic, 0));
             gPara.setEarfcnul(GetMsgIntValueInList("earfcnul", msg.dic, 0));
+            gPara.setPci(GetMsgIntValueInList("pci", msg.dic, 0));
             gPara.setBandwitch(GetMsgIntValueInList("bandwidth", msg.dic, 5));
             gPara.setCid(GetMsgIntValueInList("cellid", msg.dic, 0));
             gPara.setTac(GetMsgIntValueInList("tac", msg.dic, 0));

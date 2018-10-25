@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
@@ -306,8 +307,10 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         for(int i =0;i<ViewChangeList.size();i++) {
             //Logs.d(TAG,String.format("ViewId=%d",i));
             if (ViewChangeList.get(i).isChanges()) {
+
                 Logs.d(TAG,String.format("标志%d修改了",ViewChangeList.get(i).getFlag()));
-                ChangeConfigList.add(ViewChangeList.get(i).getFlag());
+                if (!ChangeConfigList.contains(ViewChangeList.get(i).getFlag()))
+                    ChangeConfigList.add(ViewChangeList.get(i).getFlag());
 
                 if (ViewChangeList.get(i).isOutRang()) {
                     openDialog("参数不在范围内，请重新输入正确参数");
@@ -407,58 +410,68 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         lteGeneralPara.setManualPci(Integer.parseInt(lte_MPci.getText().toString()));
         lteGeneralPara.setManualBw(Integer.parseInt(lte_MBw.getSelectedItem().toString()));
 
-        Message message = new Message();
-        message.what = SEND_LTE_COMMAND;
-        handler.sendMessage(message);
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                for(int i = 0;i< ChangeConfigList.size();i++) {
+                    int configId = ChangeConfigList.get(i);
+
+                    Message message = new Message();
+                    message.what = SEND_LTE_COMMAND;
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("CONFIG_ID",configId);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
+
+                    Utils.mySleep(3000);
+                }
+            }
+        }.start();
 
         return true;
     }
 
-    private boolean SendLteCommand(LTE_GeneralPara para) {
+    private boolean SendLteCommand(LTE_GeneralPara para,int configId) {
+        if (configId == HandleRecvXmlMsg.LTE_WORKE_MODE) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_WORKE_MODE] = 0;
+            Logs.d(TAG, "修改配置LTE_WORKE_MODE");
+            new LTE(context).SetWorkMode(deviceDate.getIp(), deviceDate.getPort(), para);
+        }
+        if (configId == HandleRecvXmlMsg.LTE_CELL_CONFIG) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_CELL_CONFIG] = 0;
+            Logs.d(TAG, "修改配置LTE_CELL_CONFIG");
+            new LTE(context).SetConfiguration(deviceDate.getIp(), deviceDate.getPort(), deviceDate.getMode(), para);
+        }
+        if (configId == HandleRecvXmlMsg.LTE_SON_CONFIG) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_SON_CONFIG] = 0;
+            Logs.d(TAG, "修改配置LTE_SON_CONFIG");
+            new LTE(context).SetSonEarfcn(deviceDate.getIp(), deviceDate.getPort(), para);
+        }
+        if (configId == HandleRecvXmlMsg.LTE_OTHER_PLMN) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_OTHER_PLMN] = 0;
+            Logs.d(TAG, "修改配置LTE_OTHER_PLMN");
+            new LTE(context).SetApParameter(deviceDate.getIp(), deviceDate.getPort(),
+                    "CFG_OTHER_PLMN", para.getOtherplmn());
+        }
+        if (configId == HandleRecvXmlMsg.LTE_PERIOD_FREQ) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_PERIOD_FREQ] = 0;
+            Logs.d(TAG, "修改配置LTE_PERIOD_FREQ");
+            new LTE(context).SetApParameter(deviceDate.getIp(), deviceDate.getPort(),
+                    "CFG_PERIOD_FREQ",
+                    String.format("%d:%s", para.getPeriodFreqTime(), para.getPeriodFreqFreq()));
+        }
+        if (configId == HandleRecvXmlMsg.LTE_SYSTEM_SET) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_SYSTEM_SET] = 0;
+            Logs.d(TAG, "修改配置LTE_SYSTEM_SET");
+            new LTE(context).SetSystemRequest(deviceDate.getIp(), deviceDate.getPort(), para);
+        }
+        if (configId == HandleRecvXmlMsg.LTE_SYNC_SET) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_SYNC_SET] = 0;
+            Logs.d(TAG, "修改配置LTE_SYNC_SET");
+            new LTE(context).SetSyncInfo(deviceDate.getIp(), deviceDate.getPort(), para);
 
-        for(int i = 0;i< ChangeConfigList.size();i++) {
-            int configId = ChangeConfigList.get(i);
-
-            if (configId == HandleRecvXmlMsg.LTE_WORKE_MODE) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_WORKE_MODE] = 0;
-                Logs.d(TAG, "修改配置LTE_WORKE_MODE");
-                new LTE(context).SetWorkMode(deviceDate.getIp(), deviceDate.getPort(), para);
-            }
-            if (configId == HandleRecvXmlMsg.LTE_CELL_CONFIG) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_CELL_CONFIG] = 0;
-                Logs.d(TAG, "修改配置LTE_CELL_CONFIG");
-                new LTE(context).SetConfiguration(deviceDate.getIp(), deviceDate.getPort(), deviceDate.getMode(), para);
-            }
-            if (configId == HandleRecvXmlMsg.LTE_SON_CONFIG) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_SON_CONFIG] = 0;
-                Logs.d(TAG, "修改配置LTE_SON_CONFIG");
-                new LTE(context).SetSonEarfcn(deviceDate.getIp(), deviceDate.getPort(), para);
-            }
-            if (configId == HandleRecvXmlMsg.LTE_OTHER_PLMN) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_OTHER_PLMN] = 0;
-                Logs.d(TAG, "修改配置LTE_OTHER_PLMN");
-                new LTE(context).SetApParameter(deviceDate.getIp(), deviceDate.getPort(),
-                        "CFG_OTHER_PLMN", para.getOtherplmn());
-            }
-            if (configId == HandleRecvXmlMsg.LTE_PERIOD_FREQ) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_PERIOD_FREQ] = 0;
-                Logs.d(TAG, "修改配置LTE_PERIOD_FREQ");
-                new LTE(context).SetApParameter(deviceDate.getIp(), deviceDate.getPort(),
-                        "CFG_PERIOD_FREQ",
-                        String.format("%d:%s", para.getPeriodFreqTime(), para.getPeriodFreqFreq()));
-            }
-            if (configId == HandleRecvXmlMsg.LTE_SYSTEM_SET) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_SYSTEM_SET] = 0;
-                Logs.d(TAG, "修改配置LTE_SYSTEM_SET");
-                new LTE(context).SetSystemRequest(deviceDate.getIp(), deviceDate.getPort(), para);
-            }
-            if (configId == HandleRecvXmlMsg.LTE_SYNC_SET) {
-                //ChangeConfigList[HandleRecvXmlMsg.LTE_SYNC_SET] = 0;
-                Logs.d(TAG, "修改配置LTE_SYNC_SET");
-                new LTE(context).SetSyncInfo(deviceDate.getIp(), deviceDate.getPort(), para);
-
-            }
-            Utils.mySleep(1000);
         }
 
         return true;
@@ -781,14 +794,15 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             Logs.d(TAG, String.format("标志(%d)Id(%d):您选择了:%s",configFlag,vId,sp.getSelectedItem().toString()));
-            //TextView tv = (TextView)contentView.findViewById(android.R.vId.text1);
+            TextView tv = (TextView) view;
             if (sp.getSelectedItem().toString().equals(defultValue)) {
-                //tv.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfTransparent));
+                tv.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfTransparent));
                 ViewChangeList.get(vId).setChanges(false);
             } else {
-                //tv.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfDialogTitle));
+                tv.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfDialogTitle));
                 ViewChangeList.get(vId).setChanges(true);
             }
+            //tv.setGravity(Gravity.CENTER);
         }
 
         @Override
@@ -808,8 +822,8 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
                     break;
 
                 case SEND_LTE_COMMAND:
-                    //LTE_GeneralPara para = (LTE_GeneralPara)msg.getData().getParcelable("LTE_PARA");
-                    SendLteCommand(lteGeneralPara);
+                    int configId = msg.getData().getInt("CONFIG_ID");
+                    SendLteCommand(lteGeneralPara,configId);
                     break;
 
                 default:
