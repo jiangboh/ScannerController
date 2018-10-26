@@ -19,6 +19,11 @@ import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.utils.Logs;
 import com.bravo.utils.Utils;
 import com.bravo.xml.HandleRecvXmlMsg;
+import com.bravo.xml.LTE_GeneralPara;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -76,11 +81,29 @@ public class DialogDeviceInfo extends Dialog {
         button.setCompoundDrawables(null,null,drawable,null);
     }
 
-    protected void onCreate(final Bundle savedInstanceState) {
-        Logs.d(TAG,"onCreate",true);
+    @Override
+    public void onStop() {
+        Logs.d(TAG,"onStop",true);
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        Logs.d(TAG, "onCreate", true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_device_info);
 
+        initView();
+        loadViewData();
+
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
+        return;
+    }
+
+    private void initView() {
         layout_gps = (LinearLayout)findViewById(R.id.gps_layout);
         layout_sctp = (LinearLayout)findViewById(R.id.sctp_layout);
         layout_s1 = (LinearLayout)findViewById(R.id.s1_layout);
@@ -121,13 +144,45 @@ public class DialogDeviceInfo extends Dialog {
         });
 
         sInfo_redio_name = (TextView) findViewById(R.id.sInfo_redio_name);
+        sInfo_redio0 = (EditText) findViewById(R.id.sInfo_redio);
+
+        sInfo_redio1 = (EditText) findViewById(R.id.sInfo_redio_1);
+        s_gps = (EditText) findViewById(R.id.sInfo_gps);
+        s_sctp = (EditText) findViewById(R.id.sInfo_sctp);
+        s_s1 = (EditText) findViewById(R.id.sInfo_s1);
+        s_cell = (EditText) findViewById(R.id.sInfo_cell);
+        s_sync = (EditText) findViewById(R.id.sInfo_sync);
+        s_licenss = (EditText) findViewById(R.id.sInfo_licenss);
+        s_wSelfStudy = (EditText) findViewById(R.id.sInfo_wSelfStudy);
+
+        sInfo_fullname = (EditText) findViewById(R.id.sInfo_fullname);
+        b_fullname = (Button) findViewById(R.id.bInfo_fullname);
+        isEditMode = false;
+
+        sInfo_sn = (EditText) findViewById(R.id.sInfo_sn);
+        sInfo_ip = (EditText) findViewById(R.id.sInfo_ip);
+        sInfo_devType = (EditText) findViewById(R.id.sInfo_devType);
+        sInfo_version = (EditText) findViewById(R.id.sInfo_version);
+        sInfo_lastTime = (EditText) findViewById(R.id.sInfo_LastTime);
+
+        findViewById(R.id.sInfo_ok).setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                cancel();
+                super.recordOnClick(v, "Cancel Event");
+            }
+        });
+
+        return;
+    }
+
+    private void loadViewData() {
         if (dds.getMode().equals(DeviceDataStruct.MODE.GSM) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)){
             sInfo_redio_name.setText("载波0射频:");
         }else {
             sInfo_redio_name.setText("射频开关:");
         }
 
-        sInfo_redio0 = (EditText) findViewById(R.id.sInfo_redio);
         if (dds.isStatus_radio()) {
             sInfo_redio0.setText("打开");
             sInfo_redio0.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
@@ -142,7 +197,6 @@ public class DialogDeviceInfo extends Dialog {
             setButtonImage(b_redio,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_redio_on));
         }
 
-        sInfo_redio1 = (EditText) findViewById(R.id.sInfo_redio_1);
         if (dds.getMode().equals(DeviceDataStruct.MODE.GSM) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)){
             if (dds.isStatus_redio2()) {
                 sInfo_redio1.setText("打开");
@@ -162,7 +216,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_redio1.setVisibility(View.GONE);
         }
 
-        s_gps = (EditText) findViewById(R.id.sInfo_gps);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_redio2()) {
@@ -177,7 +230,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_gps.setVisibility(View.GONE);
         }
 
-        s_sctp = (EditText) findViewById(R.id.sInfo_sctp);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_radio()) {
@@ -192,7 +244,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_sctp.setVisibility(View.GONE);
         }
 
-        s_s1 = (EditText) findViewById(R.id.sInfo_s1);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_radio()) {
@@ -207,7 +258,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_s1.setVisibility(View.GONE);
         }
 
-        s_cell = (EditText) findViewById(R.id.sInfo_cell);
         if (dds.isStatus_radio()) {
             s_cell.setText("正常");
             s_cell.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
@@ -216,7 +266,6 @@ public class DialogDeviceInfo extends Dialog {
             s_cell.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusFail));
         }
 
-        s_sync = (EditText) findViewById(R.id.sInfo_sync);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_radio()) {
@@ -231,7 +280,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_sync.setVisibility(View.GONE);
         }
 
-        s_licenss = (EditText) findViewById(R.id.sInfo_licenss);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_radio()) {
@@ -246,7 +294,6 @@ public class DialogDeviceInfo extends Dialog {
             layout_licenss.setVisibility(View.GONE);
         }
 
-        s_wSelfStudy = (EditText) findViewById(R.id.sInfo_wSelfStudy);
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             if (dds.isStatus_radio()) {
@@ -261,11 +308,8 @@ public class DialogDeviceInfo extends Dialog {
             layout_wSelfStudy.setVisibility(View.GONE);
         }
 
-        sInfo_fullname = (EditText) findViewById(R.id.sInfo_fullname);
         sInfo_fullname.setText(dds.getFullName());
 
-        b_fullname = (Button) findViewById(R.id.bInfo_fullname);
-        isEditMode = false;
         setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
         b_fullname.setOnClickListener(new RecordOnClick() {
             @Override
@@ -295,24 +339,22 @@ public class DialogDeviceInfo extends Dialog {
             }
         });
 
-        sInfo_sn = (EditText) findViewById(R.id.sInfo_sn);
         sInfo_sn.setText(dds.getSN());
-        sInfo_ip = (EditText) findViewById(R.id.sInfo_ip);
         sInfo_ip.setText(dds.getIp() + ":" + String.valueOf(dds.getPort()));
-        sInfo_devType = (EditText) findViewById(R.id.sInfo_devType);
         sInfo_devType.setText(dds.getMode());
-        sInfo_version = (EditText) findViewById(R.id.sInfo_version);
         sInfo_version.setText(String.valueOf(dds.getVersion()));
-        sInfo_lastTime = (EditText) findViewById(R.id.sInfo_LastTime);
         sInfo_lastTime.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(dds.getLastTime()));
 
-
-        findViewById(R.id.sInfo_ok).setOnClickListener(new RecordOnClick() {
-            @Override
-            public void recordOnClick(View v, String strMsg) {
-                cancel();
-                super.recordOnClick(v, "Cancel Event");
-            }
-        });
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void ParaChangesEvens(LTE_GeneralPara para) {
+        if (para.getSn().equals(dds.getSN())) {
+            Logs.d(TAG, "接收到参数改变改变事件", true, true);
+            dds.setGeneralPara(para);
+            loadViewData();
+        }
+    }
+
 }

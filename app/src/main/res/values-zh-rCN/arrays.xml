@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="workmode">
+        <item>自动</item>
+        <item>手动</item>
+    </string-array>
+
     <string-array name="bootmode">
         <item>CN</item>
         <item>CNE</item>

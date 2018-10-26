@@ -1,9 +1,12 @@
 package com.bravo.config;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -35,6 +38,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -235,7 +239,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
     }
 
-    private void openDialog(String str){
+    private void openDialog_bak(String str){
         OneBtnHintDialog hintDialog;
         hintDialog = new OneBtnHintDialog(context, R.style.dialog_style);
         hintDialog.setCanceledOnTouchOutside(false);
@@ -248,6 +252,49 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
             public void onBtnClick(View v) {
             }
         });
+    }
+
+    private void openDialog(String str) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setIcon(R.drawable.icon_error_errors);//设置图标
+        builder.setTitle("错误:");//设置对话框的标题
+        builder.setMessage(String.format(str));//设置对话框的内容
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {  //这个是设置确定按钮
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+
+        /*builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {  //取消按钮
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+            }
+        });
+*/
+        AlertDialog b = builder.create();
+        b.show();  //必须show一下才能看到对话框，跟Toast一样的道理
+
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object alertController = mAlert.get(b);
+
+            Field mTitleView = alertController.getClass().getDeclaredField("mTitleView");
+            mTitleView.setAccessible(true);
+            TextView title = (TextView) mTitleView.get(alertController);
+            title.setTextColor(Color.RED);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        b.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        b.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLUE);
+
+        return;
     }
 
     private void loadData() {
@@ -287,15 +334,23 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
     }
 
     private void registerSpinner(Spinner sp,int index,int flag){
+        String defult;
         if (sp == null) {
             Logs.e(TAG,"Spinner控件未赋值。");
             return;
         }
 
+        if (index < 0) {
+            Logs.e(TAG,"设备上报值在列表中未找到");
+            index = 0;
+            defult = "";
+        } else {
+            defult = sp.getAdapter().getItem(index).toString();
+        }
         if (spinnerArray.containsKey(sp)) {
-            spinnerArray.get(sp).setDeflut(sp.getAdapter().getItem(index).toString());
+            spinnerArray.get(sp).setDeflut(defult);
         } else { //未注册
-            MyOnItemSelectedListener listen = new MyOnItemSelectedListener(sp,sp.getAdapter().getItem(index).toString(),flag);
+            MyOnItemSelectedListener listen = new MyOnItemSelectedListener(sp,defult,flag);
             sp.setOnItemSelectedListener(listen);
             spinnerArray.put(sp,listen);
         }
@@ -834,7 +889,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void ChangesSendStatus(LTE_GeneralPara para) {
+    public void ParaChangesEvens(LTE_GeneralPara para) {
         if (para.getSn().equals(deviceDate.getSN())) {
             Logs.d(TAG, "接收到参数改变改变事件", true, true);
             SelectLteInit(deviceDate.getMode(), para);

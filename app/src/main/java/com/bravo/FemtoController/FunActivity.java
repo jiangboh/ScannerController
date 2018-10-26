@@ -16,6 +16,7 @@ import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentSetConfig;
+import com.bravo.config.Fragment_Device;
 import com.bravo.config.Fragment_DeviceBaseSet;
 import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.config.GSM_Fragment;
@@ -488,17 +489,17 @@ public class FunActivity extends BaseActivity {
     private void onSetDeviceClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        //menuList.add("在线设备");
+        menuList.add("在线设备");
         menuList.add("基本配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
-        //fragments.add(new Fragment_Device());
+        fragments.add(new Fragment_Device());
         fragments.add(new Fragment_DeviceBaseSet());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        //iconsResId.add(R.drawable.icon_femto_selected);
+        iconsResId.add(R.drawable.icon_femto_selected);
         iconsResId.add(R.drawable.icon_system_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
