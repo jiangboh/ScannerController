@@ -1,7 +1,6 @@
 package com.bravo.data_ben;
 
 import com.bravo.utils.Logs;
-import com.bravo.xml.LTE_GeneralPara;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -237,7 +236,7 @@ public class DeviceFragmentStruct {
         }
     }
 
-    public static int ChangeGeneralPara(String ip,int  port,LTE_GeneralPara para) {
+    public static int ChangeGeneralPara(String ip,int  port,Object para) {
         lock.lock();
         try {
             for(int i = 0 ;i<dList.size();i++)

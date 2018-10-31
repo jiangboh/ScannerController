@@ -12,6 +12,7 @@ import com.bravo.R;
 import com.bravo.config.Fragment_Device;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.dialog.DialogDeviceInfo;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.socket_service.EventBusMsgRecvXmlMsg;
 import com.bravo.utils.Logs;
@@ -32,14 +33,14 @@ public class HandleRecvXmlMsg {
     Context mContext;
     private DeviceDataStruct deviceDataStruct;
 
-    public static final int LTE_CELL_CONFIG = 0;
+    public static final int LTE_SYNC_SET = 0;
     public static final int LTE_SON_CONFIG = 1;
     public static final int LTE_WORKE_MODE = 2;
     public static final int LTE_OTHER_PLMN = 3;
     public static final int LTE_PERIOD_FREQ = 4;
     public static final int LTE_SYSTEM_SET = 5;
-    public static final int LTE_SYNC_SET = 6;
-    public static final int MAX_CONFIG = 7;
+    public static final int LTE_CELL_CONFIG = 6;
+    //public static final int MAX_CONFIG = 128;
 
 
     public HandleRecvXmlMsg(Context context) {
@@ -88,7 +89,7 @@ public class HandleRecvXmlMsg {
 
             Boolean isAdd = DeviceFragmentStruct.addList(deviceInfo);
 
-            if (Fragment_Device.isOpen) {
+            if (Fragment_Device.isOpen || DialogDeviceInfo.isOpen) {
                 //更新设备列表界面
                 EventBus.getDefault().post(deviceInfo);
             }
@@ -107,9 +108,19 @@ public class HandleRecvXmlMsg {
                         //发送心跳回复
                         new LTE(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
-                } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA) ||
-                        deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
-
+                } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                    if (deviceInfo.isStatus_offline()) {
+                        //发送心跳回复
+                        new GSM_ZYF(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                    }
+                } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
+                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort());
+                    if (deviceInfo.isStatus_offline()) {
+                        //发送心跳回复
+                        new GSM_ZYF(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                    }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
 
                 } else {
@@ -126,9 +137,12 @@ public class HandleRecvXmlMsg {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             deviceDataStruct = DeviceFragmentStruct.getDevice(index);
             Logs.d(TAG, String.format("设备[%s:%d]型号(%s),消息类型(%s)", deviceDataStruct.getIp(), deviceDataStruct.getPort(), deviceDataStruct.getMode(), msg.type), true);
-            if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
+                    || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
+                    || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
                 new LTE(mContext).HandleMsg(deviceDataStruct, msg);
-            } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
+            } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)
+                    || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
                 new GSM_ZYF(mContext).HandleMsg(deviceDataStruct, msg);
             } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
                 new GSM_HJT(mContext).HandleMsg(deviceDataStruct, msg);

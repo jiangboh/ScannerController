@@ -6,7 +6,6 @@
     android:background="@drawable/white_round_corner_bg"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="60dp"
@@ -34,11 +33,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="1.5dp"
         android:background="#cccccc" />
 
     <LinearLayout
-        android:id="@+id/layout_deviceListen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
@@ -57,12 +55,19 @@
             android:transcriptMode="alwaysScroll">
 
         </ListView>
+    </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+        android:background="#cccccc" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#cccccc" />
+    <LinearLayout
+        android:id="@+id/layout_deviceListen"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/dialog_ok"
@@ -78,6 +83,5 @@
         </Button>
 
     </LinearLayout>
-
 
 </LinearLayout>

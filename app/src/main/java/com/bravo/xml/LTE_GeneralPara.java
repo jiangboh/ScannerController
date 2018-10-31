@@ -16,8 +16,8 @@ public class LTE_GeneralPara {
     private int bandwitch;
     private int cid;
     private int tac;
-    private int mcc;
-    private int mnc;
+    private String mcc;
+    private String mnc;
     private int power;
     private int periodtac;
 
@@ -111,19 +111,19 @@ public class LTE_GeneralPara {
         this.tac = tac;
     }
 
-    public int getMcc() {
+    public String getMcc() {
         return mcc;
     }
 
-    public void setMcc(int mcc) {
+    public void setMcc(String mcc) {
         this.mcc = mcc;
     }
 
-    public int getMnc() {
+    public String getMnc() {
         return mnc;
     }
 
-    public void setMnc(int mnc) {
+    public void setMnc(String mnc) {
         this.mnc = mnc;
     }
 

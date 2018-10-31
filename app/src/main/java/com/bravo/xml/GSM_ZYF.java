@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
@@ -14,6 +15,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.bravo.xml.FindMsgStruct.GetMsgIntValueInList;
+import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 /**
@@ -166,11 +169,10 @@ public class GSM_ZYF {
         return ((str != null) && (!str.isEmpty()));
     }
 
-    public void HandleMsg(DeviceDataStruct dds, Msg_Body_Struct msgBody) {
-        if (msgBody.type.equals(Msg_Body_Struct.straight_msg))
-        {
+    public void HandleMsg(DeviceDataStruct dds, Msg_Body_Struct msg) {
+        if (msg.type.equals(Msg_Body_Struct.straight_msg)) {
             MsgRecvStruct recv = null;
-            String msg_data = FindMsgStruct.GetMsgStringValueInList("data", msgBody.dic);
+            String msg_data = GetMsgStringValueInList("data", msg.dic);
             msg_data = msg_data.replace(" ", "");
             if (!NoEmpty(msg_data))
             {
@@ -191,12 +193,33 @@ public class GSM_ZYF {
             }
 
             HandleGsmMsg(dds, recv);
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
+            CDMA_GeneralPara gPara = new CDMA_GeneralPara();
 
+            gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
+            String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
+            int sys = GetMsgIntValueInList("sys", msg.dic, Sys1);
+            if (reportType.equals("report")) {
+                //回复数据对齐完成
+                SendDataAlignOver(sys,dds.getIp(),dds.getPort());
+            }
+
+            if (sys == Sys1) {
+                gPara.setSys1(DecodeParaResp(msg));
+            } else if (sys == Sys2) {
+                gPara.setSys2(DecodeParaResp(msg));
+            }
+
+            DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
+
+            EventBus.getDefault().post(gPara);
+
+        } else {
+            Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
     }
 
-    private void HandleGsmMsg(DeviceDataStruct dds, MsgRecvStruct recv)
-    {
+    private void HandleGsmMsg(DeviceDataStruct dds, MsgRecvStruct recv) {
         String data = recv.data;
         if (recv.bMsgId == QUERY_NB_CELL_INFO_MSG ||
                 recv.bMsgId ==CONFIG_FAP_MSG ||
@@ -243,8 +266,7 @@ public class GSM_ZYF {
     /// <param name="recv">解析后的消息内容</param>
     /// <param name="msg_data">收到的消息</param>
     /// <returns>解析是否成功</returns>
-    private MsgRecvStruct DecodeGsmMsg(boolean recvFlag, String msg_data)
-    {
+    private MsgRecvStruct DecodeGsmMsg(boolean recvFlag, String msg_data) {
         MsgRecvStruct recv = new MsgRecvStruct();
         GetDataValue gdv = new GetDataValue(msg_data);
         int bProtocolSap = gdv.GetValueByString_Byte();
@@ -306,8 +328,153 @@ public class GSM_ZYF {
         return recv;
     }
 
-    private void Send2Main_UE_STATUS_REPORT_MSG(DeviceDataStruct dds, MsgRecvStruct recv, String msgType)
+    private CDMA_GeneralPara.GeneralPara DecodeParaResp(Msg_Body_Struct msg) {
+        int RECV_MSG_LEN = 12;
+        CDMA_GeneralPara.GeneralPara sys_para = new CDMA_GeneralPara().new GeneralPara();
+
+        String data = "";
+        data = GetMsgStringValueInList("fap_cfg", msg.dic);
+        data = data.replace(" ","");
+        GetDataValue gdv = new GetDataValue(data);
+        gdv.GetValueByString_String(RECV_MSG_LEN * 2);
+
+        sys_para.setbWorkingMode(gdv.GetValueByString_Byte());
+        /*nDic_config.dic.Add("bC", GetValueByString_Byte(ref data).ToString());
+        nDic_config.dic.Add("wRedirectCellUarfcn", GetValueByString_U16(ref data).ToString());
+        GetValue_Reserved(4, ref data);
+        GetValue_Reserved(4, ref data);
+        string plmn = CodeConver.AscStr2str(GetValueByString_String(10, ref data).ToString());
+        nDic_config.dic.Add("bPLMNId", plmn);
+        nDic_config.dic.Add("bTxPower", GetValueByString_Byte(ref data).ToString());
+        nDic_config.dic.Add("cReserved", GetValueByString_SByte(ref data).ToString());
+        nDic_config.dic.Add("bRxGain", GetValueByString_Byte(ref data).ToString());
+        nDic_config.dic.Add("wPhyCellId", GetValueByString_U16(ref data).ToString());
+        nDic_config.dic.Add("wLAC", GetValueByString_U16(ref data).ToString());
+        nDic_config.dic.Add("wUARFCN", GetValueByString_U16(ref data).ToString());
+        GetValue_Reserved(2, ref data);
+        nDic_config.dic.Add("dwCellId", GetValueByString_U32(ref data).ToString());
+        GetValue_Reserved(32, ref data);*/
+
+        return sys_para;
+    }
+
+    private class GetDataValue {
+    String MsgData;
+    
+    public GetDataValue(String MsgData)
     {
+        this.MsgData = MsgData;
+    }
+    
+    private String GetValueByString_String(int len) {
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return "";
+        }
+        String value = MsgData.substring(0, len);
+        MsgData = MsgData.substring(len);
+        return value;
+    }
+
+    private Integer GetValueByString_Byte() {
+        int len = 2;
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return 0;
+        }
+        int value = Integer.parseInt(MsgData.substring(0, len), 16);
+        MsgData = MsgData.substring(len);
+        return value;
+    }
+
+    private int GetValueByString_SByte() {
+        int len = 2;
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return 0;
+        }
+        int value = Integer.parseInt(MsgData.substring(0, len), 16);
+        if (value > Byte.MAX_VALUE)
+        {
+            value = Byte.MAX_VALUE - value;
+        }
+        MsgData = MsgData.substring(len);
+        return value;
+    }
+
+    private int GetValueByString_U16() {
+        int len = 4;
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return 0;
+        }
+        int value = Integer.parseInt(MsgData.substring(0, len), 16);
+        MsgData = MsgData.substring(len);
+        return value;
+    }
+
+    private long GetValueByString_U32() {
+        int len = 8;
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return 0;
+        }
+        long value = Long.parseLong(MsgData.substring(0, len), 16);
+        MsgData = MsgData.substring(len);
+        return value;
+    }
+
+    private void GetValue_Reserved(int len) {
+        len = len * 2;
+        if (MsgData.length() < len) {
+            MsgData = "";
+            return;
+        }
+        String value = MsgData.substring(0, len);
+        MsgData = MsgData.substring(len);
+        return;
+    }
+}
+
+    /// <summary>
+    /// 获取保留字段
+    /// </summary>
+    /// <param name="len">保留字段长度</param>
+    /// <returns></returns>
+    private String getReservedString(int len)
+    {
+        return String.format("%0" + len * 2 + "s", "0");
+    }
+
+    /// <summary>
+    /// 向AP发送消息
+    /// </summary>
+    /// <param name="apToKen">AP信息</param
+    /// <param name="msg">GSM文档格式的消息内容，十六进制“AA AA 01 00 15 0E 55 66 00 4B 00 54 02 2A 00 00 00 00 00 00”</param>
+    private void Send2ap_GSM(String ip,int port, MsgSendStruct sendMsg) {
+        String data = String.format("%02X%02X%02X%02X%04X%04X%08X%s",
+                sendMsg.bProtocolSap ,
+                sendMsg.bMsgId,
+                sendMsg.bMsgType,
+                sendMsg.bCellIdx,
+                sendMsg.wMsgLen,
+                sendMsg.wSqn,
+                sendMsg.dwTimeStamp,
+                sendMsg.data);
+
+        //在两个字符间加上空格
+        String sendData = data.replaceAll ("(.{2})", "$1 ").toUpperCase();
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.straight_msg);
+        msg.dic.put("data",sendData.trim());
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,EncodeApXmlMessage(msg));
+        EventBus.getDefault().post(ebmsm);
+
+        return;
+    }
+
+    private void Send2Main_UE_STATUS_REPORT_MSG(DeviceDataStruct dds, MsgRecvStruct recv, String msgType){
         GetDataValue gdv = new GetDataValue(recv.data);
         Msg_Body_Struct TypeKeyValue = new Msg_Body_Struct(msgType);
         TypeKeyValue.dic.put("sys", recv.bCellIdx);
@@ -481,12 +648,12 @@ public class GSM_ZYF {
         targetDataStruct.setFullName(dds.getFullName());
         targetDataStruct.setDeviceType(dds.getMode());
 
-        targetDataStruct.setImsi(FindMsgStruct.GetMsgStringValueInList("imsi", nDic.dic, ""));
-        targetDataStruct.setiUserType(FindMsgStruct.GetMsgIntValueInList("userType", nDic.dic, 0));
+        targetDataStruct.setImsi(GetMsgStringValueInList("imsi", nDic.dic, ""));
+        targetDataStruct.setiUserType(GetMsgIntValueInList("userType", nDic.dic, 0));
         //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
-        targetDataStruct.setImei(FindMsgStruct.GetMsgStringValueInList("imei", nDic.dic, ""));
-        targetDataStruct.setTmsi(FindMsgStruct.GetMsgStringValueInList("tmsi", nDic.dic, ""));
-        targetDataStruct.setRsrp(FindMsgStruct.GetMsgIntValueInList("rsrp", nDic.dic, 0));
+        targetDataStruct.setImei(GetMsgStringValueInList("imei", nDic.dic, ""));
+        targetDataStruct.setTmsi(GetMsgStringValueInList("tmsi", nDic.dic, ""));
+        targetDataStruct.setRsrp(GetMsgIntValueInList("rsrp", nDic.dic, 0));
         targetDataStruct.setbPositionStatus(true);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
         targetDataStruct.setStrAttachtime(formatter.format(new Date()));
@@ -500,137 +667,16 @@ public class GSM_ZYF {
             AdapterScanner.AddScannerImsi(targetDataStruct);
         }
     }
-    
-    
-private class GetDataValue {
-    String MsgData;
-    
-    public GetDataValue(String MsgData)
-    {
-        this.MsgData = MsgData;
-    }
-    
-    private String GetValueByString_String(int len) {
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return "";
-        }
-        String value = MsgData.substring(0, len);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
 
-    private Integer GetValueByString_Byte() {
-        int len = 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private int GetValueByString_SByte() {
-        int len = 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        if (value > Byte.MAX_VALUE)
-        {
-            value = Byte.MAX_VALUE - value;
-        }
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private int GetValueByString_U16() {
-        int len = 4;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private long GetValueByString_U32() {
-        int len = 8;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        long value = Long.parseLong(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private void GetValue_Reserved(int len) {
-        len = len * 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return;
-        }
-        String value = MsgData.substring(0, len);
-        MsgData = MsgData.substring(len);
-        return;
-    }
-}
-
-    /// <summary>
-    /// 获取保留字段
-    /// </summary>
-    /// <param name="len">保留字段长度</param>
-    /// <returns></returns>
-    private String getReservedString(int len)
-    {
-        return String.format("%0" + len * 2 + "s", "0");
-    }
-
-    /// <summary>
-    /// 向AP发送消息
-    /// </summary>
-    /// <param name="apToKen">AP信息</param
-    /// <param name="msg">GSM文档格式的消息内容，十六进制“AA AA 01 00 15 0E 55 66 00 4B 00 54 02 2A 00 00 00 00 00 00”</param>
-    private void Send2ap_GSM(String ip,int port, MsgSendStruct sendMsg)
-    {
-        String data = String.format("%02X%02X%02X%02X%04X%04X%08X%s",
-                sendMsg.bProtocolSap ,
-                sendMsg.bMsgId,
-                sendMsg.bMsgType,
-                sendMsg.bCellIdx,
-                sendMsg.wMsgLen,
-                sendMsg.wSqn,
-                sendMsg.dwTimeStamp,
-                sendMsg.data);
-
-        //在两个字符间加上空格
-        String sendData = data.replaceAll ("(.{2})", "$1 ").toUpperCase();
-
-        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.straight_msg);
-        msg.dic.put("data",sendData.trim());
-
-        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,EncodeApXmlMessage(msg));
-        EventBus.getDefault().post(ebmsm);
-
-        return;
-    }
-
-    private void Send2ap_CONTROL_FAP_RADIO_ON_MSG(String ip,int port, int sys)
-    {
+    private void Send2ap_CONTROL_FAP_RADIO_ON_MSG(String ip,int port, int sys) {
         Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_RADIO_ON_MSG, sys, ""));
     }
 
-    private void Send2ap_CONTROL_FAP_RADIO_OFF_MSG(String ip,int port,int sys)
-    {
+    private void Send2ap_CONTROL_FAP_RADIO_OFF_MSG(String ip,int port,int sys) {
         Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_RADIO_OFF_MSG, sys, ""));
     }
 
-    private void Send2ap_CONTROL_FAP_REBOOT_MSG(String ip,int port, int sys,int flag)
-    {
+    private void Send2ap_CONTROL_FAP_REBOOT_MSG(String ip,int port, int sys,int flag) {
         String data = String.format("%02X%s", flag,getReservedString(3));
         Send2ap_GSM(ip,port, new MsgSendStruct(CONTROL_FAP_REBOOT_MSG, sys,data));
     }
@@ -642,6 +688,7 @@ private class GetDataValue {
             Send2ap_CONTROL_FAP_RADIO_OFF_MSG(ip, port, sys);
         }
     }
+
     public void SetApReboot(String ip,int port,int flag) {
         Send2ap_CONTROL_FAP_REBOOT_MSG(ip,port,GSM_ZYF.Sys1,flag);
         Send2ap_CONTROL_FAP_REBOOT_MSG(ip,port,GSM_ZYF.Sys2,flag);
@@ -658,6 +705,42 @@ private class GetDataValue {
             msg.dic.put("paramName", args[i]);
             msg.dic.put("paramValue", args[i+1]);
         }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendDataAlignOver(int sys,String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.DataAlignOver);
+        msg.dic.put("sys",sys);
+        msg.dic.put("ReturnCode",0);
+        msg.dic.put("ReturnStr","success");
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendStatusRequest(String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.status_request);
+        msg.dic.put("timeout",0);
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendGeneralParaRequest(int sys,String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_general_para_request);
+        msg.dic.put("sys",sys);
+        msg.dic.put("timeout",0);
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

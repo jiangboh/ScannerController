@@ -70,6 +70,8 @@ public class LTE {
             return;
         } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
+            gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
+
             String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
             if (reportType.equals("report")) {
                 //回复数据对齐完成
@@ -86,18 +88,25 @@ public class LTE {
             gPara.setCid(GetMsgIntValueInList("cellid", msg.dic, 0));
             gPara.setTac(GetMsgIntValueInList("tac", msg.dic, 0));
             String plmn = GetMsgStringValueInList("primaryplmn", msg.dic, "46000");
-            gPara.setMcc(Integer.parseInt(plmn.substring(0,3)));
-            gPara.setMnc(Integer.parseInt(plmn.substring(3)));
+            gPara.setMcc(plmn.substring(0,3));
+            gPara.setMnc(plmn.substring(3));
             gPara.setPower(GetMsgIntValueInList("txpower", msg.dic, 0));
             gPara.setPeriodtac(GetMsgIntValueInList("periodtac", msg.dic, 0));
 
             gPara.setEarfcnlist(GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
 
             gPara.setOtherplmn(GetMsgStringValueInList("otherplmn", msg.dic, ""));
+
             String[] periodFreq = FindMsgStruct.GetMsgStringValueInList("periodFreq", msg.dic, "").split(":");
-            if (periodFreq.length >= 2) {
+            if (periodFreq.length == 1) {
+                gPara.setPeriodFreqTime(Integer.parseInt(periodFreq[0]));
+                gPara.setPeriodFreqFreq("");
+            } else if (periodFreq.length == 2) {
                 gPara.setPeriodFreqTime(Integer.parseInt(periodFreq[0]));
                 gPara.setPeriodFreqFreq(periodFreq[1]);
+            } else {
+                gPara.setPeriodFreqTime(0);
+                gPara.setPeriodFreqFreq("");
             }
 
             gPara.setNtpServer(GetMsgStringValueInList("NTP", msg.dic, ""));
@@ -109,11 +118,10 @@ public class LTE {
             gPara.setManualEnable(GetMsgIntValueInList("ManualEnable", msg.dic, 0));
             gPara.setManualEarfcn(GetMsgIntValueInList("ManualEarfcn", msg.dic, 0));
             gPara.setManualPci(GetMsgIntValueInList("ManualPci", msg.dic, 0));
-            gPara.setManualBw(GetMsgIntValueInList("ManualBw", msg.dic, 0));
+            gPara.setManualBw(GetMsgIntValueInList("ManualBw", msg.dic, 5));
 
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
 
-            gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
             EventBus.getDefault().post(gPara);
 
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {

@@ -31,7 +31,7 @@ public class CustomToast {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         //Toast的Y坐标是屏幕高度的1/3，不会出现不适配的问题
-        toastStart.setGravity(Gravity.TOP, 0, height *5/ 12);
+        toastStart.setGravity(Gravity.TOP, 0, height *10/ 15);
         toastStart.setDuration(showTime);
         toastStart.setView(toastRoot);
         toastStart.show();

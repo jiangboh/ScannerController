@@ -114,8 +114,8 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
     public class ValueChange {
         private int flag;
-        private boolean changes;
-        private boolean outRang;
+        private boolean changes = false;
+        private boolean outRang = false;
 
         public ValueChange(int flag) {
             this.flag = flag;
@@ -178,6 +178,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         Logs.d(TAG, "initData",true);
+        this.viewId = 0;
         lteGeneralPara = new LTE_GeneralPara();
         //changeList = new int[HandleRecvXmlMsg.MAX_CONFIG];
         //viewList = new ArrayList<Boolean>();
@@ -441,8 +442,8 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         lteGeneralPara.setPci(Integer.parseInt(lte_pci.getText().toString()));
         lteGeneralPara.setBandwitch(Integer.parseInt(lte_bw.getSelectedItem().toString()));
         lteGeneralPara.setCid(Integer.parseInt(lte_cid.getText().toString()));
-        lteGeneralPara.setMcc(Integer.parseInt(lte_mcc.getText().toString()));
-        lteGeneralPara.setMnc(Integer.parseInt(lte_mnc.getText().toString()));
+        lteGeneralPara.setMcc(lte_mcc.getText().toString());
+        lteGeneralPara.setMnc(lte_mnc.getText().toString());
         lteGeneralPara.setTac(Integer.parseInt(lte_tac.getText().toString()));
         lteGeneralPara.setPower(Integer.parseInt(lte_power.getText().toString()));
         lteGeneralPara.setPeriodtac(Integer.parseInt(lte_periodtac.getText().toString()));
@@ -585,20 +586,24 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         registerEditView(lte_pci,String.valueOf(para.getPci()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,512);
 
         lte_cid = (EditText) contentView.findViewById(R.id.lte_cellid);
+        registerEditView(lte_cid,String.valueOf(para.getCid()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,Integer.MAX_VALUE);
+
         if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
-            lte_cid.setVisibility(View.GONE);
+            ((LinearLayout)contentView.findViewById(R.id.lte_cellid_layout)).setVisibility(View.GONE);
+            ((View)contentView.findViewById(R.id.lte_cellid_view)).setVisibility(View.GONE);
         } else {
-            registerEditView(lte_cid,String.valueOf(para.getCid()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,Integer.MAX_VALUE);
+            ((LinearLayout)contentView.findViewById(R.id.lte_cellid_layout)).setVisibility(View.VISIBLE);
+            ((View)contentView.findViewById(R.id.lte_cellid_view)).setVisibility(View.VISIBLE);
         }
 
         lte_tac = (EditText) contentView.findViewById(R.id.lte_tac);
         registerEditView(lte_tac,String.valueOf(para.getTac()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,65535);
 
         lte_mcc = (EditText) contentView.findViewById(R.id.lte_mcc);
-        registerEditView(lte_mcc,String.valueOf(para.getMcc()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,999);
+        registerEditView(lte_mcc,para.getMcc(),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,999);
 
         lte_mnc = (EditText) contentView.findViewById(R.id.lte_mnc);
-        registerEditView(lte_mnc,String.valueOf(para.getMnc()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,999);
+        registerEditView(lte_mnc,para.getMnc(),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,999);
 
         lte_power = (EditText) contentView.findViewById(R.id.lte_txpower);
         registerEditView(lte_power,String.valueOf(para.getPower()),HandleRecvXmlMsg.LTE_CELL_CONFIG,Integer.MIN_VALUE,Integer.MAX_VALUE);
@@ -607,14 +612,18 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         registerEditView(lte_periodtac,String.valueOf(para.getPeriodtac()),HandleRecvXmlMsg.LTE_CELL_CONFIG,0,Integer.MAX_VALUE);
 
         lte_bw = (Spinner) contentView.findViewById(R.id.lte_bw);
+        String[] name={"5","10","15","20"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,R.layout.my_spinner,name);
+        lte_bw.setAdapter(adapter);
+        index = adapter.getPosition(String.valueOf(para.getBandwitch()));
+        registerSpinner(lte_bw,index,HandleRecvXmlMsg.LTE_CELL_CONFIG);
+
         if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
-            lte_bw.setVisibility(View.GONE);
+            ((LinearLayout)contentView.findViewById(R.id.lte_bw_layout)).setVisibility(View.GONE);
+            ((View)contentView.findViewById(R.id.lte_bw_view)).setVisibility(View.GONE);
         } else {
-            String[] name={"5","10","15","20"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,R.layout.my_spinner,name);
-            lte_bw.setAdapter(adapter);
-            index = adapter.getPosition(String.valueOf(para.getBandwitch()));
-            registerSpinner(lte_bw,index,HandleRecvXmlMsg.LTE_CELL_CONFIG);
+            ((LinearLayout)contentView.findViewById(R.id.lte_bw_layout)).setVisibility(View.VISIBLE);
+            ((View)contentView.findViewById(R.id.lte_bw_view)).setVisibility(View.VISIBLE);
         }
     }
 
@@ -623,10 +632,12 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         lte_sonEarfcn = (EditText) contentView.findViewById(R.id.lte_son_earfcn_list);
         /*lte_sonEarfcn.setText(para.getEarfcnlist());
         lte_sonEarfcn.addTextChangedListener(new MyTextWatcher(lte_sonEarfcn,para.getEarfcnlist(),HandleRecvXmlMsg.LTE_SON_CONFIG));*/
+        registerEditView(lte_sonEarfcn,para.getEarfcnlist(),HandleRecvXmlMsg.LTE_SON_CONFIG);
+
         if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
             ((LinearLayout) contentView.findViewById(R.id.lte_son_earfcn)).setVisibility(View.GONE);
         } else {
-            registerEditView(lte_sonEarfcn,para.getEarfcnlist(),HandleRecvXmlMsg.LTE_SON_CONFIG);
+            ((LinearLayout) contentView.findViewById(R.id.lte_son_earfcn)).setVisibility(View.VISIBLE);
         }
     }
 
@@ -634,25 +645,25 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         if (para == null) return;
 
         lte_otherPlmn = (EditText) contentView.findViewById(R.id.lte_plmnList);
-        if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
-            ((LinearLayout) contentView.findViewById(R.id.lte_other_plmn)).setVisibility(View.GONE);
-        } else {
-            registerEditView(lte_otherPlmn, para.getOtherplmn(),HandleRecvXmlMsg.LTE_OTHER_PLMN);
-        }
+        registerEditView(lte_otherPlmn, para.getOtherplmn(),HandleRecvXmlMsg.LTE_OTHER_PLMN);
+
+        //if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+        //    ((LinearLayout) contentView.findViewById(R.id.lte_other_plmn)).setVisibility(View.GONE);
+        //}
     }
 
     private void init_lte_periodFreq(String mode,LTE_GeneralPara para) {
         if (para == null) return;
 
-        if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
-            ((LinearLayout) contentView.findViewById(R.id.lte_period_freq)).setVisibility(View.GONE);
-        } else {
-            lte_periodFreqTime = (EditText) contentView.findViewById(R.id.lte_periodFreqTime);
-            registerEditView(lte_periodFreqTime,String.valueOf(para.getPeriodFreqTime()),HandleRecvXmlMsg.LTE_PERIOD_FREQ,0,Integer.MAX_VALUE);
+        lte_periodFreqTime = (EditText) contentView.findViewById(R.id.lte_periodFreqTime);
+        registerEditView(lte_periodFreqTime,String.valueOf(para.getPeriodFreqTime()),HandleRecvXmlMsg.LTE_PERIOD_FREQ,0,Integer.MAX_VALUE);
 
-            lte_periodFreqFreq = (EditText) contentView.findViewById(R.id.lte_periodFreqFreq);
-            registerEditView(lte_periodFreqFreq, para.getPeriodFreqFreq(), HandleRecvXmlMsg.LTE_PERIOD_FREQ);
-        }
+        lte_periodFreqFreq = (EditText) contentView.findViewById(R.id.lte_periodFreqFreq);
+        registerEditView(lte_periodFreqFreq, para.getPeriodFreqFreq(), HandleRecvXmlMsg.LTE_PERIOD_FREQ);
+
+        //if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+        //    ((LinearLayout) contentView.findViewById(R.id.lte_period_freq)).setVisibility(View.GONE);
+        //}
     }
 
     private void init_lte_systemSet(String mode,LTE_GeneralPara para) {
@@ -688,35 +699,37 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         int index;
         if (para == null) return;
 
-        if (mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+        String[] source={"GPS","CNM","未同步"};
+        lte_source = (Spinner) contentView.findViewById(R.id.lte_syncSource);
+        ArrayAdapter<String> adapterSource = new ArrayAdapter<String>(context,R.layout.my_spinner,source);
+        lte_source.setAdapter(adapterSource);
+        index = adapterSource.getPosition(source[para.getSource()]);
+        registerSpinner(lte_source,index,HandleRecvXmlMsg.LTE_SYNC_SET);
+
+        String[] manual = {"关闭","开启"};
+        lte_MEnable = (Spinner) contentView.findViewById(R.id.lte_manualSync);
+        ArrayAdapter<String> adapterManual = new ArrayAdapter<String>(context,R.layout.my_spinner,manual);
+        lte_MEnable.setAdapter(adapterManual);
+        index = adapterManual.getPosition(manual[para.getManualEnable()]);
+        registerSpinner(lte_MEnable,index,HandleRecvXmlMsg.LTE_SYNC_SET);
+
+        lte_MEarfcn = (EditText) contentView.findViewById(R.id.lte_manualSyncFreq);
+        registerEditView(lte_MEarfcn,String.valueOf(para.getManualEarfcn()),HandleRecvXmlMsg.LTE_SYNC_SET,0,65535);
+
+        lte_MPci = (EditText) contentView.findViewById(R.id.lte_manualSyncPci);
+        registerEditView(lte_MPci, String.valueOf(para.getManualPci()), HandleRecvXmlMsg.LTE_SYNC_SET,0,512);
+
+        String[] name={"5","10","15","20"};
+        lte_MBw = (Spinner) contentView.findViewById(R.id.lte_manualSyncBw);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,R.layout.my_spinner,name);
+        lte_MBw.setAdapter(adapter);
+        index = adapter.getPosition(String.valueOf(para.getManualBw()));
+        registerSpinner(lte_MBw,index,HandleRecvXmlMsg.LTE_SYNC_SET);
+
+        if (mode.equals(DeviceDataStruct.MODE.WCDMA) || mode.equals(DeviceDataStruct.MODE.LTE_FDD)) {
             ((LinearLayout) contentView.findViewById(R.id.lte_sync_info)).setVisibility(View.GONE);
         } else {
-            String[] source={"GPS","CNM","未同步"};
-            lte_source = (Spinner) contentView.findViewById(R.id.lte_syncSource);
-            ArrayAdapter<String> adapterSource = new ArrayAdapter<String>(context,R.layout.my_spinner,source);
-            lte_source.setAdapter(adapterSource);
-            index = adapterSource.getPosition(source[para.getSource()]);
-            registerSpinner(lte_source,index,HandleRecvXmlMsg.LTE_SYNC_SET);
-
-            String[] manual = {"关闭","开启"};
-            lte_MEnable = (Spinner) contentView.findViewById(R.id.lte_manualSync);
-            ArrayAdapter<String> adapterManual = new ArrayAdapter<String>(context,R.layout.my_spinner,manual);
-            lte_MEnable.setAdapter(adapterManual);
-            index = adapterManual.getPosition(manual[para.getManualEnable()]);
-            registerSpinner(lte_MEnable,index,HandleRecvXmlMsg.LTE_SYNC_SET);
-
-            lte_MEarfcn = (EditText) contentView.findViewById(R.id.lte_manualSyncFreq);
-            registerEditView(lte_MEarfcn,String.valueOf(para.getManualEarfcn()),HandleRecvXmlMsg.LTE_SYNC_SET,0,65535);
-
-            lte_MPci = (EditText) contentView.findViewById(R.id.lte_manualSyncPci);
-            registerEditView(lte_MPci, String.valueOf(para.getManualPci()), HandleRecvXmlMsg.LTE_SYNC_SET,0,512);
-
-            String[] name={"5","10","15","20"};
-            lte_MBw = (Spinner) contentView.findViewById(R.id.lte_manualSyncBw);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,R.layout.my_spinner,name);
-            lte_MBw.setAdapter(adapter);
-            index = adapter.getPosition(String.valueOf(para.getManualBw()));
-            registerSpinner(lte_MBw,index,HandleRecvXmlMsg.LTE_SYNC_SET);
+            ((LinearLayout) contentView.findViewById(R.id.lte_sync_info)).setVisibility(View.VISIBLE);
         }
     }
 

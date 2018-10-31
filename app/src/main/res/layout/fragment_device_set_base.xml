@@ -37,14 +37,13 @@
             android:spinnerMode="dropdown"
             android:textColor="@color/colorHalfTransparent"
             android:textSize="@dimen/font_size_12"></Spinner>
-    </LinearLayout>
 
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorItemLine" />
-
 
     <!--lte配置-->
     <LinearLayout
@@ -99,6 +98,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="启动方式:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -131,6 +131,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="选频方式:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -186,6 +187,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="频点:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -201,6 +203,7 @@
                             android:paddingLeft="8dp"
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
+
                     </LinearLayout>
 
                     <View
@@ -219,6 +222,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="扰码:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -244,6 +248,7 @@
 
                     <!--带宽-->
                     <LinearLayout
+                        android:id="@+id/lte_bw_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
@@ -279,6 +284,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/lte_bw_view"
                         android:layout_width="match_parent"
                         android:layout_height="0.3dp"
                         android:layout_alignParentBottom="true"
@@ -286,6 +292,7 @@
 
                     <!--小区id-->
                     <LinearLayout
+                        android:id="@+id/lte_cellid_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_heigh"
                         android:orientation="horizontal">
@@ -294,6 +301,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="小区ID:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -312,6 +320,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/lte_cellid_view"
                         android:layout_width="match_parent"
                         android:layout_height="0.3dp"
                         android:layout_alignParentBottom="true"
@@ -327,6 +336,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="MCC:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -360,6 +370,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="MNC:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -393,6 +404,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="Tac/Lac:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -426,6 +438,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="功率衰减:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -468,6 +481,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="Tac变换间隔:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -533,6 +547,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="频点(用,隔开)："
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -588,6 +603,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="PLMN(用,隔开)："
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -643,6 +659,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="周期:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -668,7 +685,6 @@
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -684,6 +700,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="频点(用,隔开)："
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -740,6 +757,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="NTP服务器地址:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -772,6 +790,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="NTP优先级:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -803,6 +822,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="GPS开关:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -834,6 +854,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="GPS频偏:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -889,6 +910,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="同步源:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -920,6 +942,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="手动同步:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -951,6 +974,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="手动同步频点:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -983,6 +1007,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="手动同步PCI:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -1015,6 +1040,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
                             android:text="手动同步带宽:"
                             android:textColor="@color/colorItemText"
                             android:textSize="@dimen/font_size_14" />
@@ -1052,12 +1078,13 @@
 
     </LinearLayout>
 
-    <!--hjt配置-->
+    <!--zyf配置-->
     <LinearLayout
-        android:id="@+id/config_hjt"
+        android:id="@+id/config_zyf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -1072,9 +1099,1053 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <!--小区配置-->
+                <LinearLayout
+                    android:id="@+id/cdma_cell_config"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <!--小区配置-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/font_size_40"
+                        android:gravity="center"
+                        android:text="小区配置"
+                        android:textColor="@color/colordialogtitle"
+                        android:textSize="@dimen/font_size_16"
+                        android:textStyle="bold" />
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="工作模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_workmode"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--自动切换模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="自动切换模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_bC"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--黑名单频点-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="黑名单频点:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_wRedirectCellUarfcn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--小区频点-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="小区频点:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_earfcn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--物理小区id-->
+                    <LinearLayout
+                        android:id="@+id/cdma_pci_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="物理小区ID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_pci"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--小区id-->
+                    <LinearLayout
+                        android:id="@+id/cdma_cellid_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="小区ID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_cellid"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/cdma_cellid_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--SID-->
+                    <LinearLayout
+                        android:id="@+id/cdma_sid_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="SID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_sid"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/cdma_sid_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--NID-->
+                    <LinearLayout
+                        android:id="@+id/cdma_nid_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="NID:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_nid"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/cdma_nid_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--PLMN-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="PLMN:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_plmn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--lac-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="追踪区域码(Lac):"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_tac"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--下行衰减-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="下行衰减:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_txpower"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:digits="0,1,2,3,4,5,6,7,8,9,-"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="dB"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--上行增益-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="上行增益:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_RxGain"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />/>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+                </LinearLayout>
+
+                <!--多载波配置-->
+                <LinearLayout
+                    android:id="@+id/cdma_carrier_config"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <!--多载波配置-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/font_size_40"
+                        android:gravity="center"
+                        android:text="多载波配置"
+                        android:textColor="@color/colordialogtitle"
+                        android:textSize="@dimen/font_size_16"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+
+                    <!--工作频点1-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点1:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_earfcn1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点1模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点1模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_mode1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点1扫描时长-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点1扫描时长:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_time1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点1扫描间隔-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点1扫描间隔:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_period1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点2-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点2:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_earfcn2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点2模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点2模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_mode2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点2扫描时长-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点2扫描时长:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_time2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点2扫描间隔-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点2扫描间隔:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_period2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点3-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点3:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_earfcn3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点3模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点3模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_mode3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点3扫描时长-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点3扫描时长:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_time3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点3扫描间隔-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点3扫描间隔:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_period3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点4-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点4:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_earfcn4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点4模式-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点4模式:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <Spinner
+                            android:id="@+id/cdma_carrier_mode4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:entries="@array/workmode"
+                            android:overlapAnchor="false"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_16"></Spinner>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.3dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorItemLine" />
+
+                    <!--工作频点4扫描时长-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点4扫描时长:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_time4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                    <!--工作频点4扫描间隔-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/item_heigh"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:text="频点4扫描间隔:"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <EditText
+                            android:id="@+id/cdma_carrier_period4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.8"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/colorHalfTransparent"
+                            android:textSize="@dimen/font_size_14" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.2"
+                            android:text="秒"
+                            android:textColor="@color/colorItemText"
+                            android:textSize="@dimen/font_size_14" />
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#cccccc" />
+
+                </LinearLayout>
 
             </LinearLayout>
+
         </ScrollView>
 
         <View
@@ -1102,7 +2173,7 @@
                 android:button="@null"
                 android:checked="true"
                 android:gravity="center"
-                android:text="Uesr(0) / Target(0)"></RadioButton>
+                android:text="载波1"></RadioButton>
 
             <RadioButton
                 android:id="@+id/cell_tab"
@@ -1112,19 +2183,19 @@
                 android:layout_weight="1"
                 android:background="@drawable/radiobtn_right_selector"
                 android:button="@null"
-
                 android:gravity="center"
-                android:text="Cell List(0)"></RadioButton>
+                android:text="载波2"></RadioButton>
         </RadioGroup>
 
     </LinearLayout>
 
-    <!--zyf配置-->
+    <!--hjt配置-->
     <LinearLayout
-        android:id="@+id/config_zyf"
+        android:id="@+id/config_hjt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
         <!--title-->
         <TextView
             android:layout_width="match_parent"

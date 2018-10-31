@@ -19,7 +19,6 @@ import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.utils.Logs;
 import com.bravo.utils.Utils;
 import com.bravo.xml.HandleRecvXmlMsg;
-import com.bravo.xml.LTE_GeneralPara;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,10 +33,12 @@ import java.util.Locale;
 
 public class DialogDeviceInfo extends Dialog {
     private final String TAG = "DialogDeviceInfo";
+    public static Boolean isOpen = false;
     private Context context;
     private DeviceDataStruct dds;
 
     private boolean isEditMode = false;
+    private String fullname = "";
 
     private LinearLayout layout_sctp;
     private LinearLayout layout_s1;
@@ -85,6 +86,7 @@ public class DialogDeviceInfo extends Dialog {
     public void onStop() {
         Logs.d(TAG,"onStop",true);
         EventBus.getDefault().unregister(this);
+        DialogDeviceInfo.isOpen = false;
         super.onStop();
     }
 
@@ -100,6 +102,7 @@ public class DialogDeviceInfo extends Dialog {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
 
+        DialogDeviceInfo.isOpen = true;
         return;
     }
 
@@ -117,7 +120,7 @@ public class DialogDeviceInfo extends Dialog {
         b_redio.setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
-                cancel();
+                //cancel();
                 if (dds.isStatus_radio()) {
                     new HandleRecvXmlMsg(context,dds).SetDeviceRedio(0,false);
                     CustomToast.showToast(context, "已向AP发送【关闭射频】命令");
@@ -132,7 +135,7 @@ public class DialogDeviceInfo extends Dialog {
         b_redio1.setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
-                cancel();
+                //cancel();
                 if (dds.isStatus_radio()) {
                     new HandleRecvXmlMsg(context,dds).SetDeviceRedio(1,false);
                     CustomToast.showToast(context, "已向AP发送【关闭射频】命令");
@@ -144,6 +147,11 @@ public class DialogDeviceInfo extends Dialog {
         });
 
         sInfo_redio_name = (TextView) findViewById(R.id.sInfo_redio_name);
+        if (dds.getMode().equals(DeviceDataStruct.MODE.GSM) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)){
+            sInfo_redio_name.setText("载波0射频:");
+        }else {
+            sInfo_redio_name.setText("射频开关:");
+        }
         sInfo_redio0 = (EditText) findViewById(R.id.sInfo_redio);
 
         sInfo_redio1 = (EditText) findViewById(R.id.sInfo_redio_1);
@@ -158,6 +166,39 @@ public class DialogDeviceInfo extends Dialog {
         sInfo_fullname = (EditText) findViewById(R.id.sInfo_fullname);
         b_fullname = (Button) findViewById(R.id.bInfo_fullname);
         isEditMode = false;
+        setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
+        b_fullname.setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                if (!isEditMode) {
+                    isEditMode = true;
+                    fullname = sInfo_fullname.getText().toString().trim();
+                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit_ok));
+
+                    sInfo_fullname.setFocusable(true);
+                    sInfo_fullname.setFocusableInTouchMode(true);
+                    sInfo_fullname.requestFocus();
+                    sInfo_fullname.setSelection(sInfo_fullname.getText().length());
+                    Utils.showSoftInput(context,sInfo_fullname);
+                } else {  //设置全名完成
+                    isEditMode = false;
+                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
+
+                    sInfo_fullname.setFocusable(false);
+                    sInfo_fullname.setFocusableInTouchMode(false);
+                    sInfo_fullname.clearFocus();
+                    Utils.hidenSoftInput(context,sInfo_fullname);
+
+                    //cancel();
+                    if (!fullname.equals(sInfo_fullname.getText().toString().trim())) {
+                        new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_FULL_NAME", sInfo_fullname.getText().toString().trim());
+                        CustomToast.showToast(context, "已向AP发送【设置全名】命令");
+                    } else {
+                        CustomToast.showToast(context, "全名没有变化");
+                    }
+                }
+            }
+        });
 
         sInfo_sn = (EditText) findViewById(R.id.sInfo_sn);
         sInfo_ip = (EditText) findViewById(R.id.sInfo_ip);
@@ -177,12 +218,6 @@ public class DialogDeviceInfo extends Dialog {
     }
 
     private void loadViewData() {
-        if (dds.getMode().equals(DeviceDataStruct.MODE.GSM) || dds.getMode().equals(DeviceDataStruct.MODE.GSM_V2)){
-            sInfo_redio_name.setText("载波0射频:");
-        }else {
-            sInfo_redio_name.setText("射频开关:");
-        }
-
         if (dds.isStatus_radio()) {
             sInfo_redio0.setText("打开");
             sInfo_redio0.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
@@ -218,7 +253,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_redio2()) {
+            if (dds.isStatus_gps()) {
                 s_gps.setText("打开");
                 s_gps.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -232,7 +267,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_radio()) {
+            if (dds.isStatus_sctp()) {
                 s_sctp.setText("连接");
                 s_sctp.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -246,7 +281,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_radio()) {
+            if (dds.isStatus_s1()) {
                 s_s1.setText("连接");
                 s_s1.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -258,7 +293,7 @@ public class DialogDeviceInfo extends Dialog {
             layout_s1.setVisibility(View.GONE);
         }
 
-        if (dds.isStatus_radio()) {
+        if (dds.isStatus_cell()) {
             s_cell.setText("正常");
             s_cell.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
         } else {
@@ -268,7 +303,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_radio()) {
+            if (dds.isStatus_sync()) {
                 s_sync.setText("同步");
                 s_sync.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -282,7 +317,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_radio()) {
+            if (dds.isStatus_licens()) {
                 s_licenss.setText("有效");
                 s_licenss.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -296,7 +331,7 @@ public class DialogDeviceInfo extends Dialog {
 
         if (dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) || dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                 || dds.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-            if (dds.isStatus_radio()) {
+            if (dds.isStatus_wSelf()) {
                 s_wSelfStudy.setText("学习中");
                 s_wSelfStudy.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorStatusOk));
             } else {
@@ -308,36 +343,9 @@ public class DialogDeviceInfo extends Dialog {
             layout_wSelfStudy.setVisibility(View.GONE);
         }
 
-        sInfo_fullname.setText(dds.getFullName());
-
-        setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
-        b_fullname.setOnClickListener(new RecordOnClick() {
-            @Override
-            public void recordOnClick(View v, String strMsg) {
-                if (!isEditMode) {
-                    isEditMode = true;
-                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit_ok));
-
-                    sInfo_fullname.setFocusable(true);
-                    sInfo_fullname.setFocusableInTouchMode(true);
-                    sInfo_fullname.requestFocus();
-                    sInfo_fullname.setSelection(sInfo_fullname.getText().length());
-                    Utils.showSoftInput(context,sInfo_fullname);
-                } else {  //设置全名完成
-                    isEditMode = false;
-                    setButtonImage(b_fullname,ContextCompat.getDrawable(context.getApplicationContext(),R.mipmap.icon_edit));
-
-                    sInfo_fullname.setFocusable(false);
-                    sInfo_fullname.setFocusableInTouchMode(false);
-                    sInfo_fullname.clearFocus();
-                    Utils.hidenSoftInput(context,sInfo_fullname);
-
-                    cancel();
-                    new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_FULL_NAME",sInfo_fullname.getText().toString().trim());
-                    CustomToast.showToast(context, "已向AP发送【设置全名】命令");
-                }
-            }
-        });
+        if (!isEditMode) { //非编辑模式下才更新全名
+            sInfo_fullname.setText(dds.getFullName());
+        }
 
         sInfo_sn.setText(dds.getSN());
         sInfo_ip.setText(dds.getIp() + ":" + String.valueOf(dds.getPort()));
@@ -349,10 +357,10 @@ public class DialogDeviceInfo extends Dialog {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void ParaChangesEvens(LTE_GeneralPara para) {
-        if (para.getSn().equals(dds.getSN())) {
+    public void ParaChangesEvens(DeviceDataStruct deviceData) {
+        if (deviceData.getSN().equals(dds.getSN())) {
             Logs.d(TAG, "接收到参数改变改变事件", true, true);
-            dds.setGeneralPara(para);
+            this.dds = deviceData;
             loadViewData();
         }
     }

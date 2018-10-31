@@ -89,8 +89,8 @@ public class CommunicationService extends Service {
 
     private void loadData() {
         SharedPreferences sp = getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
-        //offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
-        //udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
+        offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
+        udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
     }
 
     private void errorMsgTest(){

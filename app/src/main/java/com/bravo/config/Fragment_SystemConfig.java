@@ -91,7 +91,7 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
             @Override
             public void recordOnClick(View v, String strMsg) {
                 if (saveData()) {
-                    CustomToast.showToast(context, "系统配置成功！重启应用后生效");
+                    CustomToast.showToast(context, "系统配置成功！重启App后生效");
                 }
             }
         });
