@@ -40,6 +40,9 @@ public class HandleRecvXmlMsg {
     public static final int LTE_PERIOD_FREQ = 4;
     public static final int LTE_SYSTEM_SET = 5;
     public static final int LTE_CELL_CONFIG = 6;
+
+    public static final int CDMA_CELL_CONFIG = 7;
+    public static final int CDMA_CARRIER_SET = 8;
     //public static final int MAX_CONFIG = 128;
 
 
@@ -109,17 +112,17 @@ public class HandleRecvXmlMsg {
                         new LTE(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
-                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
-                        new GSM_ZYF(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                        new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
-                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
-                    new GSM_ZYF(mContext).SendGeneralParaRequest(GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
-                        new GSM_ZYF(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                        new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
 
@@ -143,7 +146,7 @@ public class HandleRecvXmlMsg {
                 new LTE(mContext).HandleMsg(deviceDataStruct, msg);
             } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)
                     || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
-                new GSM_ZYF(mContext).HandleMsg(deviceDataStruct, msg);
+                new GSM_ZYF(mContext,deviceDataStruct.getMode()).HandleMsg(deviceDataStruct, msg);
             } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
                 new GSM_HJT(mContext).HandleMsg(deviceDataStruct, msg);
             } else {
@@ -165,7 +168,7 @@ public class HandleRecvXmlMsg {
                     new LTE(mContext).SetApReboot(deviceDataStruct.getIp(), deviceDataStruct.getPort(), 1);
                     Toast.makeText(mContext, "重启" + deviceDataStruct.getSN(), Toast.LENGTH_SHORT).show();
                 } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
-                    new GSM_ZYF(mContext).SetApReboot(deviceDataStruct.getIp(), deviceDataStruct.getPort(), 1);
+                    new GSM_ZYF(mContext,deviceDataStruct.getMode()).SetApReboot(deviceDataStruct.getIp(), deviceDataStruct.getPort(), 1);
                     Toast.makeText(mContext, "重启" + deviceDataStruct.getSN(), Toast.LENGTH_SHORT).show();
                 } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
                     Toast.makeText(mContext, String.format("设备类型为%s,不支持重启" + deviceDataStruct.getMode()), Toast.LENGTH_SHORT).show();
@@ -214,9 +217,9 @@ public class HandleRecvXmlMsg {
             new LTE(mContext).SetApRedio(ip, port, mode, isOn);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
             if (sys == 1) {
-                new GSM_ZYF(mContext).SetApRedio(ip, port, GSM_ZYF.Sys2, isOn);
+                new GSM_ZYF(mContext,deviceDataStruct.getMode()).SetApRedio(ip, port, GSM_ZYF.Sys2, isOn);
             } else {
-                new GSM_ZYF(mContext).SetApRedio(ip, port, GSM_ZYF.Sys1, isOn);
+                new GSM_ZYF(mContext,deviceDataStruct.getMode()).SetApRedio(ip, port, GSM_ZYF.Sys1, isOn);
             }
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
             if (sys == 1) {
@@ -237,7 +240,7 @@ public class HandleRecvXmlMsg {
                 || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
             new LTE(mContext).SetApParameter(ip, port, name,value);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
-            new GSM_ZYF(mContext).SetApParameter(ip, port, name,value);
+            new GSM_ZYF(mContext,deviceDataStruct.getMode()).SetApParameter(ip, port, name,value);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
             new GSM_HJT(mContext).SetApParameter(ip, port, name,value);
         }

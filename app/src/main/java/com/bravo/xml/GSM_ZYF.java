@@ -6,6 +6,7 @@ import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
@@ -25,6 +26,8 @@ import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
 
 public class GSM_ZYF {
     private final String TAG = "GSM_ZYF";
+
+    private final int RECV_MSG_LEN = 12;
 
     private final int MsgHadeLen = 12;
 
@@ -60,7 +63,14 @@ public class GSM_ZYF {
     private static final int CONFIG_IMSI_MSG_V3_ID = 245;  //大数量imsi名单，用于配置不同的目标IMSI不同的行为
 
     private Context mContext;
-    public GSM_ZYF(Context context){
+    private int Protocol = GSM;
+
+    public GSM_ZYF(Context context,String mode){
+        if (mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
+            this.Protocol = GSM;
+        } else {
+            this.Protocol = CDMA;
+        }
         this.mContext = context;
     }
 
@@ -78,7 +88,7 @@ public class GSM_ZYF {
         public String data;
 
         public MsgSendStruct(int MsgId, int sys, String data) {
-            this.bProtocolSap = GSM;
+            this.bProtocolSap = Protocol;
             this.bMsgId = MsgId;
             this.bMsgType = INITIAL_MSG;
             this.bCellIdx = sys;
@@ -89,7 +99,7 @@ public class GSM_ZYF {
         }
 
         public MsgSendStruct(int MsgId, int sys, int sqn, String data) {
-            this.bProtocolSap = GSM;
+            this.bProtocolSap = Protocol;
             this.bMsgId = MsgId;
             this.bMsgType = INITIAL_MSG;
             this.bCellIdx = sys;
@@ -192,8 +202,8 @@ public class GSM_ZYF {
                 return;
             }
 
-            HandleGsmMsg(dds, recv);
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
+            HandleStraightMsg(dds, recv);
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
             CDMA_GeneralPara gPara = new CDMA_GeneralPara();
 
             gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
@@ -214,22 +224,141 @@ public class GSM_ZYF {
 
             EventBus.getDefault().post(gPara);
 
+        } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.ack_msg)) {
+            MsgRecvStruct recv = null;
+            String msg_data = GetMsgStringValueInList("data", msg.dic);
+            msg_data = msg_data.replace(" ", "");
+            if (!NoEmpty(msg_data))
+            {
+                Logs.e(TAG, "收到XML消息格式错误，XML中data字段为空！",true);
+                return;
+            }
+            if (msg_data.length() < MsgHadeLen)
+            {
+                Logs.e(TAG, "收到XML消息格式错误，XML中data字段长度过短！",true);
+                return;
+            }
+
+            recv = DecodeGsmMsg(true,msg_data);
+            if (recv == null)
+            {
+                Logs.e(TAG, "收到XML消息格式错误！",true);
+                return;
+            }
+            HandleAckMsg(dds,recv);
+        } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.DataAlignOverAck)) {
+
         } else {
             Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
     }
 
-    private void HandleGsmMsg(DeviceDataStruct dds, MsgRecvStruct recv) {
+    private void HandleAckMsg(DeviceDataStruct dds, MsgRecvStruct recv) {
+        if (recv.bMsgId == CONFIG_FAP_MSG) {
+            CDMA_GeneralPara.ConfigOrCarrierPara  para = new CDMA_GeneralPara().new ConfigOrCarrierPara();
+            CDMA_GeneralPara.GeneralPara sys_para = new CDMA_GeneralPara().new GeneralPara();
+
+            //小区配置
+            String data = "";
+            data = recv.data;
+            data = data.replace(" ","");
+            GetDataValue gdv = new GetDataValue(data);
+
+            sys_para.setbWorkingMode(gdv.GetValueByString_Byte());
+            sys_para.setbC(gdv.GetValueByString_Byte());
+            sys_para.setwRedirectCellUarfcn(gdv.GetValueByString_U16());
+            gdv.GetValue_Reserved(4);
+            gdv.GetValue_Reserved(4);
+            sys_para.setbPLMNId(asciiToString(gdv.GetValueByString_String(10)));
+            sys_para.setbTxPower(gdv.GetValueByString_Byte());
+            gdv.GetValueByString_SByte();
+            sys_para.setbRxGain(gdv.GetValueByString_Byte());
+            sys_para.setwPhyCellId(gdv.GetValueByString_U16());
+            sys_para.setwLAC(gdv.GetValueByString_U16());
+            sys_para.setwUARFCN(gdv.GetValueByString_U16());
+            gdv.GetValue_Reserved(2);
+            sys_para.setwCellId(gdv.GetValueByString_U32());
+            gdv.GetValue_Reserved(32);
+
+            para.setFlag(0);
+            para.setSn(dds.getSN());
+            para.setSys(recv.bCellIdx);
+            para.setgPara(sys_para);
+
+            EventBus.getDefault().post(para);
+
+        } else if (recv.bMsgId  == CONFIG_CDMA_CARRIER_MSG) {
+            CDMA_GeneralPara.ConfigOrCarrierPara  para = new CDMA_GeneralPara().new ConfigOrCarrierPara();
+            CDMA_GeneralPara.GeneralPara sys_para = new CDMA_GeneralPara().new GeneralPara();
+
+            //多载波配置
+            String data = "";
+            data = recv.data;
+            data = data.replace(" ","");
+            GetDataValue carr_gdv = new GetDataValue(data);
+
+            sys_para.setwARFCN1(carr_gdv.GetValueByString_U16());
+            sys_para.setbARFCN1Mode(carr_gdv.GetValueByString_Byte());
+            carr_gdv.GetValue_Reserved(1);
+            sys_para.setwARFCN1Duration(carr_gdv.GetValueByString_U16());
+            sys_para.setwARFCN1Period(carr_gdv.GetValueByString_U16());
+
+            sys_para.setwARFCN2(carr_gdv.GetValueByString_U16());
+            sys_para.setbARFCN2Mode(carr_gdv.GetValueByString_Byte());
+            carr_gdv.GetValue_Reserved(1);
+            sys_para.setwARFCN2Duration(carr_gdv.GetValueByString_U16());
+            sys_para.setwARFCN2Period(carr_gdv.GetValueByString_U16());
+
+            sys_para.setwARFCN3(carr_gdv.GetValueByString_U16());
+            sys_para.setbARFCN3Mode(carr_gdv.GetValueByString_Byte());
+            carr_gdv.GetValue_Reserved(1);
+            sys_para.setwARFCN3Duration(carr_gdv.GetValueByString_U16());
+            sys_para.setwARFCN3Period(carr_gdv.GetValueByString_U16());
+
+            sys_para.setwARFCN4(carr_gdv.GetValueByString_U16());
+            sys_para.setbARFCN4Mode(carr_gdv.GetValueByString_Byte());
+            carr_gdv.GetValue_Reserved(1);
+            sys_para.setwARFCN4Duration(carr_gdv.GetValueByString_U16());
+            sys_para.setwARFCN4Period(carr_gdv.GetValueByString_U16());
+
+            para.setFlag(1);
+            para.setSn(dds.getSN());
+            para.setSys(recv.bCellIdx);
+            para.setgPara(sys_para);
+
+            EventBus.getDefault().post(para);
+
+        } else {
+            Logs.w(TAG, "HandleAckMsg收到的Ap消息类型(" + recv.bMsgId + ")错误！",true);
+        }
+    }
+
+    private void HandleStraightMsg(DeviceDataStruct dds, MsgRecvStruct recv) {
+        Logs.d(TAG, String.format("处理HandleStraightMsg消息(%d)！",recv.bMsgId),true);
         String data = recv.data;
-        if (recv.bMsgId == QUERY_NB_CELL_INFO_MSG ||
-                recv.bMsgId ==CONFIG_FAP_MSG ||
+        if (recv.bMsgId == CONFIG_FAP_MSG ) {
+            if (recv.bMsgType == SUCC_OUTCOME) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.CDMA_CELL_CONFIG,"", WaitDialogData.RUSULT_OK));
+            } else if (recv.bMsgType == UNSUCC_OUTCOME) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.CDMA_CELL_CONFIG,"", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (recv.bMsgId  == CONFIG_CDMA_CARRIER_MSG) {
+            if (recv.bMsgType == SUCC_OUTCOME) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.CDMA_CARRIER_SET,"", WaitDialogData.RUSULT_OK));
+            } else if (recv.bMsgType == UNSUCC_OUTCOME) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.CDMA_CARRIER_SET,"", WaitDialogData.RUSULT_FAIL));
+            }
+        } else if (recv.bMsgId == QUERY_NB_CELL_INFO_MSG ||
                 recv.bMsgId ==CONTROL_FAP_REBOOT_MSG ||
                 recv.bMsgId ==CONFIG_SMS_CONTENT_MSG_ID ||
                 recv.bMsgId ==CONTROL_FAP_RADIO_ON_MSG ||
                 recv.bMsgId ==CONTROL_FAP_RADIO_OFF_MSG ||
                 recv.bMsgId ==CONTROL_FAP_RESET_MSG ||
-                recv.bMsgId ==CONFIG_CDMA_CARRIER_MSG ||
-                recv.bMsgId ==CONFIG_IMSI_MSG_V3_ID)
+                recv.bMsgId ==CONFIG_IMSI_MSG_V3_ID )
         {
             //Send2Main_SEND_REQ_CNF(apToKen, recv);
         }
@@ -255,7 +384,7 @@ public class GSM_ZYF {
         }
         else
         {
-            Logs.w(TAG, "HandleGsmMsg收到的Ap消息类型错误！",true);
+            Logs.w(TAG, "HandleStraightMsg收到的Ap消息类型(" + recv.bMsgId + ")错误！",true);
         }
     }
     
@@ -328,10 +457,28 @@ public class GSM_ZYF {
         return recv;
     }
 
+    private String asciiToString(String value)  {
+        StringBuffer sbu = new StringBuffer();
+        for (int i = 0; i < value.length(); i+=2) {
+            sbu.append((char) Integer.parseInt(value.substring(i,i+2),16));
+        }
+        return sbu.toString();
+    }
+
+    private String stringToAscii(String value) {
+        String sbu = "";
+        char[] chars = value.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            sbu = String.format("%s%02X",sbu,(int)chars[i]);
+        }
+
+        return sbu;
+    }
+
     private CDMA_GeneralPara.GeneralPara DecodeParaResp(Msg_Body_Struct msg) {
-        int RECV_MSG_LEN = 12;
         CDMA_GeneralPara.GeneralPara sys_para = new CDMA_GeneralPara().new GeneralPara();
 
+        //小区配置
         String data = "";
         data = GetMsgStringValueInList("fap_cfg", msg.dic);
         data = data.replace(" ","");
@@ -339,101 +486,132 @@ public class GSM_ZYF {
         gdv.GetValueByString_String(RECV_MSG_LEN * 2);
 
         sys_para.setbWorkingMode(gdv.GetValueByString_Byte());
-        /*nDic_config.dic.Add("bC", GetValueByString_Byte(ref data).ToString());
-        nDic_config.dic.Add("wRedirectCellUarfcn", GetValueByString_U16(ref data).ToString());
-        GetValue_Reserved(4, ref data);
-        GetValue_Reserved(4, ref data);
-        string plmn = CodeConver.AscStr2str(GetValueByString_String(10, ref data).ToString());
-        nDic_config.dic.Add("bPLMNId", plmn);
-        nDic_config.dic.Add("bTxPower", GetValueByString_Byte(ref data).ToString());
-        nDic_config.dic.Add("cReserved", GetValueByString_SByte(ref data).ToString());
-        nDic_config.dic.Add("bRxGain", GetValueByString_Byte(ref data).ToString());
-        nDic_config.dic.Add("wPhyCellId", GetValueByString_U16(ref data).ToString());
-        nDic_config.dic.Add("wLAC", GetValueByString_U16(ref data).ToString());
-        nDic_config.dic.Add("wUARFCN", GetValueByString_U16(ref data).ToString());
-        GetValue_Reserved(2, ref data);
-        nDic_config.dic.Add("dwCellId", GetValueByString_U32(ref data).ToString());
-        GetValue_Reserved(32, ref data);*/
+        sys_para.setbC(gdv.GetValueByString_Byte());
+        sys_para.setwRedirectCellUarfcn(gdv.GetValueByString_U16());
+        gdv.GetValue_Reserved(4);
+        gdv.GetValue_Reserved(4);
+        sys_para.setbPLMNId(asciiToString(gdv.GetValueByString_String(10)));
+        sys_para.setbTxPower(gdv.GetValueByString_Byte());
+        gdv.GetValueByString_SByte();
+        sys_para.setbRxGain(gdv.GetValueByString_Byte());
+        sys_para.setwPhyCellId(gdv.GetValueByString_U16());
+        sys_para.setwLAC(gdv.GetValueByString_U16());
+        sys_para.setwUARFCN(gdv.GetValueByString_U16());
+        gdv.GetValue_Reserved(2);
+        sys_para.setwCellId(gdv.GetValueByString_U32());
+        gdv.GetValue_Reserved(32);
+
+        //多载波配置
+        data = "";
+        data = GetMsgStringValueInList("cdma_carrier_cfg", msg.dic);
+        data = data.replace(" ","");
+        GetDataValue carr_gdv = new GetDataValue(data);
+        carr_gdv.GetValueByString_String(RECV_MSG_LEN * 2);
+
+        sys_para.setwARFCN1(carr_gdv.GetValueByString_U16());
+        sys_para.setbARFCN1Mode(carr_gdv.GetValueByString_Byte());
+        carr_gdv.GetValue_Reserved(1);
+        sys_para.setwARFCN1Duration(carr_gdv.GetValueByString_U16());
+        sys_para.setwARFCN1Period(carr_gdv.GetValueByString_U16());
+
+        sys_para.setwARFCN2(carr_gdv.GetValueByString_U16());
+        sys_para.setbARFCN2Mode(carr_gdv.GetValueByString_Byte());
+        carr_gdv.GetValue_Reserved(1);
+        sys_para.setwARFCN2Duration(carr_gdv.GetValueByString_U16());
+        sys_para.setwARFCN2Period(carr_gdv.GetValueByString_U16());
+
+        sys_para.setwARFCN3(carr_gdv.GetValueByString_U16());
+        sys_para.setbARFCN3Mode(carr_gdv.GetValueByString_Byte());
+        carr_gdv.GetValue_Reserved(1);
+        sys_para.setwARFCN3Duration(carr_gdv.GetValueByString_U16());
+        sys_para.setwARFCN3Period(carr_gdv.GetValueByString_U16());
+
+        sys_para.setwARFCN4(carr_gdv.GetValueByString_U16());
+        sys_para.setbARFCN4Mode(carr_gdv.GetValueByString_Byte());
+        carr_gdv.GetValue_Reserved(1);
+        sys_para.setwARFCN4Duration(carr_gdv.GetValueByString_U16());
+        sys_para.setwARFCN4Period(carr_gdv.GetValueByString_U16());
+
 
         return sys_para;
     }
 
     private class GetDataValue {
-    String MsgData;
+        String MsgData;
     
-    public GetDataValue(String MsgData)
-    {
-        this.MsgData = MsgData;
-    }
-    
-    private String GetValueByString_String(int len) {
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return "";
-        }
-        String value = MsgData.substring(0, len);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private Integer GetValueByString_Byte() {
-        int len = 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
-
-    private int GetValueByString_SByte() {
-        int len = 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
-        }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        if (value > Byte.MAX_VALUE)
+        public GetDataValue(String MsgData)
         {
-            value = Byte.MAX_VALUE - value;
+            this.MsgData = MsgData;
         }
-        MsgData = MsgData.substring(len);
-        return value;
-    }
 
-    private int GetValueByString_U16() {
-        int len = 4;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
+        private String GetValueByString_String(int len) {
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return "";
+            }
+            String value = MsgData.substring(0, len);
+            MsgData = MsgData.substring(len);
+            return value;
         }
-        int value = Integer.parseInt(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
 
-    private long GetValueByString_U32() {
-        int len = 8;
-        if (MsgData.length() < len) {
-            MsgData = "";
-            return 0;
+        private Integer GetValueByString_Byte() {
+            int len = 2;
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return 0;
+            }
+            int value = Integer.parseInt(MsgData.substring(0, len), 16);
+            MsgData = MsgData.substring(len);
+            return value;
         }
-        long value = Long.parseLong(MsgData.substring(0, len), 16);
-        MsgData = MsgData.substring(len);
-        return value;
-    }
 
-    private void GetValue_Reserved(int len) {
-        len = len * 2;
-        if (MsgData.length() < len) {
-            MsgData = "";
+        private int GetValueByString_SByte() {
+            int len = 2;
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return 0;
+            }
+            int value = Integer.parseInt(MsgData.substring(0, len), 16);
+            if (value > Byte.MAX_VALUE)
+            {
+                value = Byte.MAX_VALUE - value;
+            }
+            MsgData = MsgData.substring(len);
+            return value;
+        }
+
+        private int GetValueByString_U16() {
+            int len = 4;
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return 0;
+            }
+            int value = Integer.parseInt(MsgData.substring(0, len), 16);
+            MsgData = MsgData.substring(len);
+            return value;
+        }
+
+        private long GetValueByString_U32() {
+            int len = 8;
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return 0;
+            }
+            long value = Long.parseLong(MsgData.substring(0, len), 16);
+            MsgData = MsgData.substring(len);
+            return value;
+        }
+
+        private void GetValue_Reserved(int len) {
+            len = len * 2;
+            if (MsgData.length() < len) {
+                MsgData = "";
+                return;
+            }
+            String value = MsgData.substring(0, len);
+            MsgData = MsgData.substring(len);
             return;
         }
-        String value = MsgData.substring(0, len);
-        MsgData = MsgData.substring(len);
-        return;
-    }
 }
 
     /// <summary>
@@ -748,4 +926,56 @@ public class GSM_ZYF {
 
         return ;
     }
+
+    public void Send2ap_CONFIG_FAP_MSG(String ip,int port, int sys,CDMA_GeneralPara.GeneralPara para) {
+        String data = String.format("%02X%02X%04X%08X%08X%s%02X%02X%02X%04X%04X%04X%04X%08X%032X",
+                para.getbWorkingMode(),
+                para.getbC(),
+                para.getwRedirectCellUarfcn(),
+                0,
+                System.currentTimeMillis()/1000,
+                stringToAscii(para.getbPLMNId()),
+                para.getbTxPower(),
+                0,
+                para.getbRxGain(),
+                para.getwPhyCellId(),
+                para.getwLAC(),
+                para.getwUARFCN(),
+                0,
+                para.getwCellId(),
+                0);
+
+        Send2ap_GSM(ip,port, new MsgSendStruct(CONFIG_FAP_MSG, sys, data));
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.CDMA_CELL_CONFIG,"", WaitDialogData.SEND));
+    }
+
+    public void Send2ap_CONFIG_CDMA_CARRIER_MSG(String ip,int port, int sys,CDMA_GeneralPara.GeneralPara para) {
+        String data = String.format("%04X%02X%02X%04X%04X%04X%02X%02X%04X%04X%04X%02X%02X%04X%04X%04X%02X%02X%04X%04X",
+                para.getwARFCN1(),
+                para.getbARFCN1Mode(),
+                0,
+                para.getwARFCN1Duration(),
+                para.getwARFCN1Period(),
+                para.getwARFCN2(),
+                para.getbARFCN2Mode(),
+                0,
+                para.getwARFCN2Duration(),
+                para.getwARFCN2Period(),
+                para.getwARFCN3(),
+                para.getbARFCN3Mode(),
+                0,
+                para.getwARFCN3Duration(),
+                para.getwARFCN3Period(),
+                para.getwARFCN4(),
+                para.getbARFCN4Mode(),
+                0,
+                para.getwARFCN4Duration(),
+                para.getwARFCN4Period());
+
+        Send2ap_GSM(ip,port, new MsgSendStruct(CONFIG_CDMA_CARRIER_MSG, sys, data));
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.CDMA_CARRIER_SET,"", WaitDialogData.SEND));
+    }
+
 }

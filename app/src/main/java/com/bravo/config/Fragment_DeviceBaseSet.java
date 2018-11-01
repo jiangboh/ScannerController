@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,6 +32,8 @@ import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
 import com.bravo.utils.Logs;
 import com.bravo.utils.Utils;
+import com.bravo.xml.CDMA_GeneralPara;
+import com.bravo.xml.GSM_ZYF;
 import com.bravo.xml.HandleRecvXmlMsg;
 import com.bravo.xml.LTE;
 import com.bravo.xml.LTE_GeneralPara;
@@ -41,6 +45,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.bravo.R.id.cdma_earfcn;
 
 /**
  * Created by admin on 2018-10-17.
@@ -55,6 +61,8 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
     private static int viewId = 0;
 
+    //保存当前选择的系统号
+    private int SelectSys = GSM_ZYF.Sys1;;
     //保存所有控件是否修改，修改后值是否在范围内
     private HashMap<Integer,ValueChange> ViewChangeList = new HashMap<Integer,ValueChange>() ;
     //保存修改过的Config数组，每个Config表示要下发的命令集合
@@ -64,6 +72,8 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
     private ArrayList<String> dList;
     //保存修改后lte设备的参数值
     private LTE_GeneralPara lteGeneralPara = null;
+    //保存修改后cdma设备的参数值
+    private CDMA_GeneralPara.GeneralPara CdmaGeneralPara = null;
     //private boolean valueError = false;
     private ArrayList<WaitDialogData> sendDateList = null;
     //保存注册过的EditText控件及事件
@@ -110,6 +120,41 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
     private EditText lte_MEarfcn;
     private EditText lte_MPci;
     private Spinner lte_MBw;
+
+    //cdma配置
+    private RadioGroup sysRg;
+    private RadioButton sys1Rb;
+    private RadioButton sys2Rb;
+
+    private Spinner cdma_workmode;
+    private EditText cdma_bC;
+    private EditText cdma_wRedirectCellUarfcn;
+    private EditText cdma_wUARFCN;
+    private EditText cdma_wCellId;
+    private EditText cdma_PhyCellId;
+    private EditText cdma_bSid;
+    private EditText cdma_bNid;
+    private EditText cdma_bPlmn;
+    private EditText cdma_bLac;
+    private EditText cdma_bTxPower;
+    private EditText cdma_bRxGain;
+
+    private Spinner cdma_wARFCN1;
+    private Spinner cdma_bARFCN1Mode;
+    private EditText cdma_wARFCN1Duration;
+    private EditText cdma_wARFCN1Period;
+    private Spinner cdma_wARFCN2;
+    private Spinner cdma_bARFCN2Mode;
+    private EditText cdma_wARFCN2Duration;
+    private EditText cdma_wARFCN2Period;
+    private Spinner cdma_wARFCN3;
+    private Spinner cdma_bARFCN3Mode;
+    private EditText cdma_wARFCN3Duration;
+    private EditText cdma_wARFCN3Period;
+    private Spinner cdma_wARFCN4;
+    private Spinner cdma_bARFCN4Mode;
+    private EditText cdma_wARFCN4Duration;
+    private EditText cdma_wARFCN4Period;
 
 
     public class ValueChange {
@@ -180,6 +225,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         Logs.d(TAG, "initData",true);
         this.viewId = 0;
         lteGeneralPara = new LTE_GeneralPara();
+        CdmaGeneralPara = new CDMA_GeneralPara().new GeneralPara();
         //changeList = new int[HandleRecvXmlMsg.MAX_CONFIG];
         //viewList = new ArrayList<Boolean>();
         sendDateList = new ArrayList<WaitDialogData>();
@@ -238,6 +284,18 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         Logs.d(TAG, "onDestroy",true);
         super.onDestroy();
 
+    }
+
+    private int getIndexInArray(String[] array,String name) {
+        int index = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(name)) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
     private void openDialog_bak(String str){
@@ -302,6 +360,10 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
     }
 
+    private void registerEditView(EditText et,int defult,int flag,int min,int max) {
+        registerEditView(et,String.valueOf(defult),flag,min,max);
+    }
+
     private void registerEditView(EditText et,String defult,int flag,int min,int max){
         if (et == null) {
             Logs.e(TAG,"EditText控件未赋值。");
@@ -358,40 +420,88 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         sp.setSelection(index ,true);
     }
 
+    private void registerSpinner(Spinner sp,String[] nameList,int index,int flag){
+        if (sp == null) {
+            Logs.e(TAG,"Spinner控件未赋值。");
+            return;
+        }
+
+        String defult;
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(context,R.layout.my_spinner,nameList);
+        sp.setAdapter(adapter);
+
+        if (index < 0) {
+            Logs.e(TAG,"设备上报值在列表中未找到");
+            index = 0;
+            defult = "";
+        } else {
+            defult = sp.getAdapter().getItem(index).toString();
+        }
+
+        if (spinnerArray.containsKey(sp)) {
+            spinnerArray.get(sp).setDeflut(defult);
+        } else { //未注册
+            MyOnItemSelectedListener listen = new MyOnItemSelectedListener(sp,defult,flag);
+            sp.setOnItemSelectedListener(listen);
+            spinnerArray.put(sp,listen);
+        }
+        sp.setSelection(index ,true);
+    }
+
     private boolean checkChanges(){
+        String mode = deviceDate.getMode();
+
         ChangeConfigList.clear();
+        sendDateList.clear();
+
         for(int i =0;i<ViewChangeList.size();i++) {
             //Logs.d(TAG,String.format("ViewId=%d",i));
             if (ViewChangeList.get(i).isChanges()) {
-
-                Logs.d(TAG,String.format("标志%d修改了",ViewChangeList.get(i).getFlag()));
-                if (!ChangeConfigList.contains(ViewChangeList.get(i).getFlag()))
-                    ChangeConfigList.add(ViewChangeList.get(i).getFlag());
-
                 if (ViewChangeList.get(i).isOutRang()) {
                     openDialog("参数不在范围内，请重新输入正确参数");
                     return false;
                 }
-            }
-        }
 
-        sendDateList.clear();
-        for(int i = 0;i< ChangeConfigList.size();i++) {
-            int configId = ChangeConfigList.get(i);
-            if (configId == HandleRecvXmlMsg.LTE_WORKE_MODE) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_WORKE_MODE,"工作模式"));
-            } else if (configId == HandleRecvXmlMsg.LTE_CELL_CONFIG) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_CELL_CONFIG,"小区配置"));
-            } else if (configId == HandleRecvXmlMsg.LTE_SON_CONFIG) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SON_CONFIG,"扫频配置"));
-            } else if (configId == HandleRecvXmlMsg.LTE_OTHER_PLMN) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_OTHER_PLMN,"等效PLMN"));
-            } else if (configId == HandleRecvXmlMsg.LTE_PERIOD_FREQ) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_PERIOD_FREQ,"周期变频"));
-            } else if (configId == HandleRecvXmlMsg.LTE_SYSTEM_SET) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SYSTEM_SET,"系统配置"));
-            } else if (configId == HandleRecvXmlMsg.LTE_SYNC_SET) {
-                sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SYNC_SET,"同步配置"));
+                if (!ChangeConfigList.contains(ViewChangeList.get(i).getFlag())) {
+                    int configId = ViewChangeList.get(i).getFlag();
+                    Logs.d(TAG,String.format("标志%d修改了",configId));
+
+                    if (configId == HandleRecvXmlMsg.LTE_WORKE_MODE) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_WORKE_MODE,"工作模式"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.LTE_CELL_CONFIG) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_CELL_CONFIG,"小区配置"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.LTE_SON_CONFIG) {
+                        if (!mode.equals(DeviceDataStruct.MODE.CDMA)) {
+                            sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SON_CONFIG, "扫频配置"));
+                            ChangeConfigList.add(configId);
+                        }
+                    } else if (configId == HandleRecvXmlMsg.LTE_OTHER_PLMN) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_OTHER_PLMN,"等效PLMN"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.LTE_PERIOD_FREQ) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_PERIOD_FREQ,"周期变频"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.LTE_SYSTEM_SET) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SYSTEM_SET,"系统配置"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.LTE_SYNC_SET) {
+                        if (!mode.equals(DeviceDataStruct.MODE.CDMA)) {
+                            sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.LTE_SYNC_SET, "同步配置"));
+                            ChangeConfigList.add(configId);
+                        }
+                    } else if (configId == HandleRecvXmlMsg.CDMA_CELL_CONFIG) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.CDMA_CELL_CONFIG,"小区配置"));
+                        ChangeConfigList.add(configId);
+                    } else if (configId == HandleRecvXmlMsg.CDMA_CARRIER_SET) {
+                        if (!mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
+                            sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.CDMA_CARRIER_SET, "多载波配置"));
+                            ChangeConfigList.add(configId);
+                        }
+                    }
+                }
             }
         }
 
@@ -423,12 +533,91 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
                      saveLteData();
                 } else if (mode.equals(DeviceDataStruct.MODE.CDMA)
                         || mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
-
+                     saveCdmaData();
                 } else if (mode.equals(DeviceDataStruct.MODE.GSM)) {
 
                 }
             }
         }.start();
+
+        return true;
+    }
+
+    private boolean saveCdmaData() {
+        String mode = deviceDate.getMode();
+        int workMode = cdma_workmode.getSelectedItemPosition();
+        if (workMode == 1) {
+            CdmaGeneralPara.setbWorkingMode(3);
+        } else {
+            CdmaGeneralPara.setbWorkingMode(1);
+        }
+        CdmaGeneralPara.setbC(Integer.parseInt(cdma_bC.getText().toString()));
+        CdmaGeneralPara.setwRedirectCellUarfcn(Integer.parseInt(cdma_wRedirectCellUarfcn.getText().toString()));
+        CdmaGeneralPara.setwUARFCN(Integer.parseInt(cdma_wUARFCN.getText().toString()));
+        CdmaGeneralPara.setwPhyCellId(Integer.parseInt(cdma_PhyCellId.getText().toString()));
+        if (mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
+            CdmaGeneralPara.setwCellId(Integer.parseInt(cdma_wCellId.getText().toString()));
+        } else if (mode.equals(DeviceDataStruct.MODE.GSM_V2)){
+            CdmaGeneralPara.setwCellId(Integer.parseInt(cdma_bSid.getText().toString()) * 0x10000 +
+                    Integer.parseInt(cdma_bNid.getText().toString()));
+        }
+        CdmaGeneralPara.setbPLMNId(cdma_bPlmn.getText().toString());
+        CdmaGeneralPara.setwLAC(Integer.parseInt(cdma_bLac.getText().toString()));
+        CdmaGeneralPara.setbTxPower(Integer.parseInt(cdma_bTxPower.getText().toString()));
+        CdmaGeneralPara.setbRxGain(Integer.parseInt(cdma_bRxGain.getText().toString()));
+
+        CdmaGeneralPara.setwARFCN1(Integer.parseInt(cdma_wARFCN1.getSelectedItem().toString()));
+        CdmaGeneralPara.setbARFCN1Mode(cdma_bARFCN1Mode.getSelectedItemPosition());
+        CdmaGeneralPara.setwARFCN1Duration(Integer.parseInt(cdma_wARFCN1Duration.getText().toString()));
+        CdmaGeneralPara.setwARFCN1Period(Integer.parseInt(cdma_wARFCN1Period.getText().toString()));
+
+        CdmaGeneralPara.setwARFCN2(Integer.parseInt(cdma_wARFCN2.getSelectedItem().toString()));
+        CdmaGeneralPara.setbARFCN2Mode(cdma_bARFCN2Mode.getSelectedItemPosition());
+        CdmaGeneralPara.setwARFCN2Duration(Integer.parseInt(cdma_wARFCN2Duration.getText().toString()));
+        CdmaGeneralPara.setwARFCN2Period(Integer.parseInt(cdma_wARFCN2Period.getText().toString()));
+
+        CdmaGeneralPara.setwARFCN3(Integer.parseInt(cdma_wARFCN3.getSelectedItem().toString()));
+        CdmaGeneralPara.setbARFCN3Mode(cdma_bARFCN3Mode.getSelectedItemPosition());
+        CdmaGeneralPara.setwARFCN3Duration(Integer.parseInt(cdma_wARFCN3Duration.getText().toString()));
+        CdmaGeneralPara.setwARFCN3Period(Integer.parseInt(cdma_wARFCN3Period.getText().toString()));
+
+        CdmaGeneralPara.setwARFCN4(Integer.parseInt(cdma_wARFCN4.getSelectedItem().toString()));
+        CdmaGeneralPara.setbARFCN4Mode(cdma_bARFCN4Mode.getSelectedItemPosition());
+        CdmaGeneralPara.setwARFCN4Duration(Integer.parseInt(cdma_wARFCN4Duration.getText().toString()));
+        CdmaGeneralPara.setwARFCN4Period(Integer.parseInt(cdma_wARFCN4Period.getText().toString()));
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                for(int i = 0;i< ChangeConfigList.size();i++) {
+                    int configId = ChangeConfigList.get(i);
+
+                    Message message = new Message();
+                    message.what = SEND_ZYF_COMMAND;
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("CONFIG_ID",configId);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
+
+                    Utils.mySleep(3000);
+                }
+            }
+        }.start();
+
+        return true;
+    }
+
+    private boolean SendCdmaCommand(CDMA_GeneralPara.GeneralPara para,int configId) {
+        if (configId == HandleRecvXmlMsg.CDMA_CELL_CONFIG) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_WORKE_MODE] = 0;
+            Logs.d(TAG, "修改配置CDMA_CELL_CONFIG");
+            new GSM_ZYF(context,deviceDate.getMode()).Send2ap_CONFIG_FAP_MSG(deviceDate.getIp(), deviceDate.getPort(),SelectSys,para);
+        } else if (configId == HandleRecvXmlMsg.CDMA_CARRIER_SET) {
+            //ChangeConfigList[HandleRecvXmlMsg.LTE_WORKE_MODE] = 0;
+            Logs.d(TAG, "修改配置CDMA_CARRIER_SET");
+            new GSM_ZYF(context,deviceDate.getMode()).Send2ap_CONFIG_CDMA_CARRIER_MSG(deviceDate.getIp(), deviceDate.getPort(),SelectSys,para);
+        }
 
         return true;
     }
@@ -531,6 +720,183 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         }
 
         return true;
+    }
+
+    private void SelectCdmaInit(int sys,String mode,CDMA_GeneralPara.GeneralPara sysPara) {
+        if (sysPara == null) return;
+
+        //CDMA_GeneralPara.GeneralPara sysPara = gPara.new GeneralPara();
+
+        Logs.d(TAG, "您选择了Sys" + sys);
+        if (sys == GSM_ZYF.Sys1) {
+            SelectSys = GSM_ZYF.Sys1;
+            Logs.d(TAG, "您选择了work=" + sysPara.getbWorkingMode());
+            //sysPara = gPara.getSys1();
+        } else if (sys == GSM_ZYF.Sys2) {
+            SelectSys = GSM_ZYF.Sys2;
+            Logs.d(TAG, "您选择了work=" + sysPara.getbWorkingMode());
+            //sysPara = gPara.getSys2();
+        }
+
+        init_cdma_cellConfig(mode,sysPara);
+        init_cdma_carrierSet(mode,sysPara);
+
+    }
+
+    private void init_cdma_cellConfig(String mode,CDMA_GeneralPara.GeneralPara para) {
+        int index;
+        if (para == null) return;
+
+        String[] nameList = {"侦码模式", "驻留模式"};
+        cdma_workmode = (Spinner) contentView.findViewById(R.id.cdma_workmode);
+        if (para.getbWorkingMode() == 3) {
+            index = 1;
+        } else {
+            index = 0;
+        }
+        registerSpinner(cdma_workmode, nameList, index, HandleRecvXmlMsg.CDMA_CELL_CONFIG);
+
+        cdma_bC = (EditText) contentView.findViewById(R.id.cdma_bC);
+        registerEditView(cdma_bC, para.getbC(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wRedirectCellUarfcn = (EditText) contentView.findViewById(R.id.cdma_wRedirectCellUarfcn);
+        registerEditView(cdma_wRedirectCellUarfcn, para.getwRedirectCellUarfcn(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wUARFCN = (EditText) contentView.findViewById(cdma_earfcn);
+        registerEditView(cdma_wUARFCN, para.getwUARFCN(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_PhyCellId = (EditText) contentView.findViewById(R.id.cdma_pci);
+        registerEditView(cdma_PhyCellId, para.getwPhyCellId(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 511);
+
+        cdma_wCellId = (EditText) contentView.findViewById(R.id.cdma_cellid);
+        registerEditView(cdma_wCellId, String.valueOf(para.getwCellId()), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+        if (mode.equals(DeviceDataStruct.MODE.CDMA)) {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_cellid_layout)).setVisibility(View.GONE);
+            ((View) contentView.findViewById(R.id.cdma_cellid_view)).setVisibility(View.GONE);
+        } else {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_cellid_layout)).setVisibility(View.VISIBLE);
+            ((View) contentView.findViewById(R.id.cdma_cellid_view)).setVisibility(View.VISIBLE);
+        }
+
+        String cellid = Long.toBinaryString(para.getwCellId());
+        cdma_bSid = (EditText) contentView.findViewById(R.id.cdma_sid);
+        if (cellid.length() > 16) {
+            registerEditView(cdma_bSid, Integer.parseInt(cellid.substring(0, cellid.length() - 16),2),
+                    HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+        } else {
+            registerEditView(cdma_bSid, 0,HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+        }
+        if (mode.equals(DeviceDataStruct.MODE.CDMA)) {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_sid_layout)).setVisibility(View.VISIBLE);
+            ((View) contentView.findViewById(R.id.cdma_sid_view)).setVisibility(View.VISIBLE);
+        } else {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_sid_layout)).setVisibility(View.GONE);
+            ((View) contentView.findViewById(R.id.cdma_sid_view)).setVisibility(View.GONE);
+        }
+
+        cdma_bNid = (EditText) contentView.findViewById(R.id.cdma_nid);
+        if (cellid.length() > 16) {
+            registerEditView(cdma_bNid, Integer.parseInt(cellid.substring(cellid.length() - 16),2),
+                    HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+        } else {
+            registerEditView(cdma_bNid, Integer.parseInt(cellid.substring(0),2),
+                    HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+        }
+        if (mode.equals(DeviceDataStruct.MODE.CDMA)) {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_nid_layout)).setVisibility(View.VISIBLE);
+            ((View) contentView.findViewById(R.id.cdma_nid_view)).setVisibility(View.VISIBLE);
+        } else {
+            ((LinearLayout) contentView.findViewById(R.id.cdma_nid_layout)).setVisibility(View.GONE);
+            ((View) contentView.findViewById(R.id.cdma_nid_view)).setVisibility(View.GONE);
+        }
+
+        cdma_bPlmn = (EditText) contentView.findViewById(R.id.cdma_plmn);
+        registerEditView(cdma_bPlmn, para.getbPLMNId(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_bLac = (EditText) contentView.findViewById(R.id.cdma_lac);
+        registerEditView(cdma_bLac, para.getwLAC(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_bRxGain = (EditText) contentView.findViewById(R.id.cdma_RxGain);
+        registerEditView(cdma_bRxGain, para.getbRxGain(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 255);
+
+        cdma_bTxPower = (EditText) contentView.findViewById(R.id.cdma_txpower);
+        registerEditView(cdma_bTxPower, para.getbTxPower(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 255);
+    }
+
+    private void init_cdma_carrierSet(String mode,CDMA_GeneralPara.GeneralPara para) {
+        int index;
+        if (para == null) return;
+
+        String[] nameList1 ={"37","78","119","160","201","242","283"};
+        cdma_wARFCN1 = (Spinner) contentView.findViewById(R.id.cdma_carrier_earfcn1);
+        index = getIndexInArray(nameList1,String.valueOf(para.getwARFCN1()));
+        registerSpinner(cdma_wARFCN1,nameList1,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        String[] modeList1 ={"扫描","常开","关闭"};
+        cdma_bARFCN1Mode = (Spinner) contentView.findViewById(R.id.cdma_carrier_mode1);
+        index = para.getbARFCN1Mode();
+        registerSpinner(cdma_bARFCN1Mode,modeList1,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        cdma_wARFCN1Duration = (EditText) contentView.findViewById(R.id.cdma_carrier_time1);
+        registerEditView(cdma_wARFCN1Duration, para.getwARFCN1Duration(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wARFCN1Period = (EditText) contentView.findViewById(R.id.cdma_carrier_period1);
+        registerEditView(cdma_wARFCN1Period, para.getwARFCN1Period(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        String[] nameList2 ={"37","78","119","160","201","242","283"};
+        cdma_wARFCN2 = (Spinner) contentView.findViewById(R.id.cdma_carrier_earfcn2);
+        index = getIndexInArray(nameList2,String.valueOf(para.getwARFCN2()));
+        registerSpinner(cdma_wARFCN2,nameList2,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        String[] modeList2 ={"扫描","常开","关闭"};
+        cdma_bARFCN2Mode = (Spinner) contentView.findViewById(R.id.cdma_carrier_mode2);
+        index = para.getbARFCN2Mode();
+        registerSpinner(cdma_bARFCN2Mode,modeList2,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        cdma_wARFCN2Duration = (EditText) contentView.findViewById(R.id.cdma_carrier_time2);
+        registerEditView(cdma_wARFCN2Duration, para.getwARFCN2Duration(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wARFCN2Period = (EditText) contentView.findViewById(R.id.cdma_carrier_period2);
+        registerEditView(cdma_wARFCN2Period, para.getwARFCN2Period(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        String[] nameList3 ={"37","78","119","160","201","242","283"};
+        cdma_wARFCN3 = (Spinner) contentView.findViewById(R.id.cdma_carrier_earfcn3);
+        index = getIndexInArray(nameList3,String.valueOf(para.getwARFCN3()));
+        registerSpinner(cdma_wARFCN3,nameList3,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        String[] modeList3 ={"扫描","常开","关闭"};
+        cdma_bARFCN3Mode = (Spinner) contentView.findViewById(R.id.cdma_carrier_mode3);
+        index = para.getbARFCN3Mode();
+        registerSpinner(cdma_bARFCN3Mode,modeList3,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        cdma_wARFCN3Duration = (EditText) contentView.findViewById(R.id.cdma_carrier_time3);
+        registerEditView(cdma_wARFCN3Duration, para.getwARFCN3Duration(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wARFCN3Period = (EditText) contentView.findViewById(R.id.cdma_carrier_period3);
+        registerEditView(cdma_wARFCN3Period, para.getwARFCN3Period(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        String[] nameList4 ={"37","78","119","160","201","242","283"};
+        cdma_wARFCN4 = (Spinner) contentView.findViewById(R.id.cdma_carrier_earfcn4);
+        index = getIndexInArray(nameList4,String.valueOf(para.getwARFCN4()));
+        registerSpinner(cdma_wARFCN4,nameList4,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        String[] modeList4 ={"扫描","常开","关闭"};
+        cdma_bARFCN4Mode = (Spinner) contentView.findViewById(R.id.cdma_carrier_mode4);
+        index = para.getbARFCN4Mode();
+        registerSpinner(cdma_bARFCN4Mode,modeList4,index,HandleRecvXmlMsg.CDMA_CARRIER_SET);
+
+        cdma_wARFCN4Duration = (EditText) contentView.findViewById(R.id.cdma_carrier_time4);
+        registerEditView(cdma_wARFCN4Duration, para.getwARFCN4Duration(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        cdma_wARFCN4Period = (EditText) contentView.findViewById(R.id.cdma_carrier_period4);
+        registerEditView(cdma_wARFCN4Period, para.getwARFCN4Period(), HandleRecvXmlMsg.CDMA_CELL_CONFIG, 0, 65535);
+
+        if (mode.equals(DeviceDataStruct.MODE.CDMA)) {
+            ((LinearLayout)contentView.findViewById(R.id.cdma_carrier_config)).setVisibility(View.VISIBLE);
+
+        } else {
+            ((LinearLayout)contentView.findViewById(R.id.cdma_carrier_config)).setVisibility(View.GONE);
+        }
     }
 
     private void SelectLteInit(String mode,LTE_GeneralPara gPara) {
@@ -784,16 +1150,21 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
                 ViewChangeList.get(vId).setChanges(true);
                 if (checkRandge) {
                     try {
-                        int value = Integer.parseInt(s.toString());
-                        if (value >= MinValue && value<=MaxValue) {  //范围内
-                            et.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfDialogTitle));
-                            //Logs.d(TAG,"ViewId=" + vId + ";set false");
-                            ViewChangeList.get(vId).setOutRang(false);
+                        if (s.equals(""))
+                        {
+                            ViewChangeList.get(vId).setOutRang(true); //如果为空，表示超出范围
                         } else {
-                            et.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorAccent));
-                            CustomToast.showToast(context, String.format("输入值(%d)不在[%d-%d]范围内",value,MinValue,MaxValue));
-                            //Logs.d(TAG,"ViewId=" + vId + ";set true");
-                            ViewChangeList.get(vId).setOutRang(true);
+                            int value = Integer.parseInt(s.toString());
+                            if (value >= MinValue && value <= MaxValue) {  //范围内
+                                et.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorHalfDialogTitle));
+                                //Logs.d(TAG,"ViewId=" + vId + ";set false");
+                                ViewChangeList.get(vId).setOutRang(false);
+                            } else {
+                                et.setTextColor(ContextCompat.getColor(context.getApplicationContext(), R.color.colorAccent));
+                                CustomToast.showToast(context, String.format("输入值(%d)不在[%d-%d]范围内", value, MinValue, MaxValue));
+                                //Logs.d(TAG,"ViewId=" + vId + ";set true");
+                                ViewChangeList.get(vId).setOutRang(true);
+                            }
                         }
                     } catch (Exception e) {}
                 } else {
@@ -829,6 +1200,33 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
             } else if (mode.equals(DeviceDataStruct.MODE.CDMA)
                     || mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
                 l_Device_zyf.setVisibility(View.VISIBLE);
+
+                sysRg = (RadioGroup) contentView.findViewById(R.id.radiogroup);
+                sys1Rb = (RadioButton) contentView.findViewById(R.id.sys1_tab);
+                sys2Rb = (RadioButton) contentView.findViewById(R.id.sys2_tab);
+
+                sysRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup rg, int checkedId) {
+                        // TODO Auto-generated method stub
+                        if(checkedId == sys1Rb.getId()){
+                            SelectCdmaInit(GSM_ZYF.Sys1,deviceDate.getMode(),
+                                    (CDMA_GeneralPara.GeneralPara)((CDMA_GeneralPara) deviceDate.getGeneralPara()).getSys1());
+                        } else if(checkedId == sys2Rb.getId()){
+                            SelectCdmaInit(GSM_ZYF.Sys2,deviceDate.getMode(),
+                                    (CDMA_GeneralPara.GeneralPara)((CDMA_GeneralPara) deviceDate.getGeneralPara()).getSys2());
+                        } else{
+                        }
+                    }
+                });
+
+                SelectCdmaInit(GSM_ZYF.Sys1,deviceDate.getMode(),
+                        (CDMA_GeneralPara.GeneralPara)((CDMA_GeneralPara) deviceDate.getGeneralPara()).getSys1());
+                sys1Rb.setChecked(true);
+                if (mode.equals(DeviceDataStruct.MODE.CDMA)) {
+                    sysRg.setVisibility(View.GONE);
+                }
+
             } else if (mode.equals(DeviceDataStruct.MODE.GSM)) {
                 l_Device_hjt.setVisibility(View.VISIBLE);
             } else {
@@ -890,8 +1288,11 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
                     break;
 
                 case SEND_LTE_COMMAND:
-                    int configId = msg.getData().getInt("CONFIG_ID");
-                    SendLteCommand(lteGeneralPara,configId);
+                    SendLteCommand(lteGeneralPara,msg.getData().getInt("CONFIG_ID"));
+                    break;
+
+                case SEND_ZYF_COMMAND:
+                    SendCdmaCommand(CdmaGeneralPara,msg.getData().getInt("CONFIG_ID"));
                     break;
 
                 default:
@@ -902,11 +1303,34 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void ParaChangesEvens(LTE_GeneralPara para) {
+    public void LteParaChangesEvens(LTE_GeneralPara para) {
         if (para.getSn().equals(deviceDate.getSN())) {
-            Logs.d(TAG, "接收到参数改变改变事件", true, true);
+            Logs.d(TAG, "接收到LTE参数改变改变事件", true, true);
             SelectLteInit(deviceDate.getMode(), para);
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void CdmaParaChangesEvens(CDMA_GeneralPara para) {
+        if (para.getSn().equals(deviceDate.getSN())) {
+            Logs.d(TAG, "接收到CDMA参数改变改变事件", true, true);
+            if (SelectSys == GSM_ZYF.Sys1) {
+                SelectCdmaInit(SelectSys, deviceDate.getMode(), para.getSys1());
+            } else {
+                SelectCdmaInit(SelectSys, deviceDate.getMode(), para.getSys2());
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void CdmaParaChangesEvens(CDMA_GeneralPara.ConfigOrCarrierPara  para) {
+        if (para.getSn().equals(deviceDate.getSN()) && para.getSys() == SelectSys) {
+            Logs.d(TAG, "接收到CDMA参数改变改变事件,Flag=" + para.getFlag(), true, true);
+            if (para.getFlag() == 0) {
+                init_cdma_cellConfig(deviceDate.getMode(), para.getgPara());
+            } else if (para.getFlag() == 1) {
+                init_cdma_carrierSet(deviceDate.getMode(), para.getgPara());
+            }
+        }
+    }
 }

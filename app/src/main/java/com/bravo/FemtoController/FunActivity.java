@@ -491,16 +491,22 @@ public class FunActivity extends BaseActivity {
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("在线设备");
         menuList.add("基本配置");
+        menuList.add("设备搜索");
+        menuList.add("搜索配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new Fragment_Device());
         fragments.add(new Fragment_DeviceBaseSet());
+        fragments.add(new FragmentFind());
+        fragments.add(new FragmentFindConfig());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_femto_selected);
         iconsResId.add(R.drawable.icon_system_selected);
+        iconsResId.add(R.drawable.icon_scan_selector);
+        iconsResId.add(R.drawable.icon_config_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "设备管理");

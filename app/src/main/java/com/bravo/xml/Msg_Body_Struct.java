@@ -26,6 +26,7 @@ public class Msg_Body_Struct
     public static final String scanner = "scanner";
 
     public static final String gsm_msg = "gsm_msg";
+    public static final String ack_msg = "ack_msg";
     public static final String gsm_msg_recv = "gsm_msg_recv";
     public static final String straight_msg = "straight_msg";
 

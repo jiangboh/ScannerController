@@ -1086,6 +1086,48 @@
         android:orientation="vertical"
         android:visibility="visible">
 
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/bcast_checkbox_bg"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/sys1_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_sys1_selector"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="载波1"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/sys2_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_sys2_selector"
+                android:button="@null"
+                android:gravity="center"
+                android:text="载波2"></RadioButton>
+        </RadioGroup>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorItemLine" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -1105,7 +1147,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
                     <!--小区配置-->
                     <TextView
                         android:layout_width="match_parent"
@@ -1209,7 +1251,7 @@
                             android:layout_weight="2"
                             android:background="@null"
                             android:inputType="number"
-                            android:maxLength="3"
+                            android:maxLength="6"
                             android:paddingLeft="8dp"
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
@@ -1415,7 +1457,7 @@
                             android:layout_weight="2"
                             android:background="@null"
                             android:inputType="number"
-                            android:maxLength="3"
+                            android:maxLength="6"
                             android:paddingLeft="8dp"
                             android:textColor="@color/colorHalfTransparent"
                             android:textSize="@dimen/font_size_14" />
@@ -1442,7 +1484,7 @@
                             android:textSize="@dimen/font_size_14" />
 
                         <EditText
-                            android:id="@+id/cdma_tac"
+                            android:id="@+id/cdma_lac"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -2147,45 +2189,6 @@
             </LinearLayout>
 
         </ScrollView>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#cccccc" />
-
-        <RadioGroup
-            android:id="@+id/radiogroup"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp"
-            android:layout_gravity="center"
-            android:background="@mipmap/bcast_checkbox_bg"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/target_tab"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/radiobtn_left_selector"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="载波1"></RadioButton>
-
-            <RadioButton
-                android:id="@+id/cell_tab"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/radiobtn_right_selector"
-                android:button="@null"
-                android:gravity="center"
-                android:text="载波2"></RadioButton>
-        </RadioGroup>
 
     </LinearLayout>
 
