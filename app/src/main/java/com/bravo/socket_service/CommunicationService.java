@@ -18,7 +18,9 @@ import com.bravo.parse_generate_xml.udp.UnregisterClient;
 import com.bravo.socket.SocketTCP;
 import com.bravo.socket.SocketUDP;
 import com.bravo.socket.udpBroadCast;
+import com.bravo.system.FtpServerlet;
 import com.bravo.utils.Logs;
+import com.bravo.utils.FileUtils;
 import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.utils.SimpleDateUtils;
 import com.bravo.wifi.WifiAP;
@@ -44,6 +46,7 @@ public class CommunicationService extends Service {
     public final static String TABLE_NAME = "SystemConfig";
     public final static String tn_StartTime = "StartTime";
 
+    private FtpServerlet ftpServer;
     private SocketUDP socketUdp;
     private SocketTCP socketTCP;
     //private udpBroadCast udpBroadCast;
@@ -66,6 +69,10 @@ public class CommunicationService extends Service {
         saveData();
 
         loadData();
+
+        ftpServer = new FtpServerlet();
+        ftpServer.setmDirectory(new FileUtils(this).getFileCacheDir());
+        ftpServer.start();
 
         socketUdp = new SocketUDP(this,udpPort);
         socketUdp.startReceive();
@@ -290,6 +297,10 @@ public class CommunicationService extends Service {
         if(socketTCP != null){
             socketTCP.stopAllSockets();
             socketTCP = null;
+        }
+        if (ftpServer != null) {
+            ftpServer.stop();
+            ftpServer = null;
         }
         /*if (udpBroadCast != null) {
             udpBroadCast.closeMS();

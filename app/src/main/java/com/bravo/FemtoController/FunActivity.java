@@ -15,6 +15,7 @@ import com.bravo.BuildConfig;
 import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
+import com.bravo.config.FragmentBlackImsi;
 import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.Fragment_Device;
 import com.bravo.config.Fragment_DeviceBaseSet;
@@ -491,14 +492,14 @@ public class FunActivity extends BaseActivity {
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("在线设备");
         menuList.add("基本配置");
-        menuList.add("设备搜索");
-        menuList.add("搜索配置");
+        menuList.add("白名单配置");
+        menuList.add("黑名单配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new Fragment_Device());
         fragments.add(new Fragment_DeviceBaseSet());
-        fragments.add(new FragmentFind());
+        fragments.add(new FragmentBlackImsi());
         fragments.add(new FragmentFindConfig());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
