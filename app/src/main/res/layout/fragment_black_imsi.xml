@@ -38,13 +38,7 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorItemLine"
-            android:layout_width="match_parent"
-            android:layout_height="0.6dp"/>
-
-        <!--选项-->
+           <!--选项-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -56,8 +50,28 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/icon_2g_fail"
+                android:drawableTop="@drawable/btn_add_imsi_selector"
                 android:text="添加"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                />
+
+            <Button android:id="@+id/btnDel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/btn_del_imsi_selector"
+                android:text="删除"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                />
+
+            <Button android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/btn_edit_imsi_selector"
+                android:text="编辑"
                 android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
                 />
@@ -66,13 +80,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/icon_2g_fail"
+                android:drawableTop="@drawable/btn_sel_all_imsi_selector"
                 android:text="全选"
                 android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
                 />
 
+            <Button android:id="@+id/btnNoSelAll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/icon_no_sel_all_imsi"
+                android:text="反选"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                />
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>

@@ -17,6 +17,7 @@ import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentBlackImsi;
 import com.bravo.config.FragmentSetConfig;
+import com.bravo.config.FragmentWhiteImsi;
 import com.bravo.config.Fragment_Device;
 import com.bravo.config.Fragment_DeviceBaseSet;
 import com.bravo.config.Fragment_SystemConfig;
@@ -492,22 +493,22 @@ public class FunActivity extends BaseActivity {
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("在线设备");
         menuList.add("基本配置");
-        menuList.add("白名单配置");
         menuList.add("黑名单配置");
+        menuList.add("白名单配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new Fragment_Device());
         fragments.add(new Fragment_DeviceBaseSet());
         fragments.add(new FragmentBlackImsi());
-        fragments.add(new FragmentFindConfig());
+        fragments.add(new FragmentWhiteImsi());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
-        iconsResId.add(R.drawable.icon_femto_selected);
-        iconsResId.add(R.drawable.icon_system_selected);
-        iconsResId.add(R.drawable.icon_scan_selector);
-        iconsResId.add(R.drawable.icon_config_selector);
+        iconsResId.add(R.drawable.icon_femto_selector);
+        iconsResId.add(R.drawable.icon_system_selector);
+        iconsResId.add(R.drawable.icon_target_selector);
+        iconsResId.add(R.drawable.icon_target_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "设备管理");

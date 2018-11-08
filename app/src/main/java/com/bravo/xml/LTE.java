@@ -8,8 +8,10 @@ import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
+import com.bravo.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -73,10 +75,6 @@ public class LTE {
             gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
 
             String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
-            if (reportType.equals("report")) {
-                //回复数据对齐完成
-                SendDataAlignOver(dds.getIp(),dds.getPort());
-            }
 
             gPara.setBootmode(GetMsgIntValueInList("bootMode", msg.dic, 1));
             gPara.setManualfreq(GetMsgIntValueInList("manualfreq", msg.dic, 1));
@@ -120,10 +118,37 @@ public class LTE {
             gPara.setManualPci(GetMsgIntValueInList("ManualPci", msg.dic, 0));
             gPara.setManualBw(GetMsgIntValueInList("ManualBw", msg.dic, 5));
 
+            if (reportType.equals("report")) {
+                String whiteurl = GetMsgStringValueInList("whiteimsi_md5", msg.dic, "");
+                String blackurl = GetMsgStringValueInList("blackimsi_md5", msg.dic, "");
+                if (whiteurl.equals(CommunicationService.WhiteMd5)) {
+                    whiteurl = "";
+                } else {
+                    whiteurl = String.format("ftp://%s:2121/whitelist.txt",
+                            Utils.getWifiIp(mContext));
+                }
+                if (blackurl.equals(CommunicationService.BlackMd5)) {
+                    blackurl = "";
+                } else {
+                    blackurl = String.format("ftp://%s:2121/blacklist.txt",
+                            Utils.getWifiIp(mContext));
+                }
+
+                if (whiteurl.equals("") && blackurl.equals("")) {
+                    //回复数据对齐完成
+                    SendDataAlignOver(dds.getIp(), dds.getPort(),0);
+                } else {
+                    SetGeneralParaRequest(dds.getIp(),dds.getPort(),whiteurl,blackurl);
+                }
+            }
+
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
 
             EventBus.getDefault().post(gPara);
 
+        }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_general_para_response)) {
+            //回复数据对齐完成
+            SendDataAlignOver(dds.getIp(), dds.getPort(),GetMsgIntValueInList("result", msg.dic, 0));
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
@@ -290,10 +315,14 @@ public class LTE {
         return ;
     }
 
-    public void SendDataAlignOver(String ip,int port) {
+    public void SendDataAlignOver(String ip,int port,int result) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.DataAlignOver);
-        msg.dic.put("ReturnCode",0);
-        msg.dic.put("ReturnStr","success");
+        msg.dic.put("ReturnCode",result);
+        if (result == 0) {
+            msg.dic.put("ReturnStr", "success");
+        } else {
+            msg.dic.put("ReturnStr", "failed");
+        }
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
@@ -397,6 +426,26 @@ public class LTE {
         WaitDialogData wdd =new WaitDialogData(
                 HandleRecvXmlMsg.LTE_SYNC_SET,"", WaitDialogData.SEND);
         EventBus.getDefault().post(wdd);
+
+        return ;
+    }
+
+    public void SetGeneralParaRequest(String ip, int port, String whiteurl, String blackurl) {
+        if (whiteurl.equals("") && blackurl.equals(""))  return;
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_general_para_request);
+        msg.dic.put("ApIsBase",0);
+        if (!whiteurl.equals(""))
+            msg.dic.put("FtpUrl_White",whiteurl);
+        if (!blackurl.equals(""))
+            msg.dic.put("FtpUrl_Black",blackurl);
+
+        msg.dic.put("FtpUser","user");
+        msg.dic.put("FtpPas","password");
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
 
         return ;
     }

@@ -13,14 +13,16 @@ import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.FemtoController.TranslucentActivity;
 import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.database.BlackWhiteImsi;
+import com.bravo.database.BlackWhiteImsiDao;
 import com.bravo.parse_generate_xml.ErrorNotif;
 import com.bravo.parse_generate_xml.udp.UnregisterClient;
 import com.bravo.socket.SocketTCP;
 import com.bravo.socket.SocketUDP;
 import com.bravo.socket.udpBroadCast;
 import com.bravo.system.FtpServerlet;
-import com.bravo.utils.Logs;
 import com.bravo.utils.FileUtils;
+import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.utils.SimpleDateUtils;
 import com.bravo.wifi.WifiAP;
@@ -31,8 +33,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.Thread.sleep;
@@ -45,6 +50,9 @@ public class CommunicationService extends Service {
     public final String TAG = "CommunicationService";
     public final static String TABLE_NAME = "SystemConfig";
     public final static String tn_StartTime = "StartTime";
+
+    public static String BlackMd5 = "";
+    public static String WhiteMd5 = "";
 
     private FtpServerlet ftpServer;
     private SocketUDP socketUdp;
@@ -86,6 +94,73 @@ public class CommunicationService extends Service {
 //        errorMsgTest();
     }
 
+    private String Dabase2FtpFile_black() {
+        FileUtils fileUtils = new FileUtils(this);
+        File file = new File(fileUtils.getFileCacheDir() + File.separator + "blacklist.txt");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<BlackWhiteImsi> imsiList =
+                ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
+                        where(BlackWhiteImsiDao.Properties.Type.eq(1)).
+                        orderAsc(BlackWhiteImsiDao.Properties.Imsi,BlackWhiteImsiDao.Properties.Imei).list();
+        if (imsiList != null) {
+            for(int i =0;i<imsiList.size();i++) {
+                String str = String.format("%s,%d,%d\n",imsiList.get(i).getImsi(),
+                        imsiList.get(i).getStartRb(),imsiList.get(i).getStopRb());
+                try {
+                    fileUtils.writeTextFile(file,str,true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+
+        }
+        String md5 = fileUtils.getFileMD5(file);
+        Logs.d(TAG,"黑名单文件MD5值:(" + md5 + ")");
+        return md5;
+    }
+
+    private String Dabase2FtpFile_white() {
+        FileUtils fileUtils = new FileUtils(this);
+        File file = new File(fileUtils.getFileCacheDir() + File.separator + "whitelist.txt");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<BlackWhiteImsi> imsiList =
+                ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
+                        where(BlackWhiteImsiDao.Properties.Type.eq(0)).
+                        orderAsc(BlackWhiteImsiDao.Properties.Imsi,BlackWhiteImsiDao.Properties.Imei).list();
+        if (imsiList != null) {
+            for(int i =0;i<imsiList.size();i++) {
+                String str = String.format("%s\n",imsiList.get(i).getImsi());
+                try {
+                    fileUtils.writeTextFile(file,str,true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+
+        }
+        String md5 = fileUtils.getFileMD5(file);
+        Logs.d(TAG,"白名单文件MD5值:(" + md5 + ")");
+        return md5;
+    }
+
     private void saveData()
     {
         SharedPreferences preferences = getSharedPreferences(CommunicationService.TABLE_NAME, MODE_PRIVATE);
@@ -98,6 +173,9 @@ public class CommunicationService extends Service {
         SharedPreferences sp = getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
         offLineTime = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
         udpPort = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
+
+        BlackMd5 = Dabase2FtpFile_black();
+        WhiteMd5 = Dabase2FtpFile_white();
     }
 
     private void errorMsgTest(){

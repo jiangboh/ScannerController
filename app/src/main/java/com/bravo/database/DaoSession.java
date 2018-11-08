@@ -10,6 +10,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.bravo.database.AdjacentCell;
 import com.bravo.database.BcastHistory;
+import com.bravo.database.BlackWhiteImsi;
 import com.bravo.database.FemtoList;
 import com.bravo.database.SnifferHistory;
 import com.bravo.database.TargetUser;
@@ -17,6 +18,7 @@ import com.bravo.database.User;
 
 import com.bravo.database.AdjacentCellDao;
 import com.bravo.database.BcastHistoryDao;
+import com.bravo.database.BlackWhiteImsiDao;
 import com.bravo.database.FemtoListDao;
 import com.bravo.database.SnifferHistoryDao;
 import com.bravo.database.TargetUserDao;
@@ -33,6 +35,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig adjacentCellDaoConfig;
     private final DaoConfig bcastHistoryDaoConfig;
+    private final DaoConfig blackWhiteImsiDaoConfig;
     private final DaoConfig femtoListDaoConfig;
     private final DaoConfig snifferHistoryDaoConfig;
     private final DaoConfig targetUserDaoConfig;
@@ -40,6 +43,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final AdjacentCellDao adjacentCellDao;
     private final BcastHistoryDao bcastHistoryDao;
+    private final BlackWhiteImsiDao blackWhiteImsiDao;
     private final FemtoListDao femtoListDao;
     private final SnifferHistoryDao snifferHistoryDao;
     private final TargetUserDao targetUserDao;
@@ -55,6 +59,9 @@ public class DaoSession extends AbstractDaoSession {
         bcastHistoryDaoConfig = daoConfigMap.get(BcastHistoryDao.class).clone();
         bcastHistoryDaoConfig.initIdentityScope(type);
 
+        blackWhiteImsiDaoConfig = daoConfigMap.get(BlackWhiteImsiDao.class).clone();
+        blackWhiteImsiDaoConfig.initIdentityScope(type);
+
         femtoListDaoConfig = daoConfigMap.get(FemtoListDao.class).clone();
         femtoListDaoConfig.initIdentityScope(type);
 
@@ -69,6 +76,7 @@ public class DaoSession extends AbstractDaoSession {
 
         adjacentCellDao = new AdjacentCellDao(adjacentCellDaoConfig, this);
         bcastHistoryDao = new BcastHistoryDao(bcastHistoryDaoConfig, this);
+        blackWhiteImsiDao = new BlackWhiteImsiDao(blackWhiteImsiDaoConfig, this);
         femtoListDao = new FemtoListDao(femtoListDaoConfig, this);
         snifferHistoryDao = new SnifferHistoryDao(snifferHistoryDaoConfig, this);
         targetUserDao = new TargetUserDao(targetUserDaoConfig, this);
@@ -76,6 +84,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(AdjacentCell.class, adjacentCellDao);
         registerDao(BcastHistory.class, bcastHistoryDao);
+        registerDao(BlackWhiteImsi.class, blackWhiteImsiDao);
         registerDao(FemtoList.class, femtoListDao);
         registerDao(SnifferHistory.class, snifferHistoryDao);
         registerDao(TargetUser.class, targetUserDao);
@@ -85,6 +94,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         adjacentCellDaoConfig.clearIdentityScope();
         bcastHistoryDaoConfig.clearIdentityScope();
+        blackWhiteImsiDaoConfig.clearIdentityScope();
         femtoListDaoConfig.clearIdentityScope();
         snifferHistoryDaoConfig.clearIdentityScope();
         targetUserDaoConfig.clearIdentityScope();
@@ -97,6 +107,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public BcastHistoryDao getBcastHistoryDao() {
         return bcastHistoryDao;
+    }
+
+    public BlackWhiteImsiDao getBlackWhiteImsiDao() {
+        return blackWhiteImsiDao;
     }
 
     public FemtoListDao getFemtoListDao() {

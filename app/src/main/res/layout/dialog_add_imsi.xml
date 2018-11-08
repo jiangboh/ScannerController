@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_round_corner_bg"
+    android:orientation="vertical">
+
+    <!--title-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:gravity="center"
+        android:text="添加黑名单"
+        android:textColor="@color/colordialogtitle"
+        android:textSize="@dimen/font_size_18"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+    <!--name-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="别名:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+    <!--imsi-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="IMSI:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/imsi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:hint="请输入15位的IMSI"
+            android:inputType="number"
+            android:maxLength="15"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+    <!--imei-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="IMEI:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/imei"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:hint="请输入15位的IMEI"
+            android:inputType="number"
+            android:maxLength="15"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+    <!--tmsi-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="TMSI:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/tmsi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:hint="请输入8位16进制的TMSI"
+            android:inputType="number"
+            android:maxLength="8"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        android:background="#cccccc" />
+
+    <!--startRb-->
+    <LinearLayout
+        android:id="@+id/layout_startRb"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="起始RB:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/startRb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_startRb"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+    <!--stopRb-->
+    <LinearLayout
+        android:id="@+id/layout_stopRb"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="结束RB:"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/stopRb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@android:color/transparent"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/colordialogtext"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_stopRb"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#cccccc" />
+
+
+    <!--button-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_left_btn_bg_selector"
+            android:text="取  消"
+            android:textAllCaps="false"
+            android:textSize="@dimen/font_size_18" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#cccccc" />
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_right_btn_bg_selector"
+            android:text="确  定"
+            android:textAllCaps="false"
+            android:textSize="@dimen/font_size_18" />
+    </LinearLayout>
+</LinearLayout>

@@ -20,6 +20,7 @@ import com.bravo.utils.Logs;
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import static com.bravo.xml.XmlCodec.DecodeApXmlMessage;
 
@@ -243,6 +244,28 @@ public class HandleRecvXmlMsg {
             new GSM_ZYF(mContext,deviceDataStruct.getMode()).SetApParameter(ip, port, name,value);
         } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
             new GSM_HJT(mContext).SetApParameter(ip, port, name,value);
+        }
+
+        return true;
+    }
+
+    public boolean SetGeneralParaRequest() {
+        ArrayList<DeviceDataStruct> devicelist = DeviceFragmentStruct.getList();
+
+        for (int i=0;i<devicelist.size();i++) {
+            DeviceDataStruct deviceInfo = devicelist.get(i);
+
+            if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
+                    || deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
+                    || deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+                new LTE(mContext).SendGeneralParaRequest(deviceInfo.getIp(), deviceInfo.getPort());
+            } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)
+                    || deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+                new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
+                        GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+            } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+
+            }
         }
 
         return true;

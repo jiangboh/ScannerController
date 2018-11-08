@@ -23,6 +23,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(Database db, boolean ifNotExists) {
         AdjacentCellDao.createTable(db, ifNotExists);
         BcastHistoryDao.createTable(db, ifNotExists);
+        BlackWhiteImsiDao.createTable(db, ifNotExists);
         FemtoListDao.createTable(db, ifNotExists);
         SnifferHistoryDao.createTable(db, ifNotExists);
         TargetUserDao.createTable(db, ifNotExists);
@@ -33,6 +34,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void dropAllTables(Database db, boolean ifExists) {
         AdjacentCellDao.dropTable(db, ifExists);
         BcastHistoryDao.dropTable(db, ifExists);
+        BlackWhiteImsiDao.dropTable(db, ifExists);
         FemtoListDao.dropTable(db, ifExists);
         SnifferHistoryDao.dropTable(db, ifExists);
         TargetUserDao.dropTable(db, ifExists);
@@ -57,6 +59,7 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(AdjacentCellDao.class);
         registerDaoClass(BcastHistoryDao.class);
+        registerDaoClass(BlackWhiteImsiDao.class);
         registerDaoClass(FemtoListDao.class);
         registerDaoClass(SnifferHistoryDao.class);
         registerDaoClass(TargetUserDao.class);

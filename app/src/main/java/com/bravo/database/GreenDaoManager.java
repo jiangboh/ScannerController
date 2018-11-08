@@ -55,7 +55,9 @@ public class GreenDaoManager {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Logs.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            MigrationHelper.migrate(db, AdjacentCellDao.class, BcastHistoryDao.class, FemtoListDao.class, TargetUserDao.class, UserDao.class, SnifferHistoryDao.class);
+            MigrationHelper.migrate(db, AdjacentCellDao.class,BlackWhiteImsiDao.class,
+                    BcastHistoryDao.class, FemtoListDao.class, TargetUserDao.class,
+                    UserDao.class, SnifferHistoryDao.class);
         }
     }
 

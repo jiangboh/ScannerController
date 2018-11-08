@@ -1,15 +1,23 @@
 package com.bravo.database;
 
+import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 
 /**
  * Created by admin on 2018-11-2.
  */
-
+@Entity
 public class BlackWhiteImsi {
     @Id(autoincrement = true)
     private Long Id;
+    @Transient
+    public static final int WHITE = 0;
+    @Transient
+    public static final int BLACK = 1;
+    @Transient
+    private boolean isChecked = false; // 是否选中CheckBox
     private String Name;
     private String Imsi;
     private String Imei;
@@ -18,21 +26,29 @@ public class BlackWhiteImsi {
     private int StopRb;
     private int Type; //名单类型：0白名单；1黑名单
 
-    @Generated(hash = 1719352708)
-    public BlackWhiteImsi(Long id, String name, String imsi, String imei, String tmsi, int startRb, int stopRb, int type) {
-        this.Id = id;
-        this.Name = name;
-        this.Imsi = imsi;
-        this.Imei = imei;
-        this.Tmsi = tmsi;
-        this.StartRb = startRb;
-        this.StopRb = stopRb;
-        this.Type = type;
+    @Generated(hash = 819069845)
+    public BlackWhiteImsi(Long Id, String Name, String Imsi, String Imei,
+            String Tmsi, int StartRb, int StopRb, int Type) {
+        this.Id = Id;
+        this.Name = Name;
+        this.Imsi = Imsi;
+        this.Imei = Imei;
+        this.Tmsi = Tmsi;
+        this.StartRb = StartRb;
+        this.StopRb = StopRb;
+        this.Type = Type;
     }
 
-    @Generated(hash = 1719352558)
+    @Generated(hash = 213742470)
     public BlackWhiteImsi() {
+    }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public Long getId() {

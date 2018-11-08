@@ -22,10 +22,13 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -34,6 +37,9 @@ import java.util.Map;
 
 public class FtpServerlet extends DefaultFtplet {
     private final String TAG = "FtpServerlet";
+
+    public static boolean FtpStatus = false;
+    private static Timer timer = null;
 
     private FtpServer mFtpServer;
 
@@ -65,6 +71,11 @@ public class FtpServerlet extends DefaultFtplet {
                 super.run();
                 try {
                     startFtp();
+                    if (timer == null) {
+                        Logs.d(TAG,"启动定时检查FTP状态线程。。。");
+                        timer = new Timer();
+                        timer.schedule(new MyTimer(),0, 3000);
+                    }
                 } catch (FtpException e) {
                     Logs.e(TAG,"FTP服务器打工失败。");
                 }
@@ -72,6 +83,19 @@ public class FtpServerlet extends DefaultFtplet {
         }.start();
     }
 
+    class MyTimer extends TimerTask implements Serializable {
+        @Override
+        public void run() {
+            if (!getFtpStatus()) {
+                FtpStatus = false;
+                stop();
+                start();
+            } else {
+               FtpStatus = true;
+            }
+            //Logs.d(TAG,"当前FTP状态为：" + FtpStatus);
+        }
+    }
     /**
      * FTP启动
      * @throws FtpException
@@ -90,7 +114,7 @@ public class FtpServerlet extends DefaultFtplet {
         FtpServerFactory serverFactory = new FtpServerFactory();
         ListenerFactory listenerFactory = new ListenerFactory();
 
-        // 设定端末番号
+        // 设定端口号
         listenerFactory.setPort(mPort);
 
         // 通过PropertiesUserManagerFactory创建UserManager然后向配置文件添加用户
@@ -123,11 +147,21 @@ public class FtpServerlet extends DefaultFtplet {
         mFtpServer.start();
     }
 
+
+    /**
+     * 获取FTP运行状态
+     * @return
+     */
+    public boolean getFtpStatus() {
+        if (null != mFtpServer && false == mFtpServer.isStopped() && false == mFtpServer.isSuspended()) {
+            return true;
+        }
+        return false;
+    }
     /**
      * FTP停止
      */
     public void stop() {
-
         // FtpServer不存在和FtpServer正在运行中
         if (null != mFtpServer && false == mFtpServer.isStopped()) {
             mFtpServer.stop();

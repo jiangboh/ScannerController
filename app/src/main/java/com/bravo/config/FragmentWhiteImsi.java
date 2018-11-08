@@ -2,7 +2,6 @@ package com.bravo.config;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -35,11 +34,11 @@ import java.util.List;
 import static com.bravo.R.drawable.btn_config_selector;
 
 /**
- * Created by admin on 2018-11-2.
+ * Created by admin on 2018-11-7.
  */
 
-public class FragmentBlackImsi extends RevealAnimationBaseFragment {
-    private final String TAG = "FragmentBlackImsi";
+public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
+    private final String TAG = "FragmentWhiteImsi";
     public static boolean isOpen = false;
     private int selectedItem = -1;
 
@@ -92,16 +91,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.i("匿名内部类", "点击事件");
-                /*BlackWhiteImsi bwi = new BlackWhiteImsi();
-                bwi.setImsi(String.format("4600000000000%02d",new Random().nextInt(10)));
-                bwi.setType(1);
-                bwi.setName("公司");
-                bwi.setStartRb(2);
-                bwi.setStopRb(60);
-                saveData(bwi);*/
-                DialogAddImsi dialog = new DialogAddImsi(context,true,null);
+                DialogAddImsi dialog = new DialogAddImsi(context,false,null);
                 dialog.setSaveListener(new DialogAddImsi.OnSaveData2Database() {
                     @Override
                     public boolean onSave(BlackWhiteImsi imsiInfo) {
@@ -118,7 +108,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                DialogAddImsi dialog = new DialogAddImsi(context,true,adapeter.getItem(selectedItem));
+                DialogAddImsi dialog = new DialogAddImsi(context,false,adapeter.getItem(selectedItem));
                 dialog.setSaveListener(new DialogAddImsi.OnSaveData2Database() {
                     @Override
                     public boolean onSave(BlackWhiteImsi imsiInfo) {
@@ -151,8 +141,8 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         DelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogCustomBuilder dialog = new DialogCustomBuilder(context,"删除黑名单",
-                        "删除所有选中的黑名单?");
+                DialogCustomBuilder dialog = new DialogCustomBuilder(context,"删除白名单",
+                        "删除所有选中的白名单?");
                 dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
                     @Override
                     public void onBtnClick(DialogInterface arg0, int arg1) {
@@ -169,7 +159,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         });
 
         listView = (ListView) contentView.findViewById(R.id.black_imsi_list);
-        adapeter = new AdapeterBlackWhiteImsi(context,true);
+        adapeter = new AdapeterBlackWhiteImsi(context,false);
         adapeter.setAllSelectListener(new AdapeterBlackWhiteImsi.OnAllSelect() {
             @Override
             public boolean onSelect(int allnum,int selnum) {
@@ -208,12 +198,6 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemClick(AdapterView<?> arg0, View view, int position,
                                           long id, String strMsg) {
-                /*if (adapeter.isShow()) {
-                    adapeter.setChecked(position);
-                    //view.setSelection(listAdapter.getCount() - 1);
-                } else {
-                    //Toast.makeText(MainActivity.this, dataList.get(position).getMsg(), Toast.LENGTH_SHORT).show();
-                }*/
                 if (selectedItem != position) {
                     selectedItem = position;
                     EditButton.setEnabled(true);
@@ -222,7 +206,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
                     EditButton.setEnabled(false);
                 }
                 adapeter.setSelectedItem(selectedItem);
-         }
+            }
         });
 
         loadData();
@@ -248,7 +232,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         BlackWhiteImsi FindImsi = null;
         if (imsiInfo.getImsi().trim().length() > 0) {
             FindImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().
-                    queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK),
+                    queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE),
                     BlackWhiteImsiDao.Properties.Imsi.eq(imsiInfo.getImsi())).
                     build().unique();
             if (FindImsi != null) { //数据存在更新
@@ -263,7 +247,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         } else {
             if (imsiInfo.getImei().trim().length() > 0) {
                 FindImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().
-                        queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK),
+                        queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE),
                         BlackWhiteImsiDao.Properties.Imei.eq(imsiInfo.getImei())).
                         build().unique();
                 if (FindImsi != null) { //数据存在更新
@@ -293,7 +277,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
 
     private void loadData() {
         List<BlackWhiteImsi> imsiList = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().
-                queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK)).
+                queryBuilder().where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE)).
                 build().list();
         if (imsiList != null) {
             adapeter.setDataList(imsiList);
@@ -302,7 +286,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
 
     private void dabase2file() {
         FileUtils fileUtils = new FileUtils(context);
-        File file = new File(fileUtils.getFileCacheDir() + File.separator + "blacklist.txt");
+        File file = new File(fileUtils.getFileCacheDir() + File.separator + "whitelist.txt");
         if (file.exists()) {
             file.delete();
         }
@@ -314,11 +298,11 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         }
         List<BlackWhiteImsi> imsiList =
                 ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
-                        where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK)).
+                        where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE)).
                         orderAsc(BlackWhiteImsiDao.Properties.Imsi).list();
         if (imsiList != null) {
             for(int i =0;i<imsiList.size();i++) {
-                String str = String.format("%s,%d,%d\n",imsiList.get(i).getImsi(),
+                String str = String.format("%s\n",imsiList.get(i).getImsi(),
                         imsiList.get(i).getStartRb(),imsiList.get(i).getStopRb());
                 try {
                     fileUtils.writeTextFile(file,str,true);
@@ -330,14 +314,14 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         md5 = fileUtils.getFileMD5(file);
         Logs.d(TAG,"文件MD5值:(" + md5 + ")");
 
-        if (md5.equals(CommunicationService.BlackMd5)) {
-            CustomToast.showToast(context, "黑名单没有修改");
+        if (md5.equals(CommunicationService.WhiteMd5)) {
+            CustomToast.showToast(context, "白名单没有修改");
         } else {
-            DialogCustomBuilder dialog = new DialogCustomBuilder(context,"下发黑名单","将黑名单下发到所有在线AP?");
+            DialogCustomBuilder dialog = new DialogCustomBuilder(context,"下发白名单","将白名单下发到所有在线AP?");
             dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
                 @Override
                 public void onBtnClick(DialogInterface arg0, int arg1) {
-                    CommunicationService.BlackMd5 = md5;
+                    CommunicationService.WhiteMd5 = md5;
                     new HandleRecvXmlMsg(context).SetGeneralParaRequest();
                 }
             });

@@ -8,8 +8,10 @@ import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
+import com.bravo.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -209,21 +211,47 @@ public class GSM_ZYF {
             gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
             String reportType = GetMsgStringValueInList("reportType", msg.dic, "report");
             int sys = GetMsgIntValueInList("sys", msg.dic, Sys1);
-            if (reportType.equals("report")) {
-                //回复数据对齐完成
-                SendDataAlignOver(sys,dds.getIp(),dds.getPort());
-            }
 
             if (sys == Sys1) {
                 gPara.setSys1(DecodeParaResp(msg));
+                if (reportType.equals("report")) {
+                    String whiteurl = GetMsgStringValueInList("whiteimsi_md5", msg.dic, "");
+                    String blackurl = GetMsgStringValueInList("blackimsi_md5", msg.dic, "");
+                    if (whiteurl.equals(CommunicationService.WhiteMd5)) {
+                        whiteurl = "";
+                    } else {
+                        whiteurl = String.format("ftp://%s:2121/whitelist.txt",
+                                Utils.getWifiIp(mContext));
+                    }
+                    if (blackurl.equals(CommunicationService.BlackMd5)) {
+                        blackurl = "";
+                    } else {
+                        blackurl = String.format("ftp://%s:2121/blacklist.txt",
+                                Utils.getWifiIp(mContext));
+                    }
+
+                    if (whiteurl.equals("") && blackurl.equals("")) {
+                        //回复数据对齐完成
+                        SendDataAlignOver(Sys1,dds.getIp(), dds.getPort(), 0);
+                    } else {
+                        SetParameterRequest(dds.getIp(), dds.getPort(), whiteurl, blackurl);
+                    }
+                }
             } else if (sys == Sys2) {
                 gPara.setSys2(DecodeParaResp(msg));
+                if (reportType.equals("report")) {
+                    //回复数据对齐完成
+                    SendDataAlignOver(Sys2,dds.getIp(),dds.getPort(),0);
+                }
             }
 
             DeviceFragmentStruct.ChangeGeneralPara(dds.getIp(),dds.getPort(),gPara);
 
             EventBus.getDefault().post(gPara);
 
+        } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.set_general_para_response)) {
+            //回复数据对齐完成
+            SendDataAlignOver(Sys1,dds.getIp(), dds.getPort(),GetMsgIntValueInList("result", msg.dic, 0));
         } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.ack_msg)) {
             MsgRecvStruct recv = null;
             String msg_data = GetMsgStringValueInList("data", msg.dic);
@@ -798,6 +826,7 @@ public class GSM_ZYF {
             addFlag |= 0x4;
         }
 
+        int userType = gdv.GetValueByString_Byte();
 
         if ((addFlag & 0X1) <= 0)
         {
@@ -813,7 +842,15 @@ public class GSM_ZYF {
         }
 
         nDic.dic.put("rsrp", String.valueOf(rsrp));
-        nDic.dic.put("userType", "");
+        if (userType == 0) {
+            nDic.dic.put("userType", 2);
+        } else if (userType == 1) {
+            nDic.dic.put("userType", 0);
+        } else if (userType == 5) {
+            nDic.dic.put("userType", 1);
+        } else {
+            nDic.dic.put("userType", 2);
+        }
         nDic.dic.put("sn", dds.getSN());
 
         TypeKeyValue.n_dic.add(nDic);
@@ -827,7 +864,7 @@ public class GSM_ZYF {
         targetDataStruct.setDeviceType(dds.getMode());
 
         targetDataStruct.setImsi(GetMsgStringValueInList("imsi", nDic.dic, ""));
-        targetDataStruct.setiUserType(GetMsgIntValueInList("userType", nDic.dic, 0));
+        targetDataStruct.setiUserType(GetMsgIntValueInList("userType", nDic.dic, 2));
         //Logs.d(TAG,"用户类型：" + targetDataStruct.getiUserType());
         targetDataStruct.setImei(GetMsgStringValueInList("imei", nDic.dic, ""));
         targetDataStruct.setTmsi(GetMsgStringValueInList("tmsi", nDic.dic, ""));
@@ -891,11 +928,15 @@ public class GSM_ZYF {
         return ;
     }
 
-    public void SendDataAlignOver(int sys,String ip,int port) {
+    public void SendDataAlignOver(int sys,String ip,int port,int result) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.DataAlignOver);
         msg.dic.put("sys",sys);
-        msg.dic.put("ReturnCode",0);
-        msg.dic.put("ReturnStr","success");
+        msg.dic.put("ReturnCode",result);
+        if (result == 0) {
+            msg.dic.put("ReturnStr", "success");
+        } else {
+            msg.dic.put("ReturnStr", "failed");
+        }
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
@@ -978,4 +1019,24 @@ public class GSM_ZYF {
                 HandleRecvXmlMsg.CDMA_CARRIER_SET,"", WaitDialogData.SEND));
     }
 
+    public void SetParameterRequest(String ip,int port,String whiteurl,String blackurl) {
+        if (whiteurl.equals("") && blackurl.equals(""))  return;
+
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_general_para_request);
+        msg.dic.put("sys",0);
+        msg.dic.put("ApIsBase",0);
+        if (!whiteurl.equals(""))
+            msg.dic.put("FtpUrl_White",whiteurl);
+        if (!blackurl.equals(""))
+            msg.dic.put("FtpUrl_Black",blackurl);
+
+        msg.dic.put("FtpUser","user");
+        msg.dic.put("FtpPas","password");
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
 }
