@@ -44,6 +44,9 @@ public class HandleRecvXmlMsg {
 
     public static final int CDMA_CELL_CONFIG = 7;
     public static final int CDMA_CARRIER_SET = 8;
+
+    public static final int LTE_REDIRECTION_SET = 100;
+    public static final int AP_DATA_ALIGN_SET = 101;
     //public static final int MAX_CONFIG = 128;
 
 
@@ -107,20 +110,24 @@ public class HandleRecvXmlMsg {
                 if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD) ||
                         deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) ||
                         deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-                    new LTE(mContext).SendGeneralParaRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                    new LTE(mContext).SendGeneralParaRequest(
+                            deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
                         new LTE(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
-                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
+                            GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
                         new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
-                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
-                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
+                            GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
+                    new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
+                            GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
                         new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
@@ -258,11 +265,12 @@ public class HandleRecvXmlMsg {
             if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
                     || deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                     || deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
-                new LTE(mContext).SendGeneralParaRequest(deviceInfo.getIp(), deviceInfo.getPort());
+                new LTE(mContext).SendGeneralParaRequest(
+                        deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
             } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)
                     || deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
                 new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
-                        GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort());
+                        GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
             } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
 
             }
@@ -270,4 +278,6 @@ public class HandleRecvXmlMsg {
 
         return true;
     }
+
+
 }

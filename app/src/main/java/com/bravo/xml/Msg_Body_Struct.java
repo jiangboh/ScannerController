@@ -40,6 +40,11 @@ public class Msg_Body_Struct
     public static final String get_general_para_request = "get_general_para_request";
     public static final String get_general_para_response = "get_general_para_response";
 
+    public static final String get_redirection_req = "get_redirection_req";
+    public static final String get_redirection_rsp = "get_redirection_rsp";
+    public static final String set_redirection_req = "set_redirection_req";
+    public static final String set_redirection_rsp = "set_redirection_rsp";
+
     public static final String set_work_mode = "set_work_mode";
     public static final String set_work_mode_reponse = "set_work_mode_reponse";
     public static final String set_son_earfcn = "set_son_earfcn";

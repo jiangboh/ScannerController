@@ -18,6 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:layout_marginLeft="5dp"
             android:textSize="@dimen/font_size_16"
             android:text="Monitor IP:"
             android:textColor="@color/colorItemText"
@@ -26,7 +27,8 @@
             android:id="@+id/requestResult"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.8"
+            android:layout_marginRight="5dp"
             android:text="等待中"
             android:gravity="center">
         </TextView>

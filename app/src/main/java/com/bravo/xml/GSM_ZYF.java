@@ -252,6 +252,15 @@ public class GSM_ZYF {
         } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.set_general_para_response)) {
             //回复数据对齐完成
             SendDataAlignOver(Sys1,dds.getIp(), dds.getPort(),GetMsgIntValueInList("result", msg.dic, 0));
+
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
+            }
         } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.ack_msg)) {
             MsgRecvStruct recv = null;
             String msg_data = GetMsgStringValueInList("data", msg.dic);
@@ -275,7 +284,14 @@ public class GSM_ZYF {
             }
             HandleAckMsg(dds,recv);
         } else if(msg.type.equalsIgnoreCase(Msg_Body_Struct.DataAlignOverAck)) {
-
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
+            }
         } else {
             Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
         }
@@ -842,14 +858,14 @@ public class GSM_ZYF {
         }
 
         nDic.dic.put("rsrp", String.valueOf(rsrp));
-        if (userType == 0) {
-            nDic.dic.put("userType", 2);
+       if (userType == 0) {
+            nDic.dic.put("userType", TargetDataStruct.OTHER_IMSI);
         } else if (userType == 1) {
-            nDic.dic.put("userType", 0);
+            nDic.dic.put("userType", TargetDataStruct.WHITE_IMSI);
         } else if (userType == 5) {
-            nDic.dic.put("userType", 1);
+            nDic.dic.put("userType", TargetDataStruct.BLACK_IMSI);
         } else {
-            nDic.dic.put("userType", 2);
+            nDic.dic.put("userType", TargetDataStruct.OTHER_IMSI);
         }
         nDic.dic.put("sn", dds.getSN());
 
@@ -956,7 +972,7 @@ public class GSM_ZYF {
         return ;
     }
 
-    public void SendGeneralParaRequest(int sys,String ip,int port) {
+    public void SendGeneralParaRequest(int sys,String ip,int port,String sn) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_general_para_request);
         msg.dic.put("sys",sys);
         msg.dic.put("timeout",0);
@@ -964,6 +980,9 @@ public class GSM_ZYF {
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
+
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.LTE_SON_CONFIG,sn, WaitDialogData.SEND));
 
         return ;
     }

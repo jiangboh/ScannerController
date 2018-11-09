@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bravo.R;
 import com.bravo.database.BlackWhiteImsi;
@@ -25,6 +26,8 @@ public class DialogAddImsi extends Dialog {
     private BlackWhiteImsi imsiInfo = null;
     private boolean isBlackImsi = false;
     private OnSaveData2Database saverListener;
+
+    private TextView tv_title;
 
     private LinearLayout layout_startRb;
     private LinearLayout layout_stopRb;
@@ -74,6 +77,13 @@ public class DialogAddImsi extends Dialog {
     }
 
     private void initView() {
+        tv_title = (TextView) findViewById(R.id.title);
+        if (isBlackImsi) {
+            tv_title.setText("添加黑名单");
+        } else {
+            tv_title.setText("添加白名单");
+        }
+        layout_stopRb = (LinearLayout) findViewById(R.id.layout_stopRb);
         layout_startRb = (LinearLayout) findViewById(R.id.layout_startRb);
         layout_stopRb = (LinearLayout) findViewById(R.id.layout_stopRb);
         view_startRb = (View) findViewById(R.id.view_startRb);

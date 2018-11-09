@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingTop="2dp">
+
+    <!--设备选择-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:background="@color/colorItemLine"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dp"
+            android:text="请选择设备:"
+            android:textColor="@color/colorLeftMenuTextNormal"
+            android:textSize="@dimen/font_size_16" />
+
+        <Spinner
+            android:id="@+id/deviceSelect"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:entries="@array/bootmode"
+            android:overlapAnchor="false"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/colorHalfTransparent"
+            android:textSize="@dimen/font_size_12"></Spinner>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine" />
+
+    <!--配置-->
+    <LinearLayout
+        android:id="@+id/config_lte"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:background="@mipmap/bcast_checkbox_bg"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/white_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_sys1_selector"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="白名单用户"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/black_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radio_btn_selector"
+                android:button="@null"
+                android:gravity="center"
+                android:text="黑名单用户"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/other_tab"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/radiobtn_sys2_selector"
+                android:button="@null"
+                android:gravity="center"
+                android:text="其它用户"></RadioButton>
+        </RadioGroup>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorItemLine" />
+
+        <ScrollView
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+
+                <!--用户拒绝策略-->
+                <LinearLayout
+                    android:id="@+id/lte_bw_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_heigh"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="用户拒绝策略:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <Spinner
+                        android:id="@+id/reject_method"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:entries="@array/bandwidth"
+                        android:overlapAnchor="false"
+                        android:spinnerMode="dropdown"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16"></Spinner>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/lte_bw_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
+
+                <!--优选-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_heigh"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="优选:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <Spinner
+                        android:id="@+id/priority"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:entries="@array/workmode"
+                        android:overlapAnchor="false"
+                        android:spinnerMode="dropdown"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_16"></Spinner>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
+
+                <!--频点-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_heigh"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="频点:"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <EditText
+                        android:id="@+id/earfcn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/colorHalfTransparent"
+                        android:textSize="@dimen/font_size_14" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
+
+
+                <!--附加频点-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_heigh"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="附加频点(,隔开):"
+                        android:textColor="@color/colorItemText"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <EditText
+                        android:id="@+id/add_earfcn_list"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:digits="0,1,2,3,4,5,6,7,8,9,\,"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/colorHalfTransparent"
+                        android:textSize="@dimen/font_size_14" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorItemLine" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

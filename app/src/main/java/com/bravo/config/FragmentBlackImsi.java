@@ -2,7 +2,8 @@ package com.bravo.config;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -17,14 +18,20 @@ import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
+import com.bravo.data_ben.DeviceDataStruct;
+import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.data_ben.WaitDialogData;
 import com.bravo.database.BlackWhiteImsi;
 import com.bravo.database.BlackWhiteImsiDao;
 import com.bravo.dialog.DialogAddImsi;
 import com.bravo.dialog.DialogCustomBuilder;
+import com.bravo.dialog.WaitDialog;
 import com.bravo.fragments.RevealAnimationBaseFragment;
+import com.bravo.fragments.SerializableHandler;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.utils.FileUtils;
 import com.bravo.utils.Logs;
+import com.bravo.utils.Utils;
 import com.bravo.xml.HandleRecvXmlMsg;
 
 import java.io.File;
@@ -40,8 +47,10 @@ import static com.bravo.R.drawable.btn_config_selector;
 
 public class FragmentBlackImsi extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentBlackImsi";
+    private final int OPEN_DIALOG = 0;
     public static boolean isOpen = false;
     private int selectedItem = -1;
+    private ArrayList<WaitDialogData> sendDateList = new ArrayList<>();
 
     private String md5="";
     private Button AddButton;
@@ -92,15 +101,6 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.i("匿名内部类", "点击事件");
-                /*BlackWhiteImsi bwi = new BlackWhiteImsi();
-                bwi.setImsi(String.format("4600000000000%02d",new Random().nextInt(10)));
-                bwi.setType(1);
-                bwi.setName("公司");
-                bwi.setStartRb(2);
-                bwi.setStopRb(60);
-                saveData(bwi);*/
                 DialogAddImsi dialog = new DialogAddImsi(context,true,null);
                 dialog.setSaveListener(new DialogAddImsi.OnSaveData2Database() {
                     @Override
@@ -208,12 +208,6 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
             @Override
             public void recordOnItemClick(AdapterView<?> arg0, View view, int position,
                                           long id, String strMsg) {
-                /*if (adapeter.isShow()) {
-                    adapeter.setChecked(position);
-                    //view.setSelection(listAdapter.getCount() - 1);
-                } else {
-                    //Toast.makeText(MainActivity.this, dataList.get(position).getMsg(), Toast.LENGTH_SHORT).show();
-                }*/
                 if (selectedItem != position) {
                     selectedItem = position;
                     EditButton.setEnabled(true);
@@ -338,7 +332,27 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
                 @Override
                 public void onBtnClick(DialogInterface arg0, int arg1) {
                     CommunicationService.BlackMd5 = md5;
-                    new HandleRecvXmlMsg(context).SetGeneralParaRequest();
+                    sendDateList.clear();
+                    ArrayList<DeviceDataStruct> devicelist = DeviceFragmentStruct.getList();
+                    for (int i=0;i<devicelist.size();i++) {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.AP_DATA_ALIGN_SET,devicelist.get(i).getSN()));
+                    }
+                    if (sendDateList.size() ==0) {
+                        CustomToast.showToast(context, "没有要下发的");
+                        return;
+                    }
+                    Message message = new Message();
+                    message.what = OPEN_DIALOG;
+                    handler.sendMessage(message);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            Utils.mySleep(2000);//休眠2秒
+                            new HandleRecvXmlMsg(context).SetGeneralParaRequest();
+                        }
+                    }.start();
                 }
             });
             dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
@@ -374,4 +388,19 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
     }
 
 
+    private Handler handler = new SerializableHandler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case OPEN_DIALOG:
+                    WaitDialog waitDialog = new WaitDialog(context);
+                    waitDialog.setList(sendDateList);
+                    waitDialog.show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }

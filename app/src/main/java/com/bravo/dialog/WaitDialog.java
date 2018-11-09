@@ -21,6 +21,7 @@ import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.WaitDialogData;
 import com.bravo.utils.Logs;
+import com.bravo.xml.HandleRecvXmlMsg;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -80,6 +81,7 @@ public class WaitDialog extends Dialog {
 
             WaitDialogData data = dataList.get(position);
             holder.requestTitle.setText(data.getTitle());
+            holder.requestResult.setGravity(Gravity.RIGHT | Gravity.CENTER);
             if (data.getiRusult() == data.WAIT_SEND) {
                 holder.requestResult.setText("等待发送");
                 holder.requestResult.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colordialogtext));
@@ -107,9 +109,16 @@ public class WaitDialog extends Dialog {
 
         public void NotifyDataSetChanged (WaitDialogData wdd) {
             for (int i=0;i<dataList.size();i++) {
-                if (dataList.get(i).getId() == wdd.getId()) {
-                    dataList.get(i).setiRusult(wdd.getiRusult());
-                    break;
+                if (dataList.get(i).getId() == HandleRecvXmlMsg.AP_DATA_ALIGN_SET) { //为了匹配黑白名单设置，用sn作为主键
+                    if (dataList.get(i).getTitle().equals(wdd.getTitle())) {
+                        dataList.get(i).setiRusult(wdd.getiRusult());
+                        break;
+                    }
+                } else {
+                    if (dataList.get(i).getId() == wdd.getId()) {
+                        dataList.get(i).setiRusult(wdd.getiRusult());
+                        break;
+                    }
                 }
             }
             notifyDataSetChanged();

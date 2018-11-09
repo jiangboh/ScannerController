@@ -16,6 +16,7 @@ import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
 import com.bravo.R;
 import com.bravo.config.FragmentBlackImsi;
+import com.bravo.config.FragmentRedirection;
 import com.bravo.config.FragmentSetConfig;
 import com.bravo.config.FragmentWhiteImsi;
 import com.bravo.config.Fragment_Device;
@@ -495,6 +496,7 @@ public class FunActivity extends BaseActivity {
         menuList.add("基本配置");
         menuList.add("黑名单配置");
         menuList.add("白名单配置");
+        menuList.add("重定向配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
@@ -502,6 +504,7 @@ public class FunActivity extends BaseActivity {
         fragments.add(new Fragment_DeviceBaseSet());
         fragments.add(new FragmentBlackImsi());
         fragments.add(new FragmentWhiteImsi());
+        fragments.add(new FragmentRedirection());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
@@ -509,6 +512,7 @@ public class FunActivity extends BaseActivity {
         iconsResId.add(R.drawable.icon_system_selector);
         iconsResId.add(R.drawable.icon_target_selector);
         iconsResId.add(R.drawable.icon_target_selector);
+        iconsResId.add(R.drawable.icon_adjacent_cell_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 
         intent.putExtra(RevealAnimationActivity.TITLE, "设备管理");

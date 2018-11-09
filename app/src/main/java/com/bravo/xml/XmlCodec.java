@@ -43,7 +43,7 @@ public class XmlCodec {
             "创建Xml消息出错！",
     };
 
-    static int index = 0;
+    static HashMap<String, Integer>  indexList  = new HashMap<String, Integer>();
 
     /// <summary>
     /// 通过错误编号返回错误描述
@@ -204,11 +204,17 @@ public class XmlCodec {
         {
             if (KeyValueList.containsKey(keyName))
             {
-                if (index == Integer.MAX_VALUE)
+                /*if (index == Integer.MAX_VALUE)
                 {
                     index = 0;
                 }
-                index++;
+                index++;*/
+                int index = 1;
+                if (indexList.containsKey(keyName)) {
+                    index = indexList.get(keyName) + 1;
+                    indexList.remove(keyName);
+                }
+                indexList.put(keyName,index);
                 keyName = String.format("%s_#%d#", keyName, index);
             }
             KeyValueList.put(keyName, node.getTextContent().trim());
@@ -240,7 +246,9 @@ public class XmlCodec {
         Node idNode = null;
         Node MsgTypeNode = null;
 
-         Msg_Body_Struct TypeKeyValueList = new Msg_Body_Struct();
+        indexList.clear();
+
+        Msg_Body_Struct TypeKeyValueList = new Msg_Body_Struct();
         InputStream inStream = new ByteArrayInputStream(msg.getBytes());
         DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
         Element root = null;

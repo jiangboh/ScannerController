@@ -49,7 +49,7 @@ public class DialogCustomBuilder {
     public void show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setIcon(R.drawable.icon_error_errors);//设置图标
+        builder.setIcon(R.drawable.icon_help);//设置图标
         builder.setTitle(title);//设置对话框的标题
         builder.setMessage(message);//设置对话框的内容
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {  //这个是设置确定按钮

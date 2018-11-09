@@ -3,6 +3,7 @@ package com.bravo.xml;
 import android.content.Context;
 
 import com.bravo.adapters.AdapterScanner;
+import com.bravo.config.FragmentRedirection;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.TargetDataStruct;
@@ -149,6 +150,14 @@ public class LTE {
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_general_para_response)) {
             //回复数据对齐完成
             SendDataAlignOver(dds.getIp(), dds.getPort(),GetMsgIntValueInList("result", msg.dic, 0));
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
+            }
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
@@ -214,10 +223,72 @@ public class LTE {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.LTE_SYNC_SET, "", WaitDialogData.RUSULT_FAIL));
             }
-        } else {
-            Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.DataAlignOverAck)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
+            }
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_redirection_rsp)) {
+            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            if (result == 0) {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_REDIRECTION_SET, "", WaitDialogData.RUSULT_OK));
+            } else {
+                EventBus.getDefault().post(new WaitDialogData(
+                        HandleRecvXmlMsg.LTE_REDIRECTION_SET, "", WaitDialogData.RUSULT_FAIL));
+            }
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_redirection_rsp)) {
+                FragmentRedirection.Redirection data = new FragmentRedirection().new Redirection();
+                FragmentRedirection.Redirection.Category category = data.new Category();
+
+                category.setFreq(GetMsgIntValueInList("redirectInfo/freq", msg.dic, 0));
+                category.setPriorty(GetMsgIntValueInList("redirectInfo/priority", msg.dic, 0));
+                category.setRejectMethod(GetMsgIntValueInList("redirectInfo/rejectMethod", msg.dic, 0));
+                category.setAddFreq(GetMsgStringValueInList("redirectInfo/additionalFreq", msg.dic, ""));
+                if (GetMsgIntValueInList("redirectInfo/category", msg.dic, 0) == FragmentRedirection.Redirection.WHITE) {
+                    data.setWhite(category);
+                } else if (GetMsgIntValueInList("redirectInfo/category", msg.dic, 0) == FragmentRedirection.Redirection.BLACK) {
+                    data.setBlack(category);
+                } else if (GetMsgIntValueInList("redirectInfo/category", msg.dic, 0) == FragmentRedirection.Redirection.OTHER) { //其它名单
+                    data.setOther(category);
+                }
+
+                FragmentRedirection.Redirection.Category category1 = data.new Category();
+                category1.setFreq(GetMsgIntValueInList("redirectInfo/freq_#1#", msg.dic, 0));
+                category1.setPriorty(GetMsgIntValueInList("redirectInfo/priority_#1#", msg.dic, 0));
+                category1.setRejectMethod(GetMsgIntValueInList("redirectInfo/rejectMethod_#1#", msg.dic, 0));
+                category1.setAddFreq(GetMsgStringValueInList("redirectInfo/additionalFreq_#1#", msg.dic, ""));
+                if (GetMsgIntValueInList("redirectInfo/category_#1#", msg.dic, 0) == FragmentRedirection.Redirection.WHITE) {
+                    data.setWhite(category1);
+                } else if (GetMsgIntValueInList("redirectInfo/category_#1#", msg.dic, 0) == FragmentRedirection.Redirection.BLACK) {
+                    data.setBlack(category1);
+                } else if (GetMsgIntValueInList("redirectInfo/category_#1#", msg.dic, 0) == FragmentRedirection.Redirection.OTHER) { //其它名单
+                    data.setOther(category1);
+                }
+
+                FragmentRedirection.Redirection.Category category2 = data.new Category();
+                category2.setFreq(GetMsgIntValueInList("redirectInfo/freq_#2#", msg.dic, 0));
+                category2.setPriorty(GetMsgIntValueInList("redirectInfo/priority_#2#", msg.dic, 0));
+                category2.setRejectMethod(GetMsgIntValueInList("redirectInfo/rejectMethod_#2#", msg.dic, 0));
+                category2.setAddFreq(GetMsgStringValueInList("redirectInfo/additionalFreq_#2#", msg.dic, ""));
+                if (GetMsgIntValueInList("redirectInfo/category_#2#", msg.dic, 0) == FragmentRedirection.Redirection.WHITE) { //黑名单
+                    data.setWhite(category2);
+                } else if (GetMsgIntValueInList("redirectInfo/category_#2#", msg.dic, 0) == FragmentRedirection.Redirection.BLACK) {
+                    data.setBlack(category2);
+                } else if (GetMsgIntValueInList("redirectInfo/category_#2#", msg.dic, 0) == FragmentRedirection.Redirection.OTHER) { //其它名单
+                    data.setOther(category2);
+                }
+
+                data.setSn(dds.getSN());
+                EventBus.getDefault().post(data);
+            } else {
+                Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
+            }
         }
-    }
 
     public void SetApRedio(String ip,int port,int mode,boolean isOn) {
         int active_mode;
@@ -270,7 +341,6 @@ public class LTE {
     }*/
 
     public void SetApParameter(String ip,int port,String name,String value) {
-
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_parameter_request);
         msg.dic.put("paramName", name);
         msg.dic.put("paramValue", value);
@@ -288,18 +358,19 @@ public class LTE {
                     HandleRecvXmlMsg.LTE_PERIOD_FREQ, "", WaitDialogData.SEND));
         }
 
-
-
         return ;
     }
 
-    public void SendGeneralParaRequest(String ip,int port) {
+    public void SendGeneralParaRequest(String ip,int port,String sn) {
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_general_para_request);
         msg.dic.put("timeout",0);
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
         EventBus.getDefault().post(ebmsm);
+
+        EventBus.getDefault().post(new WaitDialogData(
+                HandleRecvXmlMsg.LTE_SON_CONFIG,sn, WaitDialogData.SEND));
 
         return ;
     }
@@ -442,6 +513,52 @@ public class LTE {
 
         msg.dic.put("FtpUser","user");
         msg.dic.put("FtpPas","password");
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendGetRedirectionRequest(String ip, int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.get_redirection_req);
+        msg.dic.put("timeout",0);
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendSetRedirectionRequest(String ip, int port,int category,FragmentRedirection.Redirection.Category data) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_redirection_req);
+        msg.dic.put("category",category);
+        msg.dic.put("priority",data.getPriorty());
+        if (data.getPriorty() == 2) {// 2G
+            msg.dic.put("GeranRedirect",1);
+            msg.dic.put("UtranRedirect",0);
+            msg.dic.put("EtranRedirect",0);
+            msg.dic.put("arfcn",data.getFreq());
+        } else if (data.getPriorty() == 3) {// 3G
+            msg.dic.put("UtranRedirect",1);
+            msg.dic.put("GeranRedirect",0);
+            msg.dic.put("EtranRedirect",0);
+            msg.dic.put("uarfcn",data.getFreq());
+        } else if (data.getPriorty() == 4) {// 4G
+            msg.dic.put("EtranRedirect",1);
+            msg.dic.put("UtranRedirect",0);
+            msg.dic.put("GeranRedirect",0);
+            msg.dic.put("earfcn",data.getFreq());
+        } else {
+            msg.dic.put("EtranRedirect",0);
+            msg.dic.put("UtranRedirect",0);
+            msg.dic.put("GeranRedirect",0);
+        }
+        msg.dic.put("RejectMethod",data.getRejectMethod());
+        msg.dic.put("additionalFreq",data.getAddFreq());
+
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

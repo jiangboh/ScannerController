@@ -266,4 +266,23 @@ public class DeviceFragmentStruct {
             lock.unlock();
         }
     }
+
+    public static ArrayList<String> getLTESnList() {
+        ArrayList<String> rList = new ArrayList<String>();
+        lock.lock();
+        try {
+            for(int i = 0 ;i<dList.size();i++)
+            {
+                String mode = dList.get(i).getMode();
+                if (mode.equals(DeviceDataStruct.MODE.LTE_TDD)
+                        || mode.equals(DeviceDataStruct.MODE.LTE_FDD)
+                        || mode.equals(DeviceDataStruct.MODE.WCDMA)) {
+                    rList.add(dList.get(i).getSN());
+                }
+            }
+            return rList;
+        } finally {
+            lock.unlock();
+        }
+    }
 }
