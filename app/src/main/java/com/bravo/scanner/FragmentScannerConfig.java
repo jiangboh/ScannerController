@@ -33,7 +33,7 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
     public static final String tn_DupRemo = "DupRemo";
     public static final Boolean DefultDupRemo = true;
     public static final int DefultMaxNum = 10000;
-       public static final int MinImsiNum = 1000;
+    public static final int MinImsiNum = 1000;
 
     private int iMaxNum = 1000;
     private TextView tv_MaxNum;
@@ -69,7 +69,6 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         ck_DupRemo = (CheckBox) contentView.findViewById(R.id.ck_DupRemo);
-        ck_DupRemo.setChecked(isDupRemo);
         ck_DupRemo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

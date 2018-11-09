@@ -9,7 +9,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bravo.BuildConfig;
 import com.bravo.Find.FragmentFind;
@@ -79,12 +78,12 @@ public class FunActivity extends BaseActivity {
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
                 //弹出提示，可以有多种方式
-                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                CustomToast.showToast(mContext,"再按一次退出程序");
                 exitTime = System.currentTimeMillis();
             } else {
-                finish();
+                //finish();
                 //参数用作状态码；根据惯例，非 0 的状态码表示异常终止。
-                //System.exit(0);
+                System.exit(0);
             }
             return true;
         }

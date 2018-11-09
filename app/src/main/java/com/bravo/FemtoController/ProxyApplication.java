@@ -16,6 +16,8 @@ import com.bravo.utils.LogsManager;
 import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.utils.Utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 
 public class ProxyApplication extends Application {
@@ -48,6 +50,9 @@ public class ProxyApplication extends Application {
 				sb.append(Utils.getVersionCode(ProxyApplication.this));
 				sb.append(Utils.getMobileInfo());
 				sb.append(ex.getMessage());
+				StringWriter sw = new StringWriter();
+				ex.printStackTrace(new PrintWriter(sw));
+				sb.append(sw.toString());
 				Logs.e(TAG,sb.toString(),"crashMsg",true);
 				mRequestQueue.cancelAll();
 				mRequestQueue.stop();
