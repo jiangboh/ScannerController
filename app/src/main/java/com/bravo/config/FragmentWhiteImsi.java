@@ -340,7 +340,7 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
                         sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.AP_DATA_ALIGN_SET,devicelist.get(i).getSN()));
                     }
                     if (sendDateList.size() ==0) {
-                        CustomToast.showToast(context, "没有要下发的");
+                        CustomToast.showToast(context, "没有要下发的设备");
                         return;
                     }
                     Message message = new Message();

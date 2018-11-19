@@ -78,6 +78,7 @@ public class CommunicationService extends Service {
 
         loadData();
 
+        //打开FTP服务器
         ftpServer = new FtpServerlet();
         ftpServer.setmDirectory(new FileUtils(this).getFileCacheDir());
         ftpServer.start();

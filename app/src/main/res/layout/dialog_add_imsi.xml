@@ -237,9 +237,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/dialog_left_btn_bg_selector"
+            android:background="@drawable/dialog_btn_bg_selector"
             android:text="取  消"
             android:textAllCaps="false"
+            android:textColor="@drawable/text_color_selector"
             android:textSize="@dimen/font_size_18" />
 
         <View
@@ -252,9 +253,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/dialog_right_btn_bg_selector"
+            android:background="@drawable/dialog_btn_bg_selector"
             android:text="确  定"
             android:textAllCaps="false"
+            android:textColor="@drawable/text_color_selector"
             android:textSize="@dimen/font_size_18" />
     </LinearLayout>
+
 </LinearLayout>
