@@ -6,6 +6,8 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +17,8 @@ import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
-import com.bravo.custom_view.CustomToast;
+import com.bravo.audio.VoiceSpeaker;
+import com.bravo.audio.VoiceTemplate;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
@@ -56,6 +59,12 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private final String TAG = "FragmentpPositionListen";
 
     public static boolean isOpen = false; //界面是否打开
+
+    //语音报报
+    //private TextToSpeech.OnInitListener onInitListener;
+    //private TextToSpeech speech;
+    //private MediaPlayer.OnCompletionListener onCompletionListener;
+    //private MediaPlayer player = new MediaPlayer();
 
     private  static ArrayList<String> imsiList = new ArrayList<String>();
     private static ArrayAdapter<String> adapter;
@@ -172,9 +181,10 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
         bSound.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CustomToast.showToast(context,"语音播报功能暂未实现");
+                //CustomToast.showToast(context,"语音播报功能暂未实现");
                 if (soundOpen) {
                     soundOpen = false;
+                    onStopPlay();
                     bSound.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sound_close));
                 } else {
                     soundOpen = true;
@@ -183,6 +193,28 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
                 saveData();
             }
         });
+
+        tRssi.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Logs.d(TAG,"改变后的值：" + tRssi.getText().toString());
+                if (soundOpen) {
+                    onPlayMultiSounds(Integer.parseInt(tRssi.getText().toString()));
+                }
+                //onPlaySingleSoundClicked();
+            }
+        });
+
     }
 
     @Override
@@ -229,6 +261,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     @Override
     public void onStop() {
         Logs.d(TAG,"onStop",true);
+        onStopPlay();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -429,6 +462,22 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         LineData lineData = new LineData(lineDataSet);
         lineChart.setData(lineData);
         lineChart.invalidate();
+    }
+
+    private void onStopPlay() {
+        VoiceSpeaker.getInstance().stopSpeak();
+    }
+
+    public void onPlayMultiSounds(int rssi) {
+        //context.sendBroadcast(new Intent(context, VoiceBroadcastReceiver.class));
+        List<String> list = new VoiceTemplate()
+                //.prefix("success")
+                //.numString("15.00")
+                //.suffix("yuan")
+                .numString(String.valueOf(Math.abs(rssi)))
+                .gen();
+
+        VoiceSpeaker.getInstance().startSpeak(context,list);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

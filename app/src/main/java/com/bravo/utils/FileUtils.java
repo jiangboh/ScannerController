@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -355,4 +357,8 @@ public class FileUtils {
 		return stringBuilder.toString();
 	}
 
+	public AssetFileDescriptor getAssetFileDescription(String filename) throws IOException {
+		AssetManager manager = context.getApplicationContext().getAssets();
+		return manager.openFd(filename);
+	}
 }
