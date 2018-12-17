@@ -6,9 +6,11 @@ import com.bravo.adapters.AdapterScanner;
 import com.bravo.config.FragmentRedirection;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.data_ben.PositionDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.scanner.FragmentpPositionListen;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
@@ -19,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.R.attr.value;
 import static com.bravo.xml.FindMsgStruct.GetMsgIntValueInList;
 import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
@@ -71,6 +74,14 @@ public class LTE {
             }
 
             return;
+        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.meas_report)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+            String imsi = GetMsgStringValueInList("imsi", msg.dic, "");
+            int rsrp = GetMsgIntValueInList("rsrp",msg.dic,-128);
+            PositionDataStruct data = new PositionDataStruct(dds.getSN(),imsi,
+                    simpleDateFormat.format(System.currentTimeMillis()).toString(),rsrp);
+            FragmentpPositionListen.addPositionData(data);
+            EventBus.getDefault().post(data);
         } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
             gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());

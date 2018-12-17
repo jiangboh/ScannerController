@@ -40,6 +40,7 @@ import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.log.Local_Fragment;
 import com.bravo.scanner.FragmentScannerConfig;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.scanner.FragmentpPositionListen;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgConstant;
 import com.bravo.status.Basic_Fragment;
@@ -446,19 +447,22 @@ public class FunActivity extends BaseActivity {
     private void onScannerClicked(){
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
-        menuList.add("实时显示");
+        menuList.add("实时捕号");
+        menuList.add("定位显示");
         menuList.add("捕号配置");
         //menuList.add("数据搜索");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentScannerListen());
+        fragments.add(new FragmentpPositionListen());
         fragments.add(new FragmentScannerConfig());
         //fragments.add(new FragmentScannerSearch());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_broadcast_selector);
+        iconsResId.add(R.drawable.icon_test_selector);
         iconsResId.add(R.drawable.icon_config_selector);
         //iconsResId.add(R.drawable.icon_scan_selected);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);

@@ -5,9 +5,11 @@ import android.content.Context;
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
+import com.bravo.data_ben.PositionDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.data_ben.WaitDialogData;
 import com.bravo.scanner.FragmentScannerListen;
+import com.bravo.scanner.FragmentpPositionListen;
 import com.bravo.socket_service.CommunicationService;
 import com.bravo.socket_service.EventBusMsgSendUDPMsg;
 import com.bravo.utils.Logs;
@@ -420,7 +422,7 @@ public class GSM_ZYF {
         }
         else if (recv.bMsgId ==UE_ORM_REPORT_MSG)
         {
-            //Send2Main_UE_ORM_REPORT_MSG(apToKen, recv, Main2ApControllerMsgType.gsm_msg_recv);
+            Send2Main_UE_ORM_REPORT_MSG(dds, recv, Msg_Body_Struct.gsm_msg_recv);
         }
         else if (recv.bMsgId ==FAP_PARAM_REPORT_MSG)
         {
@@ -896,6 +898,21 @@ public class GSM_ZYF {
         } else {
             //保存到列表
             AdapterScanner.AddScannerImsi(targetDataStruct);
+        }
+    }
+
+    private void Send2Main_UE_ORM_REPORT_MSG(DeviceDataStruct dds, MsgRecvStruct recv, String msgType) {
+        GetDataValue gdv = new GetDataValue(recv.data);
+        int bOrmType = gdv.GetValueByString_Byte();
+        if (bOrmType == 3) {
+            String imsi = gdv.GetValueByString_String(30);
+            int rsrp = gdv.GetValueByString_SByte();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+            PositionDataStruct data = new PositionDataStruct(dds.getSN(),imsi,
+                    simpleDateFormat.format(System.currentTimeMillis()).toString(),rsrp);
+            FragmentpPositionListen.addPositionData(data);
+            EventBus.getDefault().post(data);
         }
     }
 

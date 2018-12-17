@@ -5,6 +5,7 @@ import com.bravo.utils.Logs;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,6 +21,7 @@ public class DeviceFragmentStruct {
     private static ArrayList<DeviceDataStruct> dList =  new ArrayList<>();
     private static Lock lock = new ReentrantLock();
     private static Timer timer = null;
+    private static int inum = 1;
     private static int offLienTime = 20;
 
     public static void StartCheckApTimer(int time,int offTime)
@@ -39,6 +41,29 @@ public class DeviceFragmentStruct {
             boolean del = false;
             int diff = offLienTime;//秒
             Long curTime = System.currentTimeMillis();
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+
+            inum++;
+            if ((inum % 300) == 0) {
+                PositionDataStruct data = new PositionDataStruct("1asd2222222222","1asd2222222222",
+                        simpleDateFormat.format(curTime).toString(),
+                        (int) ((Math.random()) * 100));
+                //FragmentpPositionListen.addPositionData(data);
+                //EventBus.getDefault().post(data);
+            } else if ((inum % 3) == 0) {
+                PositionDataStruct data = new PositionDataStruct("1234567890123456","1234567890123456",
+                        simpleDateFormat.format(curTime).toString(),
+                        (int) ((Math.random()) * 100));
+                //FragmentpPositionListen.addPositionData(data);
+                //EventBus.getDefault().post(data);
+            } else {
+                PositionDataStruct data = new PositionDataStruct("abcdefghigklmnop","abcdefghigklmnop",
+                        simpleDateFormat.format(curTime).toString(),
+                        (int) ((Math.random() - 1) * 100));
+                //FragmentpPositionListen.addPositionData(data);
+                //EventBus.getDefault().post(data);
+            }
             lock.lock();
             try {
                 for(int i=dList.size()-1;i>=0;i--)

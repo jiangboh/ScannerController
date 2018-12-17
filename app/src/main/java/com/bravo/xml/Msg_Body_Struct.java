@@ -24,6 +24,7 @@ public class Msg_Body_Struct
     public static final String status_request = "status_request";
 
     public static final String scanner = "scanner";
+    public static final String meas_report = "meas_report";
 
     public static final String gsm_msg = "gsm_msg";
     public static final String ack_msg = "ack_msg";
