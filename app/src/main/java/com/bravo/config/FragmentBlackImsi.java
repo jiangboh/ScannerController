@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -108,6 +109,8 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
                         return saveData(imsiInfo);
                     }
                 });
+                //这句话，就是决定上面的那个黑框，也就是dialog的title。
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.show();
             }
         });
@@ -125,6 +128,8 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
                         return saveData(imsiInfo);
                     }
                 });
+                //这句话，就是决定上面的那个黑框，也就是dialog的title。
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.show();
             }
         });

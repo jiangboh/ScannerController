@@ -375,10 +375,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="确  定"
-            android:background="@drawable/dialog_one_btn_selected_bg"
+            android:background="@drawable/dialog_btn_bg_selector"
             android:textAllCaps="false"
-            android:textColor="#00b4ff"
+            android:textColor="#0000ff"
             android:textSize="@dimen/font_size_18"/>
-
     </LinearLayout>
 </LinearLayout>

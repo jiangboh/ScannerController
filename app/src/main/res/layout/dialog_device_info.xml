@@ -598,7 +598,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/dialog_one_btn_selected_bg"
+            android:background="@drawable/dialog_btn_bg_selector"
             android:text="确  定"
             android:textAllCaps="false"
             android:textColor="#00b4ff"

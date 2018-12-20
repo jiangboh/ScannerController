@@ -21,6 +21,8 @@ public class LTE_GeneralPara {
     private int power;
     private int periodtac;
 
+    private int RfTxGain;
+
     private String Earfcnlist;
 
     private String otherplmn;
@@ -245,5 +247,13 @@ public class LTE_GeneralPara {
 
     public void setManualBw(int manualBw) {
         ManualBw = manualBw;
+    }
+
+    public int getRfTxGain() {
+        return RfTxGain;
+    }
+
+    public void setRfTxGain(int rfTxGain) {
+        RfTxGain = rfTxGain;
     }
 }

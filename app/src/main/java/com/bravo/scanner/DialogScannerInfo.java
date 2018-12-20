@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.bravo.R;
@@ -33,6 +34,10 @@ public class DialogScannerInfo extends Dialog {
     private EditText sInfo_devType;
     private EditText sInfo_rsrp ;
     private EditText sInfo_we ;
+
+    private Button bClose;
+    private Button bWhite;
+    private Button bBlack;
 
     public DialogScannerInfo(@NonNull Context context,TargetDataStruct tds) {
         super(context);
@@ -80,13 +85,16 @@ public class DialogScannerInfo extends Dialog {
         else
             sInfo_we.setText("没有经纬度信息");
 
-
-        findViewById(R.id.sInfo_ok).setOnClickListener(new RecordOnClick() {
+        bClose = (Button)findViewById(R.id.sInfo_ok);
+        bClose.setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
                 cancel();
                 super.recordOnClick(v, "Cancel Event");
             }
         });
+
+
     }
+
 }

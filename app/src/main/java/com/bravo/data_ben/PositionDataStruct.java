@@ -15,7 +15,7 @@ public class PositionDataStruct {
     private int value;
 
 
-    public PositionDataStruct(String imsi,String sn,String tradeDate, int value) {
+    public PositionDataStruct(String sn,String imsi,String tradeDate, int value) {
         this.imsi = imsi;
         this.sn = sn;
         this.tradeDate = tradeDate;

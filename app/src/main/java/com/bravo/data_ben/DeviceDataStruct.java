@@ -3,6 +3,7 @@ package com.bravo.data_ben;
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
 import com.bravo.utils.Utils;
+import com.bravo.xml.CDMA_GeneralPara;
 import com.bravo.xml.FindMsgStruct;
 import com.bravo.xml.LTE_GeneralPara;
 import com.bravo.xml.Msg_Body_Struct;
@@ -72,7 +73,7 @@ public class DeviceDataStruct {
         if (mode.equals(DeviceDataStruct.MODE.LTE_TDD)
                 || mode.equals(DeviceDataStruct.MODE.LTE_FDD)
                 || mode.equals(DeviceDataStruct.MODE.WCDMA)) {
-            generalPara = new LTE_GeneralPara();
+            generalPara = new CDMA_GeneralPara();
         } else if (mode.equals(DeviceDataStruct.MODE.CDMA)
                 || mode.equals(DeviceDataStruct.MODE.GSM_V2)) {
             generalPara = new LTE_GeneralPara();

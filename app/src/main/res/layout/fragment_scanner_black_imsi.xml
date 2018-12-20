@@ -28,7 +28,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:text="IMSI:"
-                android:textColor="#0000FF"
+                android:textColor="#000000"
                 android:textSize="@dimen/font_size_18"/>
 
             <Spinner
@@ -43,26 +43,6 @@
                 android:textColor="@color/colorHalfTransparent"
                 android:textSize="@dimen/font_size_18"></Spinner>
 
-<!--
-            <TextView
-                android:id="@+id/imsi"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:layout_gravity="center"
-                android:textSize="@dimen/font_size_20"
-                android:layout_marginTop="5dp"
-                android:text="IMSI:"
-                />
-
-            <Button
-                android:id="@+id/lock"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:background="@drawable/btn_lock_close"
-                />
--->
             <Button
                 android:id="@+id/sound"
                 android:layout_width="25dp"
@@ -72,7 +52,15 @@
                 android:layout_marginRight="5dp"
                 android:background="@drawable/btn_sound_close"
                 />
-
+            <Button
+                android:id="@+id/att"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/btn_att_close"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -94,6 +82,8 @@
                 android:text=""
                 android:textColor="#0000FF"
                 android:textSize="@dimen/font_size_50"/>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -104,6 +94,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="2">
+
             <!--sn-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -205,7 +196,6 @@
                         android:layout_height="0.3dp"/>
                 </LinearLayout>
             </LinearLayout>
-
             <!--ip/port-->
             <LinearLayout
                 android:layout_width="match_parent"

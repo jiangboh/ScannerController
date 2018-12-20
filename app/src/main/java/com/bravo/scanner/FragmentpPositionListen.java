@@ -19,6 +19,7 @@ import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
 import com.bravo.audio.VoiceSpeaker;
 import com.bravo.audio.VoiceTemplate;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
@@ -26,6 +27,8 @@ import com.bravo.data_ben.PositionDataStruct;
 import com.bravo.data_ben.SavePositionData;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.Logs;
+import com.bravo.xml.HandleRecvXmlMsg;
+import com.bravo.xml.LTE_GeneralPara;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
@@ -60,16 +63,10 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
     public static boolean isOpen = false; //界面是否打开
 
-    //语音报报
-    //private TextToSpeech.OnInitListener onInitListener;
-    //private TextToSpeech speech;
-    //private MediaPlayer.OnCompletionListener onCompletionListener;
-    //private MediaPlayer player = new MediaPlayer();
-
     private  static ArrayList<String> imsiList = new ArrayList<String>();
     private static ArrayAdapter<String> adapter;
 
-    private Boolean lockOpen = false;
+    private Boolean attOpen = false;
     private Boolean soundOpen = false;
 
     private String currImsi = "";
@@ -78,7 +75,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
     private TextView tRssi;
     private Spinner sImsi;
-    //private Button bLock;
+    private Button bAtt;
     private Button bSound;
 
     private TextView dSn;
@@ -154,6 +151,26 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     @Override
     public void initView() {
         tRssi = (TextView)contentView.findViewById(R.id.rssi);
+        tRssi.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Logs.d(TAG,"改变后的值：" + tRssi.getText().toString());
+                if (soundOpen) {
+                    onPlayMultiSounds(Integer.parseInt(tRssi.getText().toString()));
+                }
+                //onPlaySingleSoundClicked();
+            }
+        });
 
         dSn = (TextView)contentView.findViewById(R.id.sn);
         dFullname = (TextView)contentView.findViewById(R.id.fullname);
@@ -171,7 +188,33 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         //添加事件Spinner事件监听
         sImsi.setOnItemSelectedListener(new SpinnerSelectedListener());
 
-        //bLock = (Button) contentView.findViewById(R.id.lock);
+        bAtt = (Button) contentView.findViewById(R.id.att);
+        if (attOpen) {
+            bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+        } else {
+            bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+        }
+        bAtt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DeviceDataStruct dds = DeviceFragmentStruct.getDevice(dSn.getText().toString());
+                if (attOpen) {
+                    attOpen = false;
+                    CustomToast.showToast(context,"已关闭上行衰减功能");
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+                    if (dds != null)
+                        new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN","0");
+                } else {
+                    attOpen = true;
+                    CustomToast.showToast(context,"已打开上行衰减功能");
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+                    if (dds != null)
+                        new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN","-10");
+
+                }
+                saveData();
+            }
+        });
+
         bSound = (Button) contentView.findViewById(R.id.sound);
 
         if (soundOpen) {
@@ -194,27 +237,6 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
             }
         });
 
-        tRssi.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Logs.d(TAG,"改变后的值：" + tRssi.getText().toString());
-                if (soundOpen) {
-                    onPlayMultiSounds(Integer.parseInt(tRssi.getText().toString()));
-                }
-                //onPlaySingleSoundClicked();
-            }
-        });
-
     }
 
     @Override
@@ -228,6 +250,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
             Logs.d(TAG, "您选择了:" + imsiList.get(position));
             initChart(lineChart);
             currImsi = imsiList.get(position);
+
             showLineChart(dataList,currImsi, 0xFF6FA9E1);
         }
 
@@ -239,14 +262,14 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private void saveData() {
         SharedPreferences preferences = context.getSharedPreferences("FragmentpPositionListen", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("lockOpen", lockOpen);
+        editor.putBoolean("attOpen", attOpen);
         editor.putBoolean("soundOpen", soundOpen);
         editor.commit();
     }
 
     private void loadData() {
         SharedPreferences sp = context.getSharedPreferences("FragmentpPositionListen", MODE_PRIVATE);
-        lockOpen = sp.getBoolean("lockOpen",false);
+        attOpen = sp.getBoolean("attOpen",false);
         soundOpen = sp.getBoolean("soundOpen",false);
     }
 
@@ -511,6 +534,18 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
                 dMode.setText(device.getMode());
                 dIp.setText(device.getIp());
                 dPort.setText(String.valueOf(device.getPort()));
+
+                int att = ((LTE_GeneralPara)device.getGeneralPara()).getRfTxGain();
+                if (att < 0) {
+                    attOpen = true;
+                } else {
+                    attOpen = false;
+                }
+                if (attOpen) {
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+                } else {
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+                }
             }
 
             dataList.clear();

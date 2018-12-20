@@ -1,6 +1,7 @@
 package com.bravo.xml;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.config.FragmentRedirection;
@@ -20,8 +21,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
-import static android.R.attr.value;
 import static com.bravo.xml.FindMsgStruct.GetMsgIntValueInList;
 import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 import static com.bravo.xml.XmlCodec.EncodeApXmlMessage;
@@ -36,8 +37,21 @@ public class LTE {
     private final int ACTIVE_STOP = 2;
     private final int ACTIVE_REBOOT = 3;
 
+    private class TimeAndRssi {
+        public Long tm;
+        public int sumRssi;
+        public int num;
+
+        public TimeAndRssi(Long tm) {
+            this.tm = tm;
+            this.sumRssi = 0;
+            this.num = 0;
+        }
+    }
+    private static HashMap<String,TimeAndRssi> LastReportTime = new HashMap();
 
     Context mContext;
+
 
     public LTE(Context context) {
         this.mContext = context;
@@ -74,15 +88,39 @@ public class LTE {
             }
 
             return;
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.meas_report)) {
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.meas_report)) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
             String imsi = GetMsgStringValueInList("imsi", msg.dic, "");
             int rsrp = GetMsgIntValueInList("rsrp",msg.dic,-128);
-            PositionDataStruct data = new PositionDataStruct(dds.getSN(),imsi,
-                    simpleDateFormat.format(System.currentTimeMillis()).toString(),rsrp);
-            FragmentpPositionListen.addPositionData(data);
-            EventBus.getDefault().post(data);
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
+            Log.d(TAG,"收到RSRP：" + rsrp);
+            //加上上行衰减值
+            rsrp = rsrp - ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain();
+            Log.d(TAG,"加衰减后RSRP：" + rsrp);
+            boolean isReport = false;
+            Long currTime = System.currentTimeMillis();
+            if (LastReportTime.containsKey(imsi)) {
+                ((TimeAndRssi) LastReportTime.get(imsi)).num++;
+                ((TimeAndRssi) LastReportTime.get(imsi)).sumRssi += rsrp;
+                Long nowTime = ((TimeAndRssi) LastReportTime.get(imsi)).tm;
+
+                if ((currTime - nowTime) / 1000 > 2) {
+                    isReport = true;
+                    rsrp = ((TimeAndRssi) LastReportTime.get(imsi)).sumRssi / ((TimeAndRssi) LastReportTime.get(imsi)).num;
+
+                    LastReportTime.remove(imsi);
+                }
+            } else {
+                isReport = true;
+            }
+            if (isReport) {
+                LastReportTime.put(imsi,new TimeAndRssi(currTime));
+                Log.d(TAG,"上报RSRP：" + rsrp);
+                PositionDataStruct data = new PositionDataStruct(dds.getSN(), imsi,
+                        simpleDateFormat.format(System.currentTimeMillis()).toString(), rsrp);
+                FragmentpPositionListen.addPositionData(data);
+                EventBus.getDefault().post(data);
+            }
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_general_para_response)) {
             LTE_GeneralPara gPara = new LTE_GeneralPara();
             gPara.setSn(DeviceFragmentStruct.getDevice(dds.getIp(),dds.getPort()).getSN());
 
@@ -102,6 +140,7 @@ public class LTE {
             gPara.setMnc(plmn.substring(3));
             gPara.setPower(GetMsgIntValueInList("txpower", msg.dic, 0));
             gPara.setPeriodtac(GetMsgIntValueInList("periodtac", msg.dic, 0));
+            gPara.setRfTxGain(GetMsgIntValueInList("RfTxGain",msg.dic,0));
 
             gPara.setEarfcnlist(GetMsgStringValueInList("Earfcnlist", msg.dic, ""));
 

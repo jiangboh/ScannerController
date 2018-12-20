@@ -7,6 +7,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.database.BlackWhiteImsi;
 import com.bravo.database.TargetUser;
 import com.bravo.database.TargetUserDao;
 import com.bravo.fragments.RevealAnimationBaseFragment;
@@ -136,24 +138,38 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
 
         try {
             TargetListView.setOnItemLongClickListener(new RecordOnItemLongClick() {
-               @Override
+                @Override
                 public void recordOnItemLongClick(AdapterView<?> parent, View view, final int position, long id, String strMsg) {
-                        return;
-                }
+                   TargetDataStruct targetDataStruct = adapterScanner.getItem(position);
+                   Logs.d(TAG,"长按：" + targetDataStruct.getImsi(),true);
+                   BlackWhiteImsi info = new BlackWhiteImsi();
+                   info.setImsi(targetDataStruct.getImsi());
+                   info.setImei(targetDataStruct.getImei());
+                   info.setTmsi(targetDataStruct.getTmsi());
+                   info.setType(targetDataStruct.getiUserType());
+
+                   DialogScannerMenu dialog = new DialogScannerMenu(context,info);
+
+                   dialog.show();
+               }
             });
             TargetListView.setOnItemClickListener(new RecordOnItemClick() {
                 @Override
                 public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3, String strMsg) {
                     TargetDataStruct targetDataStruct = adapterScanner.getItem(arg2);
-                    new DialogScannerInfo(context,targetDataStruct).show();
                     //super.recordOnItemClick(arg0, arg1, arg2, arg3, "User Item Click Event " + targetDataStruct.getImsi());
                     Logs.d(TAG,"点击：" + targetDataStruct.getImsi(),true);
+                    DialogScannerInfo dialog = new DialogScannerInfo(context,targetDataStruct);
+                    //这句话，就是决定上面的那个黑框，也就是dialog的title。
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.show();
                 }
             });
         }catch (Exception e) {
             Logs.e(TAG,"点击界面出错：" + e.getMessage(),true);
         }
     }
+
 
     @Override
     public void initData(Bundle savedInstanceState) {

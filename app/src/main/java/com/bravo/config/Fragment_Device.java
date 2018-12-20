@@ -2,6 +2,7 @@ package com.bravo.config;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -81,7 +82,10 @@ public class Fragment_Device extends RevealAnimationBaseFragment {
             public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                           long arg3, String strMsg) {
                 //DeviceDataStruct deviceDataStruct = adapterList.getItem(arg2);
-                new DialogDeviceInfo(context,adapterList.getItem(arg2)).show();
+                DialogDeviceInfo dialog = new DialogDeviceInfo(context,adapterList.getItem(arg2));
+                //这句话，就是决定上面的那个黑框，也就是dialog的title。
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
             }
         });
     }
