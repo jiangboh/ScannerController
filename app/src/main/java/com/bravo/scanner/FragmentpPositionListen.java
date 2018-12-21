@@ -197,21 +197,25 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         bAtt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DeviceDataStruct dds = DeviceFragmentStruct.getDevice(dSn.getText().toString());
-                if (attOpen) {
-                    attOpen = false;
-                    CustomToast.showToast(context,"已关闭上行衰减功能");
-                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
-                    if (dds != null)
-                        new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN","0");
+                if (!dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)) {
+                    CustomToast.showToast(context, "目前仅LTE_FDD产品支持上行衰减功能");
                 } else {
-                    attOpen = true;
-                    CustomToast.showToast(context,"已打开上行衰减功能");
-                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
-                    if (dds != null)
-                        new HandleRecvXmlMsg(context,dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN","-10");
+                    if (attOpen) {
+                        attOpen = false;
+                        CustomToast.showToast(context, "已关闭上行衰减功能");
+                        bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+                        if (dds != null)
+                            new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN", "0");
+                    } else {
+                        attOpen = true;
+                        CustomToast.showToast(context, "已打开上行衰减功能");
+                        bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+                        if (dds != null)
+                            new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN", "-10");
 
+                    }
+                    saveData();
                 }
-                saveData();
             }
         });
 
@@ -522,7 +526,11 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
 
         if (currImsi.length() == 0) {
-            sImsi.setSelection(0);
+            //sImsi.setSelection(0);
+            initChart(lineChart);
+            currImsi = data.getImsi();
+
+            showLineChart(dataList,currImsi, 0xFF6FA9E1);
         }
 
         if (currImsi.equals(data.getImsi())) { //更新界面

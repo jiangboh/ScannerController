@@ -69,7 +69,7 @@ public class DialogScannerMenu extends Dialog {
         listview = (ListView) findViewById(R.id.menulist);
         //设定列表项的选择模式为单选
         adapter=new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, data);
-        listview.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listview.setChoiceMode(ListView.CHOICE_MODE_NONE);
         listview.setAdapter(adapter);
 
         try {

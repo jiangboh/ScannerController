@@ -299,6 +299,10 @@ public class AdapterScanner extends BaseAdapter {
         holder.layout_conntime.setVisibility(View.GONE);
         //count
         holder.textViewCount.setText(String.valueOf(targetDataStructs.get(position).getCount()));
+
+        //设置item的点击效果
+        convertView.setBackgroundResource(R.drawable.dialog_btn_bg_selector);
+
         return convertView;
     }
 }

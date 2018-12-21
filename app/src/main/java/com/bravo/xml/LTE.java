@@ -273,7 +273,7 @@ public class LTE {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.LTE_SYNC_SET, "", WaitDialogData.RUSULT_FAIL));
             }
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.DataAlignOverAck)) {
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.DataAlignOverAck)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
                 EventBus.getDefault().post(new WaitDialogData(
@@ -282,7 +282,7 @@ public class LTE {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
             }
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_redirection_rsp)) {
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_redirection_rsp)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
                 EventBus.getDefault().post(new WaitDialogData(
@@ -291,7 +291,7 @@ public class LTE {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.LTE_REDIRECTION_SET, "", WaitDialogData.RUSULT_FAIL));
             }
-        } if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_redirection_rsp)) {
+        } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.get_redirection_rsp)) {
                 FragmentRedirection.Redirection data = new FragmentRedirection().new Redirection();
                 FragmentRedirection.Redirection.Category category = data.new Category();
 
