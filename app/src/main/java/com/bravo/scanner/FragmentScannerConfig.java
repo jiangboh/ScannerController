@@ -35,6 +35,15 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
     public static final int DefultMaxNum = 10000;
     public static final int MinImsiNum = 1000;
 
+    public static final String tn_RxGain = "RxGain";
+    public static final int DefultRxGain = -8;
+    public static final int MinRxGain = -15;
+
+    private int iRxGain = -8;
+    private TextView tv_RxGain;
+    private SeekBar sb_RxGain;
+
+
     private int iMaxNum = 1000;
     private TextView tv_MaxNum;
     private SeekBar sb_MaxNum;
@@ -97,6 +106,27 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
                 Log.v("停止滑动时的值：", String.valueOf(iMaxNum));
             }
         });
+
+        tv_RxGain = (TextView) contentView.findViewById(R.id.tx_RxGain);
+        sb_RxGain = (SeekBar) contentView.findViewById(R.id.sb_RxGain);
+        sb_RxGain.setMax(5 - FragmentScannerConfig.MinRxGain);
+        sb_RxGain.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tv_RxGain.setText((FragmentScannerConfig.MinRxGain + progress) + "db");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                iRxGain = FragmentScannerConfig.MinRxGain + sb_RxGain.getProgress();
+                Log.v("停止滑动时的值：", String.valueOf(iRxGain));
+            }
+        });
     }
 
     @Override
@@ -148,6 +178,11 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         sb_MaxNum.setProgress(iMaxNum - FragmentScannerConfig.MinImsiNum);
         tv_MaxNum.setText(String.valueOf(iMaxNum)+"个");
 
+        iRxGain = sp.getInt(FragmentScannerConfig.tn_RxGain,FragmentScannerConfig.DefultRxGain);
+        Log.v("初始值：", String.valueOf(iRxGain));
+        sb_RxGain.setProgress(iRxGain - FragmentScannerConfig.MinRxGain);
+        tv_RxGain.setText(String.valueOf(iRxGain)+"db");
+
         isDupRemo = sp.getBoolean(FragmentScannerConfig.tn_DupRemo,FragmentScannerConfig.DefultDupRemo);
         ck_DupRemo.setChecked(isDupRemo);
     }
@@ -156,6 +191,7 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         SharedPreferences preferences = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(FragmentScannerConfig.tn_MaxNum, iMaxNum);
+        editor.putInt(FragmentScannerConfig.tn_RxGain, iRxGain);
         editor.putBoolean(FragmentScannerConfig.tn_DupRemo, isDupRemo);
         Log.v("保存值：", String.valueOf(iMaxNum));
         editor.commit();

@@ -49,6 +49,47 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
+    <!--RxGain-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+        <!--AllFindTime-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="8dp"
+            android:text="默认上行衰减"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <SeekBar
+            android:id="@+id/sb_RxGain"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:max="40" />
+
+        <TextView
+            android:id="@+id/tx_RxGain"
+            android:layout_width="0dp"
+            android:textColor="@color/colorItemText"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:text="-8db"
+            android:gravity="right"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"/>
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
     <!--去重-->
     <LinearLayout
         android:layout_width="match_parent"

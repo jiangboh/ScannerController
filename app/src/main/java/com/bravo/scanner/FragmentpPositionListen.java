@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,6 +75,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private Boolean soundOpen = false;
     private Boolean sync_status = false;
     private String currImsi = "";
+    private int iRxGain = -8;
 
     private PowerManager.WakeLock mWakeLock;
 
@@ -245,7 +247,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
                     CustomToast.showToast(context, "已打开上行衰减功能");
                     bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
                     if (dds != null)
-                        new HandleRecvXmlMsg(context, dds).SetGeneralParaRequest("CFG_RF_UPLINK_GAIN", "-10");
+                        new HandleRecvXmlMsg(context, dds).SetGeneralParaRequest("CFG_RF_UPLINK_GAIN", String.valueOf(iRxGain));
 
                 }
                 saveData();
@@ -356,6 +358,11 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         SharedPreferences sp = context.getSharedPreferences("FragmentpPositionListen", MODE_PRIVATE);
         attOpen = sp.getBoolean("attOpen",false);
         soundOpen = sp.getBoolean("soundOpen",false);
+
+        SharedPreferences sp1 = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
+        iRxGain = sp1.getInt(FragmentScannerConfig.tn_RxGain,FragmentScannerConfig.DefultRxGain);
+        Log.v("上行衰减初始值：", String.valueOf(iRxGain));
+
     }
 
     @Override
