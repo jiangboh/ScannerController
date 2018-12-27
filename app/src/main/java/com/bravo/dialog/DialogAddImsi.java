@@ -160,8 +160,16 @@ public class DialogAddImsi extends Dialog {
             et_imsi.setText(imsiInfo.getImsi());
             et_imei.setText(imsiInfo.getImei());
             et_tmsi.setText(imsiInfo.getTmsi());
-            et_startRb.setText(String.valueOf(imsiInfo.getStartRb()));
-            et_stopRb.setText(String.valueOf(imsiInfo.getStopRb()));
+            if (imsiInfo.getStartRb() == -1) {
+                et_startRb.setText("");
+            } else {
+                et_startRb.setText(String.valueOf(imsiInfo.getStartRb()));
+            }
+            if (imsiInfo.getStopRb() == -1) {
+                et_stopRb.setText("");
+            } else {
+                et_stopRb.setText(String.valueOf(imsiInfo.getStopRb()));
+            }
         }
     }
 

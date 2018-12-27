@@ -357,7 +357,7 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
                         public void run() {
                             super.run();
                             Utils.mySleep(2000);//休眠2秒
-                            new HandleRecvXmlMsg(context).SetGeneralParaRequest();
+                            new HandleRecvXmlMsg(context).GetGeneralParaRequest();
                         }
                     }.start();
                 }

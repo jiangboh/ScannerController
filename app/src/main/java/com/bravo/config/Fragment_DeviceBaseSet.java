@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -239,6 +240,18 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         //添加事件Spinner事件监听
         s_deviceSelect.setOnItemSelectedListener(new SpinnerSelectedListener());
         s_deviceSelect.setSelection(0 ,true);
+
+        ((Button)contentView.findViewById(R.id.get_para)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //CustomToast.showToast(context,"语音播报功能暂未实现");
+                if (deviceDate == null) {
+                    return;
+                }
+                new HandleRecvXmlMsg(context,deviceDate).GetGeneralParaRequest();
+                CustomToast.showToast(context,"获取设备参数命令已发送，等待设备上报");
+            }
+        });
+
     }
 
     @Override
@@ -1065,7 +1078,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         int index;
         if (para == null) return;
 
-        String[] source={"GPS","CNM","未同步"};
+        String[] source={"GPS","CNM","未同步","1588"};
         lte_source = (Spinner) contentView.findViewById(R.id.lte_syncSource);
         ArrayAdapter<String> adapterSource = new ArrayAdapter<String>(context,R.layout.my_spinner,source);
         lte_source.setAdapter(adapterSource);

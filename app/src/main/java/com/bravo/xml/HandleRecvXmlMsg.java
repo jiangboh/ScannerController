@@ -240,7 +240,7 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
-    public boolean SetDeviceParameter(String name,String value) {
+    public boolean SetGeneralParaRequest(String name, String value) {
         String ip = deviceDataStruct.getIp();
         int port = deviceDataStruct.getPort();
 
@@ -256,7 +256,7 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
-    public boolean SetGeneralParaRequest() {
+    public boolean GetGeneralParaRequest() {
         ArrayList<DeviceDataStruct> devicelist = DeviceFragmentStruct.getList();
 
         for (int i=0;i<devicelist.size();i++) {
@@ -279,5 +279,22 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
+    public boolean SetCnmSyncStatus(Boolean stopSync) {
+        String ip = deviceDataStruct.getIp();
+        int port = deviceDataStruct.getPort();
 
+        if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)) {
+            new LTE(mContext).SendCnmSyncStatusRequest(ip,port,stopSync);
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) ||
+                deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            return true;
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) ||
+                deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+            return true;
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+            return true;
+        }
+
+        return true;
+    }
 }

@@ -143,6 +143,8 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                    TargetDataStruct targetDataStruct = adapterScanner.getItem(position);
                    Logs.d(TAG,"长按：" + targetDataStruct.getImsi(),true);
                    BlackWhiteImsi info = new BlackWhiteImsi();
+                    info.setStartRb(-1);
+                    info.setStopRb(-1);
                    info.setImsi(targetDataStruct.getImsi());
                    info.setImei(targetDataStruct.getImei());
                    info.setTmsi(targetDataStruct.getTmsi());

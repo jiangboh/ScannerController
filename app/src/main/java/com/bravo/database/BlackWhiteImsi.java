@@ -22,8 +22,8 @@ public class BlackWhiteImsi {
     private String Imsi;
     private String Imei;
     private String Tmsi;
-    private int StartRb;
-    private int StopRb;
+    private int StartRb=-1;
+    private int StopRb=-1;
     private int Type; //名单类型：0白名单；1黑名单
 
     @Generated(hash = 819069845)

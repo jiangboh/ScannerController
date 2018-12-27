@@ -1,5 +1,6 @@
 package com.bravo.scanner;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -25,6 +26,7 @@ import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.DeviceFragmentStruct;
 import com.bravo.data_ben.PositionDataStruct;
 import com.bravo.data_ben.SavePositionData;
+import com.bravo.dialog.DialogCustomBuilder;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.Logs;
 import com.bravo.xml.HandleRecvXmlMsg;
@@ -52,7 +54,9 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.POWER_SERVICE;
+import static com.bravo.R.drawable.btn_sound_open;
 import static com.bravo.R.id.imsi;
+import static com.bravo.data_ben.DeviceFragmentStruct.getDevice;
 
 /**
  * Created by admin on 2018-12-11.
@@ -68,7 +72,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
     private Boolean attOpen = false;
     private Boolean soundOpen = false;
-
+    private Boolean sync_status = false;
     private String currImsi = "";
 
     private PowerManager.WakeLock mWakeLock;
@@ -77,6 +81,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private Spinner sImsi;
     private Button bAtt;
     private Button bSound;
+    private Button bSync;
 
     private TextView dSn;
     private TextView dFullname;
@@ -196,33 +201,62 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
         bAtt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DeviceDataStruct dds = DeviceFragmentStruct.getDevice(dSn.getText().toString());
-                if (!dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)) {
-                    CustomToast.showToast(context, "目前仅LTE_FDD产品支持上行衰减功能");
-                } else {
-                    if (attOpen) {
-                        attOpen = false;
-                        CustomToast.showToast(context, "已关闭上行衰减功能");
-                        bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
-                        if (dds != null)
-                            new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN", "0");
-                    } else {
-                        attOpen = true;
-                        CustomToast.showToast(context, "已打开上行衰减功能");
-                        bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
-                        if (dds != null)
-                            new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_RF_UPLINK_GAIN", "-10");
-
-                    }
-                    saveData();
+                DeviceDataStruct dds = getDevice(dSn.getText().toString());
+                if (dds == null) {
+                    CustomToast.showToast(context, "没有设备信息");
+                    return;
                 }
+                if ((!dds.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)) &&
+                        (!dds.getMode().equals(DeviceDataStruct.MODE.LTE_FDD))) {
+                    CustomToast.showToast(context, "目前仅LTE产品支持上行衰减功能");
+                    return;
+                }
+                if (sync_status) {
+                    LTE_GeneralPara para = (LTE_GeneralPara)dds.getGeneralPara();
+                    if (para.getSource() == 1) {
+                        DialogCustomBuilder dialog = new DialogCustomBuilder(
+                                context,"下发停止同步命令","目前为空口同步，请先停止同步后再进行衰减\n是否立即停止同步?");
+                        dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
+                            @Override
+                            public void onBtnClick(DialogInterface arg0, int arg1) {
+                                DeviceDataStruct d =  DeviceFragmentStruct.getDevice(dSn.getText().toString());
+                                new HandleRecvXmlMsg(context,d).SetCnmSyncStatus(true);
+                            }
+                        });
+                        dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
+                            @Override
+                            public void onBtnClick(DialogInterface arg0, int arg1) {
+                            }
+                        });
+                        dialog.show();
+
+                        return;
+                    }
+                }
+
+                if (attOpen) {
+                    attOpen = false;
+                    CustomToast.showToast(context, "已关闭上行衰减功能");
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+                    if (dds != null)
+                        new HandleRecvXmlMsg(context, dds).SetGeneralParaRequest("CFG_RF_UPLINK_GAIN", "0");
+                } else {
+                    attOpen = true;
+                    CustomToast.showToast(context, "已打开上行衰减功能");
+                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+                    if (dds != null)
+                        new HandleRecvXmlMsg(context, dds).SetGeneralParaRequest("CFG_RF_UPLINK_GAIN", "-10");
+
+                }
+                saveData();
+
             }
         });
 
         bSound = (Button) contentView.findViewById(R.id.sound);
 
         if (soundOpen) {
-            bSound.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sound_open));
+            bSound.setBackgroundDrawable(context.getResources().getDrawable(btn_sound_open));
         } else {
             bSound.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sound_close));
         }
@@ -235,13 +269,60 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
                     bSound.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sound_close));
                 } else {
                     soundOpen = true;
-                    bSound.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sound_open));
+                    bSound.setBackgroundDrawable(context.getResources().getDrawable(btn_sound_open));
                 }
                 saveData();
             }
         });
 
+        bSync = (Button) contentView.findViewById(R.id.sync);
+        SetSyncStatus();
+        bSync.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DeviceDataStruct dev =  DeviceFragmentStruct.getDevice(dSn.getText().toString());
+                if (dev == null) {
+                    CustomToast.showToast(context, "没有设备信息");
+                    return;
+                }
+                if (((LTE_GeneralPara)dev.getGeneralPara()).getSource() != 1) {
+                    CustomToast.showToast(context, "非CNM同步，不能作此操作");
+                    return;
+                }
+
+                if (sync_status) {
+                    new HandleRecvXmlMsg(context, dev).SetCnmSyncStatus(true);
+                    CustomToast.showToast(context, "停止CNM同步命令已下发，请等待状态变化");
+                } else {
+                    new HandleRecvXmlMsg(context, dev).SetCnmSyncStatus(false);
+                    CustomToast.showToast(context, "开启CNM同步命令已下发，请等待状态变化");
+                }
+            }
+        });
+
     }
+
+    private void SetSyncStatus() {
+        String sn = dSn.getText().toString();
+
+        if (sn.length() <= 0)  {
+            sync_status = false;
+        } else {
+            DeviceDataStruct device = getDevice(sn);
+
+            if (device == null) {
+                sync_status = false;
+            } else {
+                sync_status = device.isStatus_sync();
+            }
+        }
+
+        if (sync_status) {
+            bSync.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sync_ok));
+        } else {
+            bSync.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_sync_fail));
+        }
+    }
+
 
     @Override
     public void initData(Bundle savedInstanceState) {
@@ -510,13 +591,14 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetPosition(PositionDataStruct data) {
         boolean flag = false;
+        String rImsi = data.getImsi().toString();
         List<PositionDataStruct> currList = new ArrayList<PositionDataStruct>();
 
-        Logs.d(TAG,"接收到定位消息：" + data.getImsi() + ":" + data.getTradeDate() + "(" + data.getValue() + ")");
+        Logs.d(TAG,"接收到定位消息：" + rImsi + ":" + data.getTradeDate() + "(" + data.getValue() + ")");
 
         //更新数据列表
         for(int i=0;i<allSaveData.size();i++) {
-            if (currImsi.equals(allSaveData.get(i).getImsi())) {
+            if (rImsi.equals(allSaveData.get(i).getImsi())) {
                 for(int j =0;j<allSaveData.get(i).getDataList().size();j++) {
                     currList.add(allSaveData.get(i).getDataList().get(j));
                 }
@@ -526,17 +608,18 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
 
         if (currImsi.length() == 0) {
-            //sImsi.setSelection(0);
-            initChart(lineChart);
-            currImsi = data.getImsi();
+            sImsi.setSelection(0);
+            //initChart(lineChart);
+            //currImsi = data.getImsi();
 
-            showLineChart(dataList,currImsi, 0xFF6FA9E1);
+            //showLineChart(dataList,currImsi, 0xFF6FA9E1);
         }
 
         if (currImsi.equals(data.getImsi())) { //更新界面
             tRssi.setText(String.valueOf(data.getValue()));
             dSn.setText(data.getSn());
-            DeviceDataStruct device = DeviceFragmentStruct.getDevice(data.getSn());
+            SetSyncStatus();
+            DeviceDataStruct device = getDevice(data.getSn());
             if (device != null) {
                 dFullname.setText(device.getFullName());
                 dMode.setText(device.getMode());
@@ -565,5 +648,14 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
         }
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void LteParaChangesEvens(LTE_GeneralPara para) {
+        DeviceDataStruct dds = getDevice(dSn.getText().toString());
+        if (para.getSn().equals(dds.getSN())) {
+            Logs.d(TAG, "接收到LTE参数改变改变事件", true, true);
+            SetSyncStatus();
+        }
     }
 }

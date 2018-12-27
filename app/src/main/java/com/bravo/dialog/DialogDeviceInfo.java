@@ -191,7 +191,7 @@ public class DialogDeviceInfo extends Dialog {
 
                     //cancel();
                     if (!fullname.equals(sInfo_fullname.getText().toString().trim())) {
-                        new HandleRecvXmlMsg(context, dds).SetDeviceParameter("CFG_FULL_NAME", sInfo_fullname.getText().toString().trim());
+                        new HandleRecvXmlMsg(context, dds).SetGeneralParaRequest("CFG_FULL_NAME", sInfo_fullname.getText().toString().trim());
                         CustomToast.showToast(context, "已向AP发送【设置全名】命令");
                     } else {
                         CustomToast.showToast(context, "全名没有变化");

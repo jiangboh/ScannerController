@@ -59,6 +59,10 @@ public class Msg_Body_Struct
     public static final String DataAlignOver = "DataAlignOver";
     public static final String DataAlignOverAck = "DataAlignOverAck";
 
+    public static final String set_cnm_sync_status_request = "set_cnm_sync_status_request";
+    public static final String set_cnm_sync_status_response = "set_cnm_sync_status_response";
+
+
     public Msg_Body_Struct(int id,String type)
     {
         this.msgId = id;

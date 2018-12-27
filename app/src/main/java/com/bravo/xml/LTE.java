@@ -163,7 +163,7 @@ public class LTE {
             gPara.setGps_select(GetMsgIntValueInList("gps_select", msg.dic, 0));
             gPara.setBandoffset(GetMsgStringValueInList("Bandoffset", msg.dic, ""));
 
-            gPara.setSource(GetMsgIntValueInList("source", msg.dic, 0));
+            gPara.setSource(GetMsgIntValueInList("source", msg.dic, 2));
             gPara.setManualEnable(GetMsgIntValueInList("ManualEnable", msg.dic, 0));
             gPara.setManualEarfcn(GetMsgIntValueInList("ManualEarfcn", msg.dic, 0));
             gPara.setManualPci(GetMsgIntValueInList("ManualPci", msg.dic, 0));
@@ -335,6 +335,8 @@ public class LTE {
 
                 data.setSn(dds.getSN());
                 EventBus.getDefault().post(data);
+            } else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_cnm_sync_status_response)) {
+                //暂不作处理
             } else {
                 Logs.e(TAG, String.format("消息类型(%s)为不支持的消息类型！", msg.type),true);
             }
@@ -421,6 +423,21 @@ public class LTE {
 
         EventBus.getDefault().post(new WaitDialogData(
                 HandleRecvXmlMsg.LTE_SON_CONFIG,sn, WaitDialogData.SEND));
+
+        return ;
+    }
+
+    public void SendCnmSyncStatusRequest(String ip,int port,Boolean stopSync) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.set_cnm_sync_status_request);
+        if (stopSync) {
+            msg.dic.put("operation", 0);
+        } else {
+            msg.dic.put("operation", 1);
+        }
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
 
         return ;
     }

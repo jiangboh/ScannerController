@@ -35,7 +35,7 @@ public class LTE_GeneralPara {
     private int gps_select;
     private String Bandoffset;
 
-    private int source;
+    private int source;  //0 gps;1 cnm;2 no sync
     private int ManualEnable;
     private int ManualEarfcn;
     private int ManualPci;
