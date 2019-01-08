@@ -74,6 +74,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private Boolean attOpen = false;
     private Boolean soundOpen = false;
     private Boolean sync_status = false;
+    private Boolean openOffset = true;
     private String currImsi = "";
     private int iRxGain = -8;
 
@@ -362,6 +363,8 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         SharedPreferences sp1 = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
         iRxGain = sp1.getInt(FragmentScannerConfig.tn_RxGain,FragmentScannerConfig.DefultRxGain);
         Log.v("上行衰减初始值：", String.valueOf(iRxGain));
+        openOffset = sp1.getBoolean(FragmentScannerConfig.tn_OpenOffset,FragmentScannerConfig.DefultOpenOffset);
+        Log.v("补偿上行衰减值：", String.valueOf(openOffset));
 
     }
 
@@ -567,7 +570,12 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
              * 在此可查看 Entry构造方法，可发现 可传入数值 Entry(float x, float y)
              * 也可传入Drawable， Entry(float x, float y, Drawable icon) 可在XY轴交点 设置Drawable图像展示
              */
-            Entry entry = new Entry(i, (int) data.getValue() + 128);
+            Entry entry;
+            if (openOffset) {
+                entry = new Entry(i, (int) data.getValue() - (int)data.getRxGain() + 128);
+            } else {
+                entry = new Entry(i, (int) data.getValue() + 128);
+            }
             entries.add(entry);
         }
 
@@ -623,7 +631,11 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
 
         if (currImsi.equals(data.getImsi())) { //更新界面
-            tRssi.setText(String.valueOf(data.getValue()));
+            if (openOffset) {
+                tRssi.setText(String.valueOf(data.getValue() - data.getRxGain()));
+            } else {
+                tRssi.setText(String.valueOf(data.getValue()));
+            }
             dSn.setText(data.getSn());
             SetSyncStatus();
             DeviceDataStruct device = getDevice(data.getSn());

@@ -13,13 +13,31 @@ public class PositionDataStruct {
     private String sn;
     private String tradeDate;
     private int value;
+    private int rxGain;
 
 
-    public PositionDataStruct(String sn,String imsi,String tradeDate, int value) {
+    public PositionDataStruct(String imsi, String sn, String tradeDate, int value, int rxGain) {
         this.imsi = imsi;
         this.sn = sn;
         this.tradeDate = tradeDate;
         this.value = value;
+        this.rxGain = rxGain;
+    }
+
+    public PositionDataStruct(String sn, String imsi, String tradeDate, int value) {
+        this.imsi = imsi;
+        this.sn = sn;
+        this.tradeDate = tradeDate;
+        this.value = value;
+        this.rxGain = 0;
+    }
+
+    public int getRxGain() {
+        return rxGain;
+    }
+
+    public void setRxGain(int rxGain) {
+        this.rxGain = rxGain;
     }
 
     public String getImsi() {

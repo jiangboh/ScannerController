@@ -40,11 +40,13 @@ public class LTE {
     private class TimeAndRssi {
         public Long tm;
         public int sumRssi;
+        public int rxGain;
         public int num;
 
         public TimeAndRssi(Long tm) {
             this.tm = tm;
             this.sumRssi = 0;
+            this.rxGain = 0;
             this.num = 0;
         }
     }
@@ -94,8 +96,9 @@ public class LTE {
             int rsrp = GetMsgIntValueInList("rsrp",msg.dic,-128);
             Log.d(TAG,"收到RSRP：" + rsrp);
             //加上上行衰减值
-            rsrp = rsrp - ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain();
-            Log.d(TAG,"加衰减后RSRP：" + rsrp);
+            //rsrp = rsrp - ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain();
+            //Log.d(TAG,"加衰减后RSRP：" + rsrp);
+
             boolean isReport = false;
             Long currTime = System.currentTimeMillis();
             if (LastReportTime.containsKey(imsi)) {
@@ -114,9 +117,11 @@ public class LTE {
             }
             if (isReport) {
                 LastReportTime.put(imsi,new TimeAndRssi(currTime));
-                Log.d(TAG,"上报RSRP：" + rsrp);
+                Log.d(TAG,"上报RSRP：" + rsrp +
+                        ";上行增益衰减:" + ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain());
                 PositionDataStruct data = new PositionDataStruct(dds.getSN(), imsi,
-                        simpleDateFormat.format(System.currentTimeMillis()).toString(), rsrp);
+                        simpleDateFormat.format(System.currentTimeMillis()).toString(), rsrp,
+                        ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain());
                 FragmentpPositionListen.addPositionData(data);
                 EventBus.getDefault().post(data);
             }

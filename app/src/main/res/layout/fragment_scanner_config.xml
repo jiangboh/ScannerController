@@ -90,6 +90,40 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
+    <!--上行增益补偿-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="8dp"
+            android:text="上行增益补偿"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <CheckBox
+            android:id="@+id/ck_Offset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_16"
+            android:text=""
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.8"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
     <!--去重-->
     <LinearLayout
         android:layout_width="match_parent"

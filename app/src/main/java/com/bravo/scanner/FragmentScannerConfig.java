@@ -39,6 +39,9 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
     public static final int DefultRxGain = -8;
     public static final int MinRxGain = -15;
 
+    public static final String tn_OpenOffset = "penOffset";
+    public static final Boolean DefultOpenOffset = true;
+
     private int iRxGain = -8;
     private TextView tv_RxGain;
     private SeekBar sb_RxGain;
@@ -50,6 +53,9 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
 
     private Boolean isDupRemo;
     private CheckBox ck_DupRemo;
+
+    private Boolean openOffset;
+    private CheckBox ck_openOffset;
 
     @Override
     public void onResume() {
@@ -83,6 +89,15 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isDupRemo = isChecked;
                 Log.v(TAG,"isDupRemo：" + isDupRemo);
+            }
+        });
+
+        ck_openOffset = (CheckBox) contentView.findViewById(R.id.ck_Offset);
+        ck_openOffset.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                openOffset = isChecked;
+                Log.v(TAG,"openOffset：" + isDupRemo);
             }
         });
 
@@ -185,6 +200,9 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
 
         isDupRemo = sp.getBoolean(FragmentScannerConfig.tn_DupRemo,FragmentScannerConfig.DefultDupRemo);
         ck_DupRemo.setChecked(isDupRemo);
+
+        openOffset = sp.getBoolean(FragmentScannerConfig.tn_OpenOffset,FragmentScannerConfig.DefultOpenOffset);
+        ck_openOffset.setChecked(openOffset);
     }
 
     private boolean saveData() {
@@ -193,6 +211,7 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         editor.putInt(FragmentScannerConfig.tn_MaxNum, iMaxNum);
         editor.putInt(FragmentScannerConfig.tn_RxGain, iRxGain);
         editor.putBoolean(FragmentScannerConfig.tn_DupRemo, isDupRemo);
+        editor.putBoolean(FragmentScannerConfig.tn_OpenOffset, openOffset);
         Log.v("保存值：", String.valueOf(iMaxNum));
         editor.commit();
 
