@@ -74,7 +74,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private Boolean attOpen = false;
     private Boolean soundOpen = false;
     private Boolean sync_status = false;
-    private Boolean openOffset = true;
+    private static Boolean openOffset = true;
     private String currImsi = "";
     private int iRxGain = -8;
 
@@ -102,6 +102,10 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private Legend legend;              //图例
     private LimitLine limitLine;        //限制线
 //  private MyMarkerView markerView;    //标记视图 即点击xy轴交点时弹出展示信息的View 需自定义
+
+    public static void setOpenOffset(boolean flag) {
+        openOffset = flag;
+    }
 
     public static void addPositionData(PositionDataStruct data) {
         boolean flag = false;
@@ -609,7 +613,8 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         String rImsi = data.getImsi().toString();
         List<PositionDataStruct> currList = new ArrayList<PositionDataStruct>();
 
-        Logs.d(TAG,"接收到定位消息：" + rImsi + ":" + data.getTradeDate() + "(" + data.getValue() + ")");
+        Logs.d(TAG,"接收到定位消息：" + rImsi + ":" + data.getTradeDate() +
+                "(" + data.getValue() + ")衰减:" + data.getRxGain());
 
         //更新数据列表
         for(int i=0;i<allSaveData.size();i++) {
@@ -631,6 +636,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
 
         if (currImsi.equals(data.getImsi())) { //更新界面
+            Logs.d(TAG,"补偿开关：" + String.valueOf(openOffset));
             if (openOffset) {
                 tRssi.setText(String.valueOf(data.getValue() - data.getRxGain()));
             } else {

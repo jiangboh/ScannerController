@@ -218,6 +218,7 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
         AdapterScanner.setIsDupRemo(isDupRemo);
         AdapterScanner.setMaxTotal(iMaxNum);
 
+        FragmentpPositionListen.setOpenOffset(openOffset);
         return true;
     }
 

@@ -147,7 +147,11 @@ public class HandleRecvXmlMsg {
         } else {
             DeviceFragmentStruct.setListLastTime(index, System.currentTimeMillis());
             deviceDataStruct = DeviceFragmentStruct.getDevice(index);
-            Logs.d(TAG, String.format("设备[%s:%d]型号(%s),消息类型(%s)", deviceDataStruct.getIp(), deviceDataStruct.getPort(), deviceDataStruct.getMode(), msg.type), true);
+            if ((!msg.type.equals(Msg_Body_Struct.scanner)) &&
+                    (!msg.type.equals(Msg_Body_Struct.meas_report))) {
+                Logs.d(TAG, String.format("设备[%s:%d]型号(%s),消息类型(%s)", deviceDataStruct.getIp(), deviceDataStruct.getPort(),
+                        deviceDataStruct.getMode(), msg.type), true);
+            }
             if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
                     || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
                     || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
