@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/item_bg"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_marginTop="1dp"
+            android:background="@mipmap/blue_bar_bg">
+
+            <ImageView
+                android:id="@+id/iv_setting_back"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_setting_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="选择存贮目录"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_path_select"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="当前选择目录"
+            android:textColor="#555555"
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/item_bg"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/folder_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="10"
+                android:divider="#000000"
+                android:dividerHeight="0dp"
+
+                android:transcriptMode="alwaysScroll"
+                android:cacheColorHint="@android:color/transparent"
+                android:listSelector="@android:color/transparent"/>
+
+
+            <LinearLayout
+                android:id="@+id/FindImageViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_folder_comfirm"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="确  定"/>
+
+                <Button
+                    android:id="@+id/btn_folder_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="取  消"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,6 +1,8 @@
 package com.bravo.scanner;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +19,7 @@ import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.custom_view.CustomProgressDialog;
+import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.OneBtnHintDialog;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
@@ -25,6 +28,7 @@ import com.bravo.data_ben.TargetDataStruct;
 import com.bravo.database.BlackWhiteImsi;
 import com.bravo.database.TargetUser;
 import com.bravo.database.TargetUserDao;
+import com.bravo.dialog.DialogCustomBuilder;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.fragments.SerializableHandler;
 import com.bravo.socket_service.CommunicationService;
@@ -34,8 +38,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -71,6 +79,9 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     private CustomProgressDialog proDialog;
     private OneBtnHintDialog hintDialog;
 
+    private TextView toPositionListen;
+    private TextView saveImsi;
+
     private static Lock lock = new ReentrantLock();
     private final ArrayList<TargetDataStruct> targetDataStructs = new ArrayList<>();
 
@@ -81,6 +92,10 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     //String strCurTech;
     private int iMaxNum;
     private boolean isDupRemo;
+
+    //用户选择的保存imsi的文件路径
+    private String SaveImsiName;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -132,6 +147,40 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     }
     @Override
     public void initView() {
+        saveImsi = (TextView) contentView.findViewById(R.id.tv_SaveImsi);
+        saveImsi.setEnabled(false);
+        saveImsi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                saveImsi2file();
+            }
+        });
+        saveImsi.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                saveImsi2file();
+                return false;
+            }
+        });
+
+        toPositionListen = (TextView) contentView.findViewById(R.id.tv_toPosition);
+        toPositionListen.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG );
+        toPositionListen.setEnabled(false);
+        toPositionListen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                //跳转到捕号页面
+                ((RevealAnimationActivity)context).changeFragment(1, new Bundle());
+            }
+        });
+        toPositionListen.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((RevealAnimationActivity)context).changeFragment(1, new Bundle());
+                return false;
+            }
+        });
+
         TargetListView = (ListView) contentView.findViewById(R.id.scannerlist);
         adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView);
         TargetListView.setAdapter(adapterScanner);
@@ -176,6 +225,81 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         InitBcastEndDialog();
+    }
+
+
+    private void saveImsi2file()
+    {
+        SharedPreferences sp = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
+        String SaveImsiPath = sp.getString(FragmentScannerConfig.ImsiSavePath,"");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");// HH:mm:ss
+        // 获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        SaveImsiName = SaveImsiPath + "/" + simpleDateFormat.format(date) + ".txt";
+        DialogCustomBuilder dialog = new DialogCustomBuilder(context,"保存捕号信息","确定将捕号信息保存到\n" + SaveImsiName );
+        dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
+            @Override
+            public void onBtnClick(DialogInterface arg0, int arg1) {
+                saveImsi.setEnabled(false);
+                Logs.i(TAG, "保存捕号的IMSI到：" + SaveImsiName, true);
+                try {
+                    File file = new File(SaveImsiName);
+                    if (!file.exists()) {
+                        file.getParentFile().mkdirs();
+                        file.createNewFile();
+                    }
+                    RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+                    raf.seek(file.length());
+
+                    lock.lock();
+                    try {
+                        ArrayList<TargetDataStruct> list = adapterScanner.getList();
+                        for (int i = 0; i < list.size(); i++) {
+                            String strContent = GetSaveStr(list.get(i));
+                            raf.write(strContent.getBytes());
+                        }
+                    } finally {
+                        lock.unlock();
+                    }
+
+                    raf.close();
+                    CustomToast.showToast(context, "捕号信息保存成功");
+                } catch (Exception e) {
+                    CustomToast.showToast(context, "捕号信息保存失败");
+                    Log.e(TAG, "保存捕号的IMSI到：" + SaveImsiName + "出错。出错原因：" + e.getMessage());
+                }
+                saveImsi.setEnabled(true);
+            }
+        });
+        dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
+            @Override
+            public void onBtnClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        dialog.show();
+    }
+
+    //写入的文件格式
+    private String GetSaveStr(TargetDataStruct tds)
+    {
+        String userType = "";
+        if (tds.getiUserType() == BlackWhiteImsi.BLACK)
+        {
+            userType = "Black";
+        }
+        else if (tds.getiUserType() == BlackWhiteImsi.WHITE)
+        {
+            userType = "White";
+        }
+        else
+        {
+            userType = "Other";
+        }
+        return String.format("%s:Sn=%s;DeviceType=%s;UserType=%s;Imsi=%s;Imei=%s;Tmsi=%s;" +
+                        "Rsrp=%d;Latitude=%s;Longitude=%s\r\n",
+                tds.getStrAttachtime(),tds.getSN(), tds.getDeviceType(),
+                userType,tds.getImsi(),tds.getImei(),tds.getTmsi(),tds.getRsrp(),
+                tds.getStrLatitude(),tds.getStrLongitude());
     }
 
     protected void InitBcastEndDialog() {
@@ -360,7 +484,12 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         lock.lock();
         try{
             //Logs.d(TAG,"接收到Scanner消息:" + tds.getImsi());
+            if (tds.getiUserType() == TargetDataStruct.BLACK_IMSI)
+            {
+                toPositionListen.setEnabled(true);
+            }
             targetDataStructs.add(0,tds);
+            //Logs.d(TAG,"捕号数量:" + targetDataStructs.size());
         } finally {
             lock.unlock();
         }
@@ -372,6 +501,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             Message message = new Message();
             message.what = SEND_IMSI_START;
             handler.sendMessage(message);
+            saveImsi.setEnabled(true);
         }
     }
 

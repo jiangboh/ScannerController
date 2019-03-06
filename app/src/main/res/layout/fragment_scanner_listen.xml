@@ -16,11 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:background="@drawable/item_bg"
-        android:orientation="vertical">
+        android:orientation="horizontal">
         <!--timer-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.2"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="0dp"
@@ -33,7 +34,8 @@
                 android:id="@+id/scanner_timemeter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
+                android:layout_weight="1"
+                android:text="00:00:00"
                 android:textColor="@color/colorItemText"/>
             <TextView
                 android:layout_width="0dp"
@@ -46,32 +48,31 @@
                 android:id="@+id/cur_Total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_weight="0.7"
                 android:text="0"
+                android:textColor="@color/colorItemText"/>
+
+            <TextView
+                android:id="@+id/tv_SaveImsi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:clickable="true"
+                android:text="保存"
                 android:gravity="right"
-                android:textColor="@color/colorItemText"/>
-        </LinearLayout>
-        <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                android:textColor="@drawable/btn_text_selector"/>
+
             <TextView
+                android:id="@+id/tv_toPosition"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total:"
-                android:textColor="@color/colorItemText"/>
-            <TextView
-                android:id="@+id/cur_Total"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textColor="@color/colorItemText"/>
+                android:clickable="true"
+                android:text="Go>>"
+                android:gravity="right"
+                android:textColor="@drawable/btn_text_selector"/>
         </LinearLayout>
-        -->
-    </LinearLayout>
+     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

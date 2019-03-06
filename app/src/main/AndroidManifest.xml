@@ -68,6 +68,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.bravo.FileSlelect.SelectFolderActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.bravo.FemtoController.FemtoListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
@@ -155,6 +160,7 @@
         <activity android:name="com.bravo.BlueTooth.TTSettingActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

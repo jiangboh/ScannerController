@@ -49,6 +49,41 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
+    <!--去重-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="8dp"
+            android:text="去掉重复IMSI"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <!--AllFindTime-->
+        <CheckBox
+            android:id="@+id/ck_DupRemo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_16"
+            android:text=""
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.8"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
     <!--RxGain-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,7 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"/>
 
-    <!--去重-->
+    <!--IMSI保存路径-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_heigh"
@@ -135,21 +170,32 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_14"
             android:paddingLeft="8dp"
-            android:text="去掉重复IMSI"
+            android:text="捕号保存路径"
             android:textColor="@color/colorItemText"
             android:layout_gravity="center"
             android:layout_weight="2.0"/>
 
-        <!--AllFindTime-->
-        <CheckBox
-            android:id="@+id/ck_DupRemo"
+        <TextView
+            android:id="@+id/tv_imsiSavePath"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_16"
+            android:layout_height="30dp"
+            android:textSize="@dimen/font_size_10"
             android:text=""
             android:textColor="@color/colorItemText"
             android:layout_gravity="center"
-            android:layout_weight="2.8"/>
+            android:background="@drawable/item_bg"
+            android:layout_weight="2.2"
+            android:maxLines="1"/>
+
+        <Button
+            android:id="@+id/btn_imsiSavePath"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.6"
+            android:textSize="@dimen/font_size_10"
+            android:gravity="center"
+            android:text="浏览"/>
 
     </LinearLayout>
 

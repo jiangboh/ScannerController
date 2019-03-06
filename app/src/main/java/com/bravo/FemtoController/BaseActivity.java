@@ -89,6 +89,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         statusGps.setOnClickListener(this);
         statusBts.setOnClickListener(this);
         txTuktuk.setOnClickListener(this);
+
+        statusConn.setVisibility(View.GONE);
+        statusError.setVisibility(View.GONE);
+        statusGps.setVisibility(View.GONE);
+        txTuktuk.setVisibility(View.GONE);
+
         String time = SimpleDateUtils.formatTime("HH:mm");
         //////////////////////////////////////////////////////
         statusTime.setText(time);

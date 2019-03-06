@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bravo.R;
@@ -40,6 +41,7 @@ public class WaitDialog extends Dialog {
     private TextView progress_dialog_title ;
     private ListView listView;
     private Button b_ok;
+    private ProgressBar progressBar;
     private Context mContext;
 
     public class AdapterReqList extends BaseAdapter {
@@ -150,6 +152,10 @@ public class WaitDialog extends Dialog {
 
         progress_dialog_title = (TextView) findViewById(R.id.progress_dialog_title);
         listView = (ListView) findViewById(R.id.requselist);
+
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
         b_ok = (Button) findViewById(R.id.dialog_ok);
         b_ok.setOnClickListener(new RecordOnClick() {
             @Override
@@ -223,6 +229,8 @@ public class WaitDialog extends Dialog {
             }
         }
         if (allSend) {
+            progressBar.setVisibility(View.GONE);
+            progress_dialog_title.setText("任务全部完成");
             b_ok.setEnabled(true);
             b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
         }

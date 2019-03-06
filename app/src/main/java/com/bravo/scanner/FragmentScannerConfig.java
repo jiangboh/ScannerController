@@ -1,15 +1,18 @@
 package com.bravo.scanner;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
+import com.bravo.FileSlelect.SelectFolderActivity;
 import com.bravo.R;
 import com.bravo.adapters.AdapterScanner;
 import com.bravo.custom_view.CustomToast;
@@ -36,13 +39,15 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
     public static final int MinImsiNum = 1000;
 
     public static final String tn_RxGain = "RxGain";
-    public static final int DefultRxGain = -8;
-    public static final int MinRxGain = -15;
+    public static final int DefultRxGain = -15;
+    public static final int MinRxGain = -30;
 
     public static final String tn_OpenOffset = "penOffset";
     public static final Boolean DefultOpenOffset = true;
 
-    private int iRxGain = -8;
+    public static final String ImsiSavePath = "ImsiSavePath";
+
+    private int iRxGain = DefultRxGain;
     private TextView tv_RxGain;
     private SeekBar sb_RxGain;
 
@@ -56,6 +61,9 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
 
     private Boolean openOffset;
     private CheckBox ck_openOffset;
+
+    private TextView tv_savePath;
+    private Button btn_savePath;
 
     @Override
     public void onResume() {
@@ -142,6 +150,39 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
                 Log.v("停止滑动时的值：", String.valueOf(iRxGain));
             }
         });
+
+        tv_savePath = (TextView) contentView.findViewById(R.id.tv_imsiSavePath);
+        tv_savePath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                CustomToast.showToast(context, tv_savePath.getText().toString());
+            }
+        });
+        btn_savePath = (Button) contentView.findViewById(R.id.btn_imsiSavePath);
+        btn_savePath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent intent = new Intent(context,SelectFolderActivity.class);
+                startActivityForResult(intent,1);
+            }
+        });
+        btn_savePath.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(context,SelectFolderActivity.class);
+                startActivityForResult(intent,1);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode==1&&resultCode==2){
+            //当请求码是1&&返回码是2进行下面操作
+            loadData();
+        }
     }
 
     @Override
@@ -203,6 +244,8 @@ public class FragmentScannerConfig extends RevealAnimationBaseFragment {
 
         openOffset = sp.getBoolean(FragmentScannerConfig.tn_OpenOffset,FragmentScannerConfig.DefultOpenOffset);
         ck_openOffset.setChecked(openOffset);
+
+        tv_savePath.setText(sp.getString(FragmentScannerConfig.ImsiSavePath,""));
     }
 
     private boolean saveData() {
