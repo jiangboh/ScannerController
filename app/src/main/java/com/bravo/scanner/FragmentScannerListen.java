@@ -68,6 +68,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     private final int START_FLAG = 3;
     private final int SEND_IMSI_START = 4;
     private final int SEND_IMSI_END = 5;
+    private final int SAVE_IMSI_TO_FILE = 6;
 
     private int iBcastTimer ;//开始捕号时间
     private Timer bcastTimer;//小区定时器
@@ -148,7 +149,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     @Override
     public void initView() {
         saveImsi = (TextView) contentView.findViewById(R.id.tv_SaveImsi);
-        saveImsi.setEnabled(false);
+        //saveImsi.setEnabled(false);
         saveImsi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -240,35 +241,9 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
             @Override
             public void onBtnClick(DialogInterface arg0, int arg1) {
-                saveImsi.setEnabled(false);
-                Logs.i(TAG, "保存捕号的IMSI到：" + SaveImsiName, true);
-                try {
-                    File file = new File(SaveImsiName);
-                    if (!file.exists()) {
-                        file.getParentFile().mkdirs();
-                        file.createNewFile();
-                    }
-                    RandomAccessFile raf = new RandomAccessFile(file, "rwd");
-                    raf.seek(file.length());
-
-                    lock.lock();
-                    try {
-                        ArrayList<TargetDataStruct> list = adapterScanner.getList();
-                        for (int i = 0; i < list.size(); i++) {
-                            String strContent = GetSaveStr(list.get(i));
-                            raf.write(strContent.getBytes());
-                        }
-                    } finally {
-                        lock.unlock();
-                    }
-
-                    raf.close();
-                    CustomToast.showToast(context, "捕号信息保存成功");
-                } catch (Exception e) {
-                    CustomToast.showToast(context, "捕号信息保存失败");
-                    Log.e(TAG, "保存捕号的IMSI到：" + SaveImsiName + "出错。出错原因：" + e.getMessage());
-                }
-                saveImsi.setEnabled(true);
+                Message message = new Message();
+                message.what = SAVE_IMSI_TO_FILE;
+                handler.sendMessage(message);
             }
         });
         dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
@@ -277,6 +252,39 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             }
         });
         dialog.show();
+    }
+
+    private void SaveImsi()
+    {
+        saveImsi.setEnabled(false);
+        Logs.i(TAG, "保存捕号的IMSI到：" + SaveImsiName, true);
+        try {
+            File file = new File(SaveImsiName);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+            RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+            raf.seek(file.length());
+
+            lock.lock();
+            try {
+                ArrayList<TargetDataStruct> list = adapterScanner.getList();
+                for (int i = 0; i < list.size(); i++) {
+                    String strContent = GetSaveStr(list.get(i));
+                    raf.write(strContent.getBytes());
+                }
+            } finally {
+                lock.unlock();
+            }
+
+            raf.close();
+            CustomToast.showToast(context, "捕号信息保存成功");
+        } catch (Exception e) {
+            CustomToast.showToast(context, "捕号信息保存失败");
+            Log.e(TAG, "保存捕号的IMSI到：" + SaveImsiName + "出错。出错原因：" + e.getMessage());
+        }
+        saveImsi.setEnabled(true);
     }
 
     //写入的文件格式
@@ -434,6 +442,9 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                     index++;
                     TargetListView.setEnabled(true);
                     //((TextView)contentView.findViewById(R.id.scanner_timemeter)).setText(secToTime(iBcastTimer));
+                    break;
+                case SAVE_IMSI_TO_FILE:
+                    SaveImsi();
                     break;
                 default:
                     break;

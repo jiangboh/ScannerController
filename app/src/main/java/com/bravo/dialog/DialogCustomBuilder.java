@@ -52,6 +52,7 @@ public class DialogCustomBuilder {
         builder.setIcon(R.drawable.icon_help);//设置图标
         builder.setTitle(title);//设置对话框的标题
         builder.setMessage(message);//设置对话框的内容
+        builder.setCancelable(false);//设置点击其它地，该对话框不关闭
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {  //这个是设置确定按钮
             @Override
             public void onClick(DialogInterface arg0, int arg1) {

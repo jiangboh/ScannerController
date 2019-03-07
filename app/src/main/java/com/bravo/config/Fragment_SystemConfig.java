@@ -17,7 +17,7 @@ import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.Logs;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.bravo.R.drawable.btn_config_normal;
+import static com.bravo.R.drawable.btn_config_selector;
 import static com.bravo.R.id.tv_LisenPort;
 
 /**
@@ -86,7 +86,7 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
         super.onResume();
         loadData();
         ((RevealAnimationActivity) context).getSettingBtn().setVisibility(View.VISIBLE);
-        ((RevealAnimationActivity) context).getSettingBtn().setImageResource(btn_config_normal);
+        ((RevealAnimationActivity) context).getSettingBtn().setImageResource(btn_config_selector);
         ((RevealAnimationActivity) context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {

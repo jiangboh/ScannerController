@@ -260,7 +260,7 @@ public class Fragment_DeviceBaseSet extends RevealAnimationBaseFragment {
         super.onResume();
         loadData();
         ((RevealAnimationActivity) context).getSettingBtn().setVisibility(View.VISIBLE);
-        ((RevealAnimationActivity) context).getSettingBtn().setImageResource(com.bravo.R.drawable.btn_config_normal);
+        ((RevealAnimationActivity) context).getSettingBtn().setImageResource(com.bravo.R.drawable.btn_config_selector);
         ((RevealAnimationActivity) context).getSettingBtn().setOnClickListener(new RecordOnClick() {
             @Override
             public void recordOnClick(View v, String strMsg) {
