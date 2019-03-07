@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,6 +59,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.bravo.utils.Utils.getWifiIp;
 
@@ -69,6 +72,12 @@ public class FunActivity extends BaseActivity {
             R.drawable.circle_menu_status_selector, R.drawable.circle_menu_system_selector,
             R.drawable.circle_menu_test_selector};
     private ImageView selectedIV;
+
+    private ImageView imageView2;
+    private boolean timeFlag = true;
+    private int HANDLER_IMAGE_NORMAL = 100;
+    private int HANDLER_IMAGE_FAIL = 101;
+
     private OneBtnHintDialog connHintDialog;
 
     // 用来计算返回键的点击间隔时间
@@ -116,6 +125,10 @@ public class FunActivity extends BaseActivity {
                         selectedIV.setImageResource(R.drawable.test_selected);
                         break;
                 }
+            } else if(msg.what == HANDLER_IMAGE_NORMAL){
+                imageView2.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.mipmap.fun_activity_normal));
+            }  else if(msg.what == HANDLER_IMAGE_FAIL){
+                imageView2.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.mipmap.fun_activity_fail));
             }
         }
     };
@@ -132,6 +145,8 @@ public class FunActivity extends BaseActivity {
         });
         ((TextView) findViewById(R.id.tv_activity_title)).setText("ScannerController");
         selectedIV = (ImageView) findViewById(R.id.circle_menu_selected_iv);
+        imageView2 = (ImageView) findViewById(R.id.imageView2);
+        new Timer().schedule(new MyTimer(), 1000, 1000);
 
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.circleMenuLayout);
         mCircleMenuLayout.setMenuItemIcons(mItemImgs);
@@ -155,6 +170,20 @@ public class FunActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_wifi)).setText("WiFi地址: " + getWifiIp(mContext));
         ((TextView) findViewById(R.id.tv_sn)).setText("编译时间: " + BuildConfig.versionDateTime);
         initStatusView();
+    }
+
+    class MyTimer extends TimerTask implements Serializable {
+        @Override
+        public void run() {
+            Message message = new Message();
+            if (timeFlag) {
+                message.what = HANDLER_IMAGE_NORMAL;
+            } else {
+                message.what = HANDLER_IMAGE_FAIL;
+            }
+            handler.sendMessage(message);
+            timeFlag = !timeFlag;
+        }
     }
 
     private void skipActivity(int pos){
