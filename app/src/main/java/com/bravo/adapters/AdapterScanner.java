@@ -28,6 +28,7 @@ public class AdapterScanner extends BaseAdapter {
     private Context mContext;
     private ListView listView;
     private TextView toPosition;
+    private TextView saveImsi;
     private static int iCurAuthTotal = 0;
     private Long changedTime = System.currentTimeMillis();
     private TextView tvTotal;
@@ -37,11 +38,12 @@ public class AdapterScanner extends BaseAdapter {
     /*public AdapterScanner(Context context) {
         this.mContext = context;
     }*/
-    public AdapterScanner(Context context, TextView txView, ListView listView,TextView toPosition) {
+    public AdapterScanner(Context context, TextView txView, ListView listView,TextView toPosition,TextView saveImsi) {
         this.tvTotal = txView;
         this.mContext = context;
         this.listView = listView;
         this.toPosition = toPosition;
+        this.saveImsi = saveImsi;
     }
 
     public static void setMaxTotal(int maxTotal) {
@@ -259,6 +261,10 @@ public class AdapterScanner extends BaseAdapter {
         } else {
             holder.textViewImeiName.setText("IMEI:");
         }
+
+        if (saveImsi.isEnabled() == false)
+            saveImsi.setEnabled(true);
+
         //userType
         int iUserType = targetDataStructs.get(position).getiUserType();
         if (iUserType == TargetDataStruct.BLACK_IMSI) {

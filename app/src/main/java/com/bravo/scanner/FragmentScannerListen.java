@@ -149,7 +149,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     @Override
     public void initView() {
         saveImsi = (TextView) contentView.findViewById(R.id.tv_SaveImsi);
-        //saveImsi.setEnabled(false);
+        saveImsi.setEnabled(false);
         saveImsi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -183,7 +183,8 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         });
 
         TargetListView = (ListView) contentView.findViewById(R.id.scannerlist);
-        adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView,toPositionListen);
+        adapterScanner = new AdapterScanner(context,(TextView)
+                contentView.findViewById(R.id.cur_Total),TargetListView,toPositionListen,saveImsi);
         TargetListView.setAdapter(adapterScanner);
 
         try {
@@ -508,7 +509,6 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
             Message message = new Message();
             message.what = SEND_IMSI_START;
             handler.sendMessage(message);
-            saveImsi.setEnabled(true);
         }
     }
 
