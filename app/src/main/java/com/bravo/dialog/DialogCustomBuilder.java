@@ -21,12 +21,19 @@ public class DialogCustomBuilder {
     private OkBtnClickListener OkListener;
     private CancelBtnClickListener CancelListener;
 
+    private boolean showCancel;
+
     private AlertDialog.Builder builder;
 
     public DialogCustomBuilder(Context context,String title,String msg) {
+        this(context,title, msg,true);
+    }
+
+    public DialogCustomBuilder(Context context,String title,String msg,boolean showCancel) {
         this.context = context;
         this.title = title;
         this.message = msg;
+        this.showCancel = showCancel;
         builder = new AlertDialog.Builder(context);
     }
 
@@ -49,7 +56,10 @@ public class DialogCustomBuilder {
     public void show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setIcon(R.drawable.icon_help);//设置图标
+        if (showCancel)
+            builder.setIcon(R.drawable.icon_help);//设置图标
+        else
+            builder.setIcon(R.drawable.icon_error_errors);//设置图标
         builder.setTitle(title);//设置对话框的标题
         builder.setMessage(message);//设置对话框的内容
         builder.setCancelable(false);//设置点击其它地，该对话框不关闭
@@ -61,16 +71,16 @@ public class DialogCustomBuilder {
                 }
             }
         });
-
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {  //取消按钮
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                if(CancelListener != null){
-                    CancelListener.onBtnClick(arg0,arg1);
+        if (showCancel) {
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {  //取消按钮
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    if (CancelListener != null) {
+                        CancelListener.onBtnClick(arg0, arg1);
+                    }
                 }
-            }
-        });
-
+            });
+        }
         AlertDialog b = builder.create();
         b.show();  //必须show一下才能看到对话框，跟Toast一样的道理
         try

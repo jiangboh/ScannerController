@@ -1,9 +1,12 @@
 package com.bravo.FemtoController;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -32,6 +35,7 @@ import com.bravo.custom_view.CircleMenuLayout;
 import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.OneBtnHintDialog;
 import com.bravo.custom_view.RecordOnClick;
+import com.bravo.dialog.DialogCustomBuilder;
 import com.bravo.femto.FragmentAdjacentCell;
 import com.bravo.femto.FragmentBcastHistory;
 import com.bravo.femto.FragmentBcastStart;
@@ -62,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.bravo.utils.Utils.getConnectWifiSsid;
 import static com.bravo.utils.Utils.getWifiIp;
 
 
@@ -77,8 +82,12 @@ public class FunActivity extends BaseActivity {
     private boolean timeFlag = true;
     private int HANDLER_IMAGE_NORMAL = 100;
     private int HANDLER_IMAGE_FAIL = 101;
+    private int SETING_WIFI_INFO = 102;
 
     private OneBtnHintDialog connHintDialog;
+
+    private TextView wifiInfo;
+    private Boolean WifiEnable = false;
 
     // 用来计算返回键的点击间隔时间
     private long exitTime = 0;
@@ -127,8 +136,19 @@ public class FunActivity extends BaseActivity {
                 }
             } else if(msg.what == HANDLER_IMAGE_NORMAL){
                 imageView2.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.mipmap.fun_activity_normal));
-            }  else if(msg.what == HANDLER_IMAGE_FAIL){
+            } else if(msg.what == HANDLER_IMAGE_FAIL){
                 imageView2.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.mipmap.fun_activity_fail));
+            } else if(msg.what == SETING_WIFI_INFO){
+                String ssid = getConnectWifiSsid(mContext);
+                if (ssid.isEmpty()) {
+                    WifiEnable = false;
+                    wifiInfo.setTextColor(Color.parseColor("#FF0000"));
+                    wifiInfo.setText("WiFi地址: Wifi Off (" + getWifiIp(mContext) + ")");
+                } else {
+                    WifiEnable = true;
+                    wifiInfo.setTextColor(Color.parseColor("#FFFFFF"));
+                    wifiInfo.setText("WiFi地址: " + ssid + " (" + getWifiIp(mContext) + ")");
+                }
             }
         }
     };
@@ -154,12 +174,37 @@ public class FunActivity extends BaseActivity {
 
             @Override
             public void itemClick(View view, int pos) {
-                skipActivity(pos);
+                if (WifiEnable || pos == 2 || pos == 4 || pos == 5) {
+                    skipActivity(pos);
+                } else {
+                    DialogCustomBuilder dialog = new DialogCustomBuilder(
+                            mContext,"Wifi状态异常","当前未连接上Wifi。请先排查网络状态！",false);
+                    dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
+                        @Override
+                        public void onBtnClick(DialogInterface arg0, int arg1) {
+
+                        }
+                    });
+                    dialog.show();
+                }
             }
 
             @Override
             public void itemCenterClick(View view) {
-                skipActivity(mCircleMenuLayout.getSelectedPos() - 1);
+                int pos = mCircleMenuLayout.getSelectedPos() - 1;
+                if (WifiEnable || pos == 2 || pos == 4 || pos == 5) {
+                    skipActivity(pos);
+                } else {
+                    DialogCustomBuilder dialog = new DialogCustomBuilder(
+                            mContext,"Wifi状态异常","当前未连接上Wifi。请先排查网络状态！",false);
+                    dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
+                        @Override
+                        public void onBtnClick(DialogInterface arg0, int arg1) {
+
+                        }
+                    });
+                    dialog.show();
+                }
             }
         });
 
@@ -167,7 +212,25 @@ public class FunActivity extends BaseActivity {
         selectedIV.setVisibility(View.GONE);
         mCircleMenuLayout.setHandler(null);
 
-        ((TextView) findViewById(R.id.tv_wifi)).setText("WiFi地址: " + getWifiIp(mContext));
+        wifiInfo =((TextView) findViewById(R.id.tv_wifi));
+        wifiInfo.setText("WiFi地址: " +
+                getConnectWifiSsid(mContext) + " (" + getWifiIp(mContext) + ")");
+        wifiInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                //直接进入手机中的wifi网络设置界面
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            }
+        });
+        wifiInfo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //直接进入手机中的wifi网络设置界面
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                return false;
+            }
+        });
+
         ((TextView) findViewById(R.id.tv_sn)).setText("编译时间: " + BuildConfig.versionDateTime);
         initStatusView();
     }
@@ -183,6 +246,10 @@ public class FunActivity extends BaseActivity {
             }
             handler.sendMessage(message);
             timeFlag = !timeFlag;
+
+            Message message2 = new Message();
+            message2.what = SETING_WIFI_INFO;
+            handler.sendMessage(message2);
         }
     }
 

@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.content.Context.WIFI_SERVICE;
+
 public class Utils {
 
     public static final String BUILD_TYPE_STR = BuildConfig.BUILD_TYPE;
@@ -578,15 +580,35 @@ public class Utils {
         return false;
     }
 
+    /*
+    获取Wifi的SSID
+     */
+    public static String getConnectWifiSsid(Context context){
+        WifiManager mWifiManager;
+        WifiInfo mWifiInfo;
+
+        //获取wifi服务
+        mWifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        //判断wifi是否开启
+        if (!mWifiManager.isWifiEnabled()) {
+            //mWifiManager.setWifiEnabled(true);
+            return "";
+        }
+        mWifiInfo = mWifiManager.getConnectionInfo();
+
+        return mWifiInfo.getSSID().replace("\"","");
+    }
+
     private static int getWifiIpByInt(Context context) {
         WifiManager mWifiManager;
         WifiInfo mWifiInfo;
 
         //获取wifi服务
-        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
         //判断wifi是否开启
         if (!mWifiManager.isWifiEnabled()) {
-            mWifiManager.setWifiEnabled(true);
+            //mWifiManager.setWifiEnabled(true);
+            return 0;
         }
         mWifiInfo = mWifiManager.getConnectionInfo();
         int ipAddress = mWifiInfo.getIpAddress();
@@ -600,6 +622,8 @@ public class Utils {
     {
         int ipAddress = getWifiIpByInt(context);
 
+        if (ipAddress == 0) return "0.0.0.0";
+
         return (ipAddress & 0xFF ) + "." +
                 ((ipAddress >> 8 ) & 0xFF) + "." +
                 ((ipAddress >> 16 ) & 0xFF) + "." +
@@ -610,7 +634,10 @@ public class Utils {
      */
     public static String getWifiBroadcastIp(Context context)
     {
-        int ipAddress = getWifiIpByInt(context)  | 0xFF000000;
+        int ipAddress = getWifiIpByInt(context) ;
+        if (ipAddress == 0) return "0.0.0.0";
+
+        ipAddress = ipAddress  | 0xFF000000;
 
         return (ipAddress & 0xFF ) + "." +
                 ((ipAddress >> 8 ) & 0xFF) + "." +
