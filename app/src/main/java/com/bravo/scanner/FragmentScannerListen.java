@@ -183,7 +183,7 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         });
 
         TargetListView = (ListView) contentView.findViewById(R.id.scannerlist);
-        adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView);
+        adapterScanner = new AdapterScanner(context,(TextView) contentView.findViewById(R.id.cur_Total),TargetListView,toPositionListen);
         TargetListView.setAdapter(adapterScanner);
 
         try {
@@ -193,8 +193,8 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
                    TargetDataStruct targetDataStruct = adapterScanner.getItem(position);
                    Logs.d(TAG,"长按：" + targetDataStruct.getImsi(),true);
                    BlackWhiteImsi info = new BlackWhiteImsi();
-                    info.setStartRb(-1);
-                    info.setStopRb(-1);
+                   info.setStartRb(-1);
+                   info.setStopRb(-1);
                    info.setImsi(targetDataStruct.getImsi());
                    info.setImei(targetDataStruct.getImei());
                    info.setTmsi(targetDataStruct.getTmsi());
@@ -495,10 +495,6 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
         lock.lock();
         try{
             //Logs.d(TAG,"接收到Scanner消息:" + tds.getImsi());
-            if (tds.getiUserType() == TargetDataStruct.BLACK_IMSI)
-            {
-                toPositionListen.setEnabled(true);
-            }
             targetDataStructs.add(0,tds);
             //Logs.d(TAG,"捕号数量:" + targetDataStructs.size());
         } finally {

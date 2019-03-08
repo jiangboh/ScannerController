@@ -27,6 +27,7 @@ public class AdapterScanner extends BaseAdapter {
     private final static ArrayList<TargetDataStruct> targetDataStructs = new ArrayList<>();
     private Context mContext;
     private ListView listView;
+    private TextView toPosition;
     private static int iCurAuthTotal = 0;
     private Long changedTime = System.currentTimeMillis();
     private TextView tvTotal;
@@ -36,10 +37,11 @@ public class AdapterScanner extends BaseAdapter {
     /*public AdapterScanner(Context context) {
         this.mContext = context;
     }*/
-    public AdapterScanner(Context context, TextView txView, ListView listView) {
+    public AdapterScanner(Context context, TextView txView, ListView listView,TextView toPosition) {
         this.tvTotal = txView;
         this.mContext = context;
         this.listView = listView;
+        this.toPosition = toPosition;
     }
 
     public static void setMaxTotal(int maxTotal) {
@@ -259,8 +261,11 @@ public class AdapterScanner extends BaseAdapter {
         }
         //userType
         int iUserType = targetDataStructs.get(position).getiUserType();
-        if (iUserType == TargetDataStruct.BLACK_IMSI)
+        if (iUserType == TargetDataStruct.BLACK_IMSI) {
             holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
+            if (toPosition.isEnabled() == false)
+                toPosition.setEnabled(true);
+        }
         else if (iUserType == TargetDataStruct.WHITE_IMSI)
             holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);
         else if (iUserType == TargetDataStruct.OTHER_IMSI)
