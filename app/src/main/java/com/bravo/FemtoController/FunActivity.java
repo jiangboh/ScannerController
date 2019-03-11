@@ -171,7 +171,6 @@ public class FunActivity extends BaseActivity {
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.circleMenuLayout);
         mCircleMenuLayout.setMenuItemIcons(mItemImgs);
         mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener() {
-
             @Override
             public void itemClick(View view, int pos) {
                 if (WifiEnable || pos == 2 || pos == 4 || pos == 5) {

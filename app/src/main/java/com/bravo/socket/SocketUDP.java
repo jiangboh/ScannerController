@@ -50,9 +50,11 @@ public class SocketUDP {
                     if (!msg.isEmpty()) {
                         //String msg_utf8 = URLEncoder.encode(msg,"UTF-8");
                         //Logs.d(TAG, "UDP send ip= " + ipAddress + ",Port=" + serverPort + ",data=" + msg);
-                        byte[] buf = msg.getBytes();
+                        byte[] buf = msg.getBytes("utf-8");
                         InetAddress address = InetAddress.getByName(ipAddress);//服务器地址
                         //创建发送方的数据报信息(包的最大长度为64k)
+                        //String str = new String(buf, 0, buf.length, "utf-8");
+                        //Logs.d(TAG, "发送消息:" + str);
                         DatagramPacket dataGramPacket = new DatagramPacket(buf, buf.length, address, serverPort);
                         socket.send(dataGramPacket);  //通过套接字发送数据
                     }
@@ -90,7 +92,7 @@ public class SocketUDP {
                         try {
                             socket.receive(packet);
                             //把接收到的data转换为String字符串
-                            String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"GBK");
+                            String result = new String(packet.getData(), packet.getOffset(), packet.getLength(),"utf-8");
                             //Logs.w(TAG, "接收到的UDP数据为：" + result,true,true);
                             //EventBus.getDefault().post(new EventBusMsgSendUDPMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));
                             EventBus.getDefault().post(new EventBusMsgRecvXmlMsg(packet.getAddress().getHostAddress(),packet.getPort(),result));

@@ -45,25 +45,25 @@ public class DeviceFragmentStruct {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 
             inum++;
-            if ((inum % 300) == 0) {
+            /*if ((inum % 300) == 0) {
                 PositionDataStruct data = new PositionDataStruct("1asd2222222222","1asd2222222222",
                         simpleDateFormat.format(curTime).toString(),
                         (int) ((Math.random()) * 100));
-                //FragmentpPositionListen.addPositionData(data);
-                //EventBus.getDefault().post(data);
+                FragmentpPositionListen.addPositionData(data);
+                EventBus.getDefault().post(data);
             } else if ((inum % 3) == 0) {
                 PositionDataStruct data = new PositionDataStruct("1234567890123456","1234567890123456",
                         simpleDateFormat.format(curTime).toString(),
                         (int) ((Math.random()) * 100));
-                //FragmentpPositionListen.addPositionData(data);
-                //EventBus.getDefault().post(data);
+                FragmentpPositionListen.addPositionData(data);
+                EventBus.getDefault().post(data);
             } else {
                 PositionDataStruct data = new PositionDataStruct("abcdefghigklmnop","abcdefghigklmnop",
                         simpleDateFormat.format(curTime).toString(),
                         (int) ((Math.random() - 1) * 100));
-                //FragmentpPositionListen.addPositionData(data);
-                //EventBus.getDefault().post(data);
-            }
+                FragmentpPositionListen.addPositionData(data);
+                EventBus.getDefault().post(data);
+            }*/
             lock.lock();
             try {
                 for(int i=dList.size()-1;i>=0;i--)

@@ -71,6 +71,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     private  static ArrayList<String> imsiList = new ArrayList<String>();
     private static ArrayAdapter<String> adapter;
 
+    private SimpleDateFormat  formatter = new SimpleDateFormat("HH:mm:ss");
     private Boolean attOpen = false;
     private Boolean soundOpen = false;
     private Boolean sync_status = false;
@@ -80,6 +81,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
     private PowerManager.WakeLock mWakeLock;
 
+    private TextView posTime;
     private TextView tRssi;
     private Spinner sImsi;
     private Button bAtt;
@@ -162,6 +164,7 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
 
     @Override
     public void initView() {
+        posTime = (TextView)contentView.findViewById(R.id.positionTime);
         tRssi = (TextView)contentView.findViewById(R.id.rssi);
         tRssi.addTextChangedListener(new TextWatcher() {
             @Override
@@ -343,7 +346,24 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
             initChart(lineChart);
             currImsi = imsiList.get(position);
 
+            //更新数据列表
+            dataList.clear();
+            for(int i=0;i<allSaveData.size();i++) {
+                if (currImsi.equals(allSaveData.get(i).getImsi())) {
+                    for(int j =0;j<allSaveData.get(i).getDataList().size();j++) {
+                        dataList.add(allSaveData.get(i).getDataList().get(j));
+                    }
+                    break;
+                }
+            }
+
             showLineChart(dataList,currImsi, 0xFF6FA9E1);
+
+            PositionDataStruct data = new PositionDataStruct("",currImsi,"0000/00/00-00:00:00",0);
+            if (dataList.size() > 0) {
+                data = dataList.get(dataList.size() - 1);
+            }
+            setRssiAndTime(data);
         }
 
         @Override
@@ -607,6 +627,40 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         VoiceSpeaker.getInstance().startSpeak(context,list);
     }
 
+    private void setRssiAndTime(PositionDataStruct data)
+    {
+        Logs.d(TAG,"补偿开关：" + String.valueOf(openOffset));
+        if (openOffset) {
+            tRssi.setText(String.valueOf(data.getValue() - data.getRxGain()));
+        } else {
+            tRssi.setText(String.valueOf(data.getValue()));
+        }
+
+        posTime.setText(data.getTradeDate().substring(11));
+
+        dSn.setText(data.getSn());
+        SetSyncStatus();
+        DeviceDataStruct device = getDevice(data.getSn());
+        if (device != null) {
+            dFullname.setText(device.getFullName());
+            dMode.setText(device.getMode());
+            dIp.setText(device.getIp());
+            dPort.setText(String.valueOf(device.getPort()));
+
+            int att = ((LTE_GeneralPara)device.getGeneralPara()).getRfTxGain();
+            if (att < 0) {
+                attOpen = true;
+            } else {
+                attOpen = false;
+            }
+            if (attOpen) {
+                bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
+            } else {
+                bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
+            }
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void TargetPosition(PositionDataStruct data) {
         boolean flag = false;
@@ -636,33 +690,8 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
         }
 
         if (currImsi.equals(data.getImsi())) { //更新界面
-            Logs.d(TAG,"补偿开关：" + String.valueOf(openOffset));
-            if (openOffset) {
-                tRssi.setText(String.valueOf(data.getValue() - data.getRxGain()));
-            } else {
-                tRssi.setText(String.valueOf(data.getValue()));
-            }
-            dSn.setText(data.getSn());
-            SetSyncStatus();
-            DeviceDataStruct device = getDevice(data.getSn());
-            if (device != null) {
-                dFullname.setText(device.getFullName());
-                dMode.setText(device.getMode());
-                dIp.setText(device.getIp());
-                dPort.setText(String.valueOf(device.getPort()));
 
-                int att = ((LTE_GeneralPara)device.getGeneralPara()).getRfTxGain();
-                if (att < 0) {
-                    attOpen = true;
-                } else {
-                    attOpen = false;
-                }
-                if (attOpen) {
-                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_open));
-                } else {
-                    bAtt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_att_close));
-                }
-            }
+            setRssiAndTime(data);
 
             dataList.clear();
             for(int j=0;j<currList.size();j++) {
