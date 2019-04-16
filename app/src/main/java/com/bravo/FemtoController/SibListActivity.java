@@ -26,6 +26,7 @@ public class SibListActivity extends BaseActivity {
     private final int UMTS_LTE_TECH = 1;
     private String strCurTech;
     private int iTech;
+
     @Override
     protected void initView() {
         strCurTech = SharePreferenceUtils.getInstance(this).getString("status_notif_tech" + ((ProxyApplication) getApplicationContext()).getCurSocketAddress() + ((ProxyApplication) getApplicationContext()).getiTcpPort(), "");

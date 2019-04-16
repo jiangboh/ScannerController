@@ -17,16 +17,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.bravo.FemtoController.BaseActivity;
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
@@ -51,6 +41,16 @@ import com.bravo.parse_generate_xml.target_redirect.TargetRedirectReq;
 import com.bravo.parse_generate_xml.target_redirect.TargetRedirectRes;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -88,6 +88,7 @@ public class AttachInfoActivity extends BaseActivity {
     private ImageView rightBtn;
     private TextToSpeech tts;
     private CheckBox openOrCloseVoice;
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_attach_info);

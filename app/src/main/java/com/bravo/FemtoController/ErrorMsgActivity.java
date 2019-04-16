@@ -20,6 +20,7 @@ public class ErrorMsgActivity extends BaseActivity{
     private ExpandableListView listView;
     private ErrorMsgListAdapter adapter;
     private DeleteOrIgnoreErrorDialog dialog;
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_error_msg);

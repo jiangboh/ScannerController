@@ -134,6 +134,8 @@ public class FragmentpPositionListen extends RevealAnimationBaseFragment {
     public void onResume() {
         super.onResume();
 
+        isOpen = true;
+
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
 

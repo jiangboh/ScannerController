@@ -179,6 +179,7 @@
             android:layout_weight="1.5"
             android:background="@android:color/transparent"
             android:inputType="number"
+            android:text="3"
             android:singleLine="true"
             android:textColor="@color/colordialogtext"
             android:textSize="@dimen/font_size_14" />
@@ -214,6 +215,7 @@
             android:layout_weight="1.5"
             android:background="@android:color/transparent"
             android:inputType="number"
+            android:text="5"
             android:singleLine="true"
             android:textColor="@color/colordialogtext"
             android:textSize="@dimen/font_size_14" />

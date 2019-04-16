@@ -979,8 +979,13 @@ public class GSM_ZYF {
     }
 
     public void SendStatusRequest(String ip,int port) {
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.status_request);
         msg.dic.put("timeout",0);
+        msg.dic.put("timestamp",dateString);
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

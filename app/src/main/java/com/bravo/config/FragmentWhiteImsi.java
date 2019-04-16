@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
@@ -51,6 +52,8 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
     private final int OPEN_DIALOG = 0;
 
     public static boolean isOpen = false;
+    private static ArrayList<String> SendOkList = new ArrayList<>();
+
     private int selectedItem = -1;
     private ArrayList<WaitDialogData> sendDateList = new ArrayList<>();
 
@@ -331,45 +334,63 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
         Logs.d(TAG,"文件MD5值:(" + md5 + ")");
 
         if (md5.equals(CommunicationService.WhiteMd5)) {
-            CustomToast.showToast(context, "白名单没有修改");
-        } else {
-            DialogCustomBuilder dialog = new DialogCustomBuilder(context,"下发白名单","将白名单下发到所有在线AP?");
-            dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
-                @Override
-                public void onBtnClick(DialogInterface arg0, int arg1) {
-                    CommunicationService.WhiteMd5 = md5;
-
-                    sendDateList.clear();
-                    ArrayList<DeviceDataStruct> devicelist = DeviceFragmentStruct.getList();
-                    for (int i=0;i<devicelist.size();i++) {
-                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.AP_DATA_ALIGN_SET,devicelist.get(i).getSN()));
-                    }
-                    if (sendDateList.size() ==0) {
-                        CustomToast.showToast(context, "没有要下发的设备");
-                        return;
-                    }
-                    Message message = new Message();
-                    message.what = OPEN_DIALOG;
-                    handler.sendMessage(message);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            super.run();
-                            Utils.mySleep(2000);//休眠2秒
-                            new HandleRecvXmlMsg(context).GetGeneralParaRequest();
-                        }
-                    }.start();
-                }
-            });
-            dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
-                @Override
-                public void onBtnClick(DialogInterface arg0, int arg1) {
-                }
-            });
-            dialog.show();
-
+        //    CustomToast.showToast(context, "白名单没有修改");
+        //    return;
         }
+        else
+        {
+            Log.d(TAG,"白名单修改了，删除以前保存的发送成功的sn");
+            SendOkList.clear();//名单修改了，删除以前保存的发送成功的sn
+        }
+
+        DialogCustomBuilder dialog = new DialogCustomBuilder(context,"下发白名单","将白名单下发到所有在线AP?");
+        dialog.setOkListener(new DialogCustomBuilder.OkBtnClickListener() {
+            @Override
+            public void onBtnClick(DialogInterface arg0, int arg1) {
+                CommunicationService.WhiteMd5 = md5;
+
+                sendDateList.clear();
+                ArrayList<DeviceDataStruct> devicelist = DeviceFragmentStruct.getList();
+                for (int i=0;i<devicelist.size();i++) {
+                    if (SendOkList.contains(devicelist.get(i).getSN())) {
+                        //已发送成功的AP直接显示成功
+                        sendDateList.add(new WaitDialogData(
+                                HandleRecvXmlMsg.AP_DATA_ALIGN_SET, devicelist.get(i).getSN(),WaitDialogData.RUSULT_OK));
+                    }
+                    else
+                    {
+                        sendDateList.add(new WaitDialogData(HandleRecvXmlMsg.AP_DATA_ALIGN_SET, devicelist.get(i).getSN()));
+                    }
+                }
+                if (sendDateList.size() ==0) {
+                    CustomToast.showToast(context, "没有要下发的设备");
+                    return;
+                }
+                Message message = new Message();
+                message.what = OPEN_DIALOG;
+                handler.sendMessage(message);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        Utils.mySleep(2000);//休眠2秒
+                        for(WaitDialogData list : sendDateList)
+                        {
+                            if (list.getiRusult() == WaitDialogData.WAIT_SEND)
+                                new HandleRecvXmlMsg(context).GetGeneralParaRequest(list.getTitle());
+                        }
+                    }
+                }.start();
+            }
+        });
+        dialog.setCancelListener(new DialogCustomBuilder.CancelBtnClickListener() {
+            @Override
+            public void onBtnClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        dialog.show();
+
         return;
     }
 
@@ -403,6 +424,12 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
                 case OPEN_DIALOG:
                     WaitDialog waitDialog = new WaitDialog(context);
                     waitDialog.setList(sendDateList);
+                    waitDialog.setSendOkListener(new WaitDialog.onIsSendOkListener() {
+                        @Override
+                        public void isSendOk(String sn) {
+                            SendOkList.add(sn);
+                        }
+                    });
                     waitDialog.show();
                     break;
                 default:

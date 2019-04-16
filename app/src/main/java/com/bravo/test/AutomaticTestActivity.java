@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -125,6 +124,7 @@ public class AutomaticTestActivity extends BaseActivity {
             "4360..4362", "", "", "2940..2942"};
     private final static String arrayGSMChannels[] = new String[]{"", "", "512..514", "814..816", "", "131..133", "", "",
             "980..982"};
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_automatic_test);

@@ -42,6 +42,7 @@ public class LoginActivity extends BaseActivity {
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 2;
 
     private Button btnLogin;
+
     @Override
     protected void initView() {
         Logs.d(TAG,"initView");

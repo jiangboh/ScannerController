@@ -2,6 +2,7 @@ package com.bravo.FemtoController;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,10 @@ import android.widget.TextView;
 
 import com.bravo.BlueTooth.EventBusTukTukMsg;
 import com.bravo.R;
+import com.bravo.audio.VoiceSpeaker;
+import com.bravo.audio.VoiceTemplate;
+import com.bravo.data_ben.PositionDataStruct;
+import com.bravo.fragments.SerializableHandler;
 import com.bravo.no_http.download.DownloadListener;
 import com.bravo.no_http.download.DownloadQueue;
 import com.bravo.no_http.download.DownloadRequest;
@@ -24,7 +29,10 @@ import com.bravo.no_http.rest.Request;
 import com.bravo.no_http.rest.RequestQueue;
 import com.bravo.parse_generate_xml.ErrorNotif;
 import com.bravo.parse_generate_xml.Status;
+import com.bravo.scanner.FragmentScannerConfig;
+import com.bravo.scanner.FragmentpPositionListen;
 import com.bravo.socket_service.EventBusMsgConstant;
+import com.bravo.utils.Logs;
 import com.bravo.utils.SharePreferenceUtils;
 import com.bravo.utils.SimpleDateUtils;
 import com.bravo.utils.StatusBarCompat;
@@ -35,12 +43,21 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  *@author jintian.ming
  *@createDate 2016/12/20
  * 完成activity基类的封装（后继会根据具体需要添加）
  */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private Timer timer;
+    private final int BLACK_IMSI_ONLING = 1;
+    private final int BLACK_IMSI_OFFLING = 2;
 
     protected String TAG = getClass().getSimpleName();
     protected Context mContext;
@@ -380,4 +397,73 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 break;
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void TargetPosition(PositionDataStruct data) {
+
+        Message message = new Message();
+        message.what = BLACK_IMSI_ONLING;
+        Bundle bundle = new Bundle();
+        bundle.putInt("RSSI",data.getValue());
+        bundle.putInt("GAIN",data.getRxGain());
+        message.setData(bundle);
+        handler.sendMessage(message);
+    }
+
+    class MyTimer extends TimerTask implements Serializable {
+        @Override
+        public void run() {
+            Message message = new Message();
+            message.what = BLACK_IMSI_OFFLING;
+            handler.sendMessage(message);
+        }
+    }
+
+    private Handler handler = new SerializableHandler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case BLACK_IMSI_ONLING:
+                    int iRssi = msg.getData().getInt("RSSI",-100);
+
+                    SharedPreferences sp = mContext.getSharedPreferences("FragmentpPositionListen", MODE_PRIVATE);
+                    boolean soundOpen = sp.getBoolean("soundOpen",false);
+
+                    SharedPreferences sp1 = mContext.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
+                    boolean openOffset = sp1.getBoolean(FragmentScannerConfig.tn_OpenOffset,FragmentScannerConfig.DefultOpenOffset);
+
+                    if (openOffset) {
+                        txTuktuk.setText(String.valueOf(iRssi - msg.getData().getInt("GAIN",0)));
+                    } else {
+                        txTuktuk.setText(String.valueOf(iRssi));
+                    }
+                    txTuktuk.setVisibility(View.VISIBLE);
+
+                    if (timer != null) {
+                        Logs.d(TAG, "启动定时检查在线状态线程。。。");
+                        timer.cancel();
+                        timer = null;
+                    }
+                    timer = new Timer();
+                    timer.schedule(new MyTimer(), 10000);  //10秒未上报，认为黑名单用户下线了
+
+                    if (soundOpen && !FragmentpPositionListen.isOpen) {
+                        List<String> list = new VoiceTemplate()
+                                .numString(String.valueOf(Math.abs(iRssi)))
+                                .gen();
+
+                        VoiceSpeaker.getInstance().startSpeak(mContext, list);
+                    }
+                    break;
+
+                case BLACK_IMSI_OFFLING:
+                    txTuktuk.setVisibility(View.INVISIBLE);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    };
 }

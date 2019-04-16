@@ -91,6 +91,7 @@ public class FemtoListActivity extends BaseActivity implements View.OnClickListe
 
     private EditText ipAddress1,ipAddress2,ipAddress3,ipAddress4,port;
     private ImageView rightBtn;
+
     @Override
     protected void initView() {
         if (!isServiceRunning(mContext, "com.bravo.socket_service.CommunicationService")){

@@ -95,6 +95,13 @@ public class LTE {
             String imsi = GetMsgStringValueInList("imsi", msg.dic, "");
             int rsrp = GetMsgIntValueInList("rsrp",msg.dic,-128);
             Log.d(TAG,"收到RSRP：" + rsrp);
+
+            if (rsrp == 0 )
+            {
+                Log.d(TAG,"收到非法RSRP(" + rsrp + ")值");
+                return;
+            }
+
             //加上上行衰减值
             //rsrp = rsrp - ((LTE_GeneralPara)dds.getGeneralPara()).getRfTxGain();
             //Log.d(TAG,"加衰减后RSRP：" + rsrp);
@@ -448,8 +455,14 @@ public class LTE {
     }
 
     public void SendStatusRequest(String ip,int port) {
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.status_request);
         msg.dic.put("timeout",0);
+        msg.dic.put("timestamp",dateString);
+
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

@@ -91,6 +91,7 @@ public class FunActivity extends BaseActivity {
 
     // 用来计算返回键的点击间隔时间
     private long exitTime = 0;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK

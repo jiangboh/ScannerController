@@ -30,6 +30,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import static com.bravo.data_ben.WaitDialogData.RUSULT_OK;
+
 /**
  * Created by admin on 2018-10-19.
  */
@@ -43,6 +45,16 @@ public class WaitDialog extends Dialog {
     private Button b_ok;
     private ProgressBar progressBar;
     private Context mContext;
+
+    private onIsSendOkListener isSendOkListener;
+
+    public interface onIsSendOkListener {
+        void isSendOk(String sn);
+    }
+
+    public void setSendOkListener(onIsSendOkListener listener) {
+        this.isSendOkListener = listener;
+    }
 
     public class AdapterReqList extends BaseAdapter {
         private  ArrayList<WaitDialogData> dataList = new ArrayList<>();
@@ -90,7 +102,7 @@ public class WaitDialog extends Dialog {
             } else if (data.getiRusult() == data.SEND){
                 holder.requestResult.setText("已发送");
                 holder.requestResult.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorHalfDialogTitle));
-            } else if (data.getiRusult() == data.RUSULT_OK){
+            } else if (data.getiRusult() == RUSULT_OK){
                 holder.requestResult.setText("成功");
                 holder.requestResult.setTextColor(ContextCompat.getColor(context.getApplicationContext(),R.color.colorStatusOk));
             } else if (data.getiRusult() == data.RUSULT_FAIL){
@@ -114,6 +126,11 @@ public class WaitDialog extends Dialog {
                 if (dataList.get(i).getId() == HandleRecvXmlMsg.AP_DATA_ALIGN_SET) { //为了匹配黑白名单设置，用sn作为主键
                     if (dataList.get(i).getTitle().equals(wdd.getTitle())) {
                         dataList.get(i).setiRusult(wdd.getiRusult());
+                        if (wdd.getiRusult() == RUSULT_OK ) //保存发送成功的sn
+                        {
+                            if (isSendOkListener != null)
+                                isSendOkListener.isSendOk(wdd.getTitle());
+                        }
                         break;
                     }
                 } else {

@@ -45,7 +45,7 @@ public class DeviceFragmentStruct {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 
             inum++;
-            /*if ((inum % 300) == 0) {
+            /*if ((inum % 1) == 0) {
                 PositionDataStruct data = new PositionDataStruct("1asd2222222222","1asd2222222222",
                         simpleDateFormat.format(curTime).toString(),
                         (int) ((Math.random()) * 100));

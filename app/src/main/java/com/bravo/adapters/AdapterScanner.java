@@ -269,8 +269,10 @@ public class AdapterScanner extends BaseAdapter {
         int iUserType = targetDataStructs.get(position).getiUserType();
         if (iUserType == TargetDataStruct.BLACK_IMSI) {
             holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
-            if (toPosition.isEnabled() == false)
+            if (toPosition.isEnabled() == false) {
                 toPosition.setEnabled(true);
+                //this.ststatusGps.
+            }
         }
         else if (iUserType == TargetDataStruct.WHITE_IMSI)
             holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);

@@ -15,6 +15,7 @@ public class SnifferHistoryActivity extends BaseActivity {
     private ListView TargetListView;
     private AdapeterSnifferList adapeterSnifferList;
     private ImageView btnRight;
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_history);

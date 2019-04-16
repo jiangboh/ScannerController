@@ -283,6 +283,26 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
+    public boolean GetGeneralParaRequest(String sn) {
+        DeviceDataStruct deviceInfo = DeviceFragmentStruct.getDevice(sn);
+        if (deviceInfo == null) return false;
+
+        if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
+                || deviceInfo.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
+                || deviceInfo.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            new LTE(mContext).SendGeneralParaRequest(
+                    deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
+        } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)
+                || deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+            new GSM_ZYF(mContext,deviceInfo.getMode()).SendGeneralParaRequest(
+                    GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
+        } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+
+        }
+
+        return true;
+    }
+
     public boolean SetCnmSyncStatus(Boolean stopSync) {
         String ip = deviceDataStruct.getIp();
         int port = deviceDataStruct.getPort();

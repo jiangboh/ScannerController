@@ -2,11 +2,14 @@ package com.bravo.data_ben;
 
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
+import com.bravo.utils.TimeConvert;
 import com.bravo.utils.Utils;
 import com.bravo.xml.CDMA_GeneralPara;
 import com.bravo.xml.FindMsgStruct;
 import com.bravo.xml.LTE_GeneralPara;
 import com.bravo.xml.Msg_Body_Struct;
+
+import java.text.ParseException;
 
 /**
  * Created by admin on 2018-9-17.
@@ -146,7 +149,16 @@ public class DeviceDataStruct {
         deviceInfo.setPort(port);
         deviceInfo.setMode(String2Mode(mode));
         deviceInfo.setSN(sn);
-        deviceInfo.setLastTime( System.currentTimeMillis());
+
+        try {
+            deviceInfo.setLastTime(TimeConvert.stringToLong(
+                    FindMsgStruct.GetMsgStringValueInList("timestamp",msg.dic,"1970-01-01 08:00:00"),
+                    "yyyy-MM-dd HH:mm:ss"));
+        } catch (ParseException e) {
+            deviceInfo.setLastTime(System.currentTimeMillis());
+        }
+
+
         deviceInfo.setFullName(FindMsgStruct.GetMsgStringValueInList("fullname",msg.dic,""));
         deviceInfo.setVersion(FindMsgStruct.GetMsgStringValueInList("version",msg.dic,""));
         String sd = FindMsgStruct.GetMsgStringValueInList("detail",msg.dic,"0x0");

@@ -26,6 +26,7 @@ import static android.net.NetworkCapabilities.TRANSPORT_CELLULAR;
 
 public class NetTestActivity extends BaseActivity {
     private ConnectivityManager connectivityManager;
+
     @Override
     protected void initData(Bundle savedInstanceState) {
 
