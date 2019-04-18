@@ -314,6 +314,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         List<BlackWhiteImsi> imsiList =
                 ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
                         where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK)).
@@ -422,6 +423,7 @@ public class FragmentBlackImsi extends RevealAnimationBaseFragment {
                 case OPEN_DIALOG:
                     WaitDialog waitDialog = new WaitDialog(context);
                     waitDialog.setList(sendDateList);
+                    waitDialog.setDataAlignFlag(true);
                     waitDialog.setSendOkListener(new WaitDialog.onIsSendOkListener() {
                         @Override
                         public void isSendOk(String sn) {

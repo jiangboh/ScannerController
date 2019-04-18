@@ -424,6 +424,7 @@ public class FragmentWhiteImsi extends RevealAnimationBaseFragment {
                 case OPEN_DIALOG:
                     WaitDialog waitDialog = new WaitDialog(context);
                     waitDialog.setList(sendDateList);
+                    waitDialog.setDataAlignFlag(true);
                     waitDialog.setSendOkListener(new WaitDialog.onIsSendOkListener() {
                         @Override
                         public void isSendOk(String sn) {

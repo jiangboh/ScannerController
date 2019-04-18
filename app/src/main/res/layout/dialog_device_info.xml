@@ -174,7 +174,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="最后消息时间:"
+            android:text="设备时间:"
             android:textColor="@color/colordialogtext"
             android:textSize="@dimen/font_size_14" />
 

@@ -11,12 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
 import com.bravo.data_ben.DeviceDataStruct;
 import com.bravo.data_ben.TargetDataStruct;
+import com.bravo.database.BlackWhiteImsi;
+import com.bravo.database.BlackWhiteImsiDao;
 import com.bravo.utils.Logs;
 
 import java.util.ArrayList;
+
+import static com.bravo.R.id.imsi;
 
 /**
  * Created by admin on 2018-9-14.
@@ -239,7 +244,7 @@ public class AdapterScanner extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.adapter_conn_target, null);
             holder.layout_conntime = (LinearLayout) convertView.findViewById(R.id.layout_conntime);
             holder.textViewName = ((TextView) convertView.findViewById(R.id.name));
-            holder.textViewImsi = ((TextView) convertView.findViewById(R.id.imsi));
+            holder.textViewImsi = ((TextView) convertView.findViewById(imsi));
             holder.textViewConntime = ((TextView) convertView.findViewById(R.id.conntime));
             holder.layout_imei = (LinearLayout) convertView.findViewById(R.id.layout_imei);
             holder.textViewImei = ((TextView) convertView.findViewById(R.id.imei));
@@ -265,30 +270,6 @@ public class AdapterScanner extends BaseAdapter {
         if (saveImsi.isEnabled() == false)
             saveImsi.setEnabled(true);
 
-        //userType
-        int iUserType = targetDataStructs.get(position).getiUserType();
-        if (iUserType == TargetDataStruct.BLACK_IMSI) {
-            holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
-            if (toPosition.isEnabled() == false) {
-                toPosition.setEnabled(true);
-                //this.ststatusGps.
-            }
-        }
-        else if (iUserType == TargetDataStruct.WHITE_IMSI)
-            holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);
-        else if (iUserType == TargetDataStruct.OTHER_IMSI)
-            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
-        else
-            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
-
-        //name
-        String name = targetDataStructs.get(position).getName();
-        if (name == null || name.isEmpty()) {
-            holder.layout_name.setVisibility(View.GONE);
-        } else {
-            holder.layout_name.setVisibility(View.VISIBLE);
-            holder.textViewName.setText(name);
-        }
         String tmsi = targetDataStructs.get(position).getTmsi();
         if (tmsi == null || tmsi.isEmpty()) {
             holder.layout_tmsi.setVisibility(View.GONE);
@@ -305,6 +286,42 @@ public class AdapterScanner extends BaseAdapter {
         } else {
             holder.layout_imei.setVisibility(View.VISIBLE);
             holder.textViewImei.setText(strImei);
+        }
+
+        BlackWhiteImsi bwImsi = null;
+        //userType
+        int iUserType = targetDataStructs.get(position).getiUserType();
+        if (iUserType == TargetDataStruct.BLACK_IMSI) {
+            holder.iv_user_icon.setImageResource(R.mipmap.user_red_icon);
+            if (toPosition.isEnabled() == false) {
+                toPosition.setEnabled(true);
+                //this.ststatusGps.
+            }
+
+            bwImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
+                        where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK)).
+                        where(BlackWhiteImsiDao.Properties.Imsi.eq(imsi)).
+                        unique();
+        }
+        else if (iUserType == TargetDataStruct.WHITE_IMSI) {
+            holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);
+            bwImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
+                    where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE)).
+                    where(BlackWhiteImsiDao.Properties.Imsi.eq(imsi)).
+                    unique();
+        }
+        else if (iUserType == TargetDataStruct.OTHER_IMSI)
+            holder.iv_user_icon.setImageResource(R.mipmap.user_icon);
+        else
+            holder.iv_user_icon.setImageResource(R.mipmap.user_yellow_icon);
+
+        //name
+        //String name = targetDataStructs.get(position).getName();
+        if (bwImsi == null) {
+            holder.layout_name.setVisibility(View.GONE);
+        } else {
+            holder.layout_name.setVisibility(View.VISIBLE);
+            holder.textViewName.setText(bwImsi.getName());
         }
 
         //conntime

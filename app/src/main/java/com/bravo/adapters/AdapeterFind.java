@@ -111,6 +111,8 @@ public class AdapeterFind  extends BaseAdapter {
             holder.SN = (TextView) convertView.findViewById(R.id.sn);
             holder.FullName = (TextView) convertView.findViewById(R.id.fullname);
             holder.Mode = (TextView) convertView.findViewById(R.id.mode);
+            holder.AddStatus = (TextView) convertView.findViewById(R.id.addStatus);
+            holder.Name_AddStatus = (TextView) convertView.findViewById(R.id.name_addStatus);
             holder.Ip = (TextView) convertView.findViewById(R.id.ip);
             holder.Port = (TextView) convertView.findViewById(R.id.port);
             convertView.setTag(holder);
@@ -122,8 +124,12 @@ public class AdapeterFind  extends BaseAdapter {
         holder.SN.setText(deviceDataStructs.get(position).getSN());
         holder.FullName.setText(deviceDataStructs.get(position).getFullName());
         holder.Mode.setText(deviceDataStructs.get(position).getMode());
+        holder.AddStatus.setText(DeviceDataStruct.sAddStatus[deviceDataStructs.get(position).getAddStatus()]);
         holder.Ip.setText(deviceDataStructs.get(position).getIp());
         holder.Port.setText(String.valueOf(deviceDataStructs.get(position).getPort()));
+
+        holder.AddStatus.setVisibility(View.GONE);
+        holder.Name_AddStatus.setVisibility(View.GONE);
 
         if (findList) {
             holder.imageView.setVisibility(View.GONE);
@@ -159,8 +165,6 @@ public class AdapeterFind  extends BaseAdapter {
         } else {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.addImage.setVisibility(View.GONE);
-
-
         }
         return convertView;/* String mode = deviceDataStructs.get(position).getBootmode();
             if (mode.equalsIgnoreCase("LTE")) {
@@ -180,6 +184,8 @@ public class AdapeterFind  extends BaseAdapter {
         TextView SN;
         TextView FullName;
         TextView Mode;
+        TextView Name_AddStatus;
+        TextView AddStatus;
         TextView Ip;
         TextView Port;
         LinearLayout fullname_layout;

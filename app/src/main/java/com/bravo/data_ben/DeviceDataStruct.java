@@ -2,14 +2,13 @@ package com.bravo.data_ben;
 
 import com.bravo.parse_generate_xml.Find.FindDeviceInfo;
 import com.bravo.utils.Logs;
-import com.bravo.utils.TimeConvert;
 import com.bravo.utils.Utils;
 import com.bravo.xml.CDMA_GeneralPara;
 import com.bravo.xml.FindMsgStruct;
 import com.bravo.xml.LTE_GeneralPara;
 import com.bravo.xml.Msg_Body_Struct;
 
-import java.text.ParseException;
+import static com.bravo.xml.FindMsgStruct.GetMsgStringValueInList;
 
 /**
  * Created by admin on 2018-9-17.
@@ -20,6 +19,17 @@ public class DeviceDataStruct {
 
     public static final int ON_LINE = 1;
     public static final int OFF_LINE = 0;
+
+    public static final String sAddStatus[] = {
+            "未就绪状态",
+            "就绪状态",
+            "扫频状态",
+            "小区准备就绪",
+            "小区建立中",
+            "小区建立完成",
+            "小区建立失败",
+            "未知状态"
+    };
 
     public static class MODE {
         public static final String NOMODE = "NOMODE";
@@ -55,6 +65,7 @@ public class DeviceDataStruct {
     private String Mode;
     private String FullName;
     private Long LastTime;
+    private String sDeviceTime;
     private Long detail;
     private boolean status_sctp;
     private boolean status_s1;
@@ -67,6 +78,7 @@ public class DeviceDataStruct {
     private boolean status_redio2;
     private boolean status_radio;
 
+    private int iAddStatus;
     private String version;
     private Object generalPara = null;
 
@@ -130,12 +142,12 @@ public class DeviceDataStruct {
     public static DeviceDataStruct xmlToBean(String ip,int port,Msg_Body_Struct msg) {
         DeviceDataStruct deviceInfo;
 
-        String sn = FindMsgStruct.GetMsgStringValueInList("sn",msg.dic,"");
+        String sn = GetMsgStringValueInList("sn",msg.dic,"");
         String mode = MODE.NOMODE;
         if (Utils.isDebugVersion()) {
-            mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.LTE_TDD);
+            mode = GetMsgStringValueInList("mode", msg.dic, MODE.LTE_TDD);
         } else {
-            mode = FindMsgStruct.GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
+            mode = GetMsgStringValueInList("mode", msg.dic, MODE.NOMODE);
         }
 
         mode = mode.replace("-","_");
@@ -149,23 +161,38 @@ public class DeviceDataStruct {
         deviceInfo.setPort(port);
         deviceInfo.setMode(String2Mode(mode));
         deviceInfo.setSN(sn);
-
-        try {
-            deviceInfo.setLastTime(TimeConvert.stringToLong(
-                    FindMsgStruct.GetMsgStringValueInList("timestamp",msg.dic,"1970-01-01 08:00:00"),
-                    "yyyy-MM-dd HH:mm:ss"));
-        } catch (ParseException e) {
-            deviceInfo.setLastTime(System.currentTimeMillis());
-        }
-
+        deviceInfo.setLastTime(System.currentTimeMillis());
+        deviceInfo.setDeviceTime(FindMsgStruct.GetMsgStringValueInList("timestamp",msg.dic,"1970-01-01 08:00:00"));
 
         deviceInfo.setFullName(FindMsgStruct.GetMsgStringValueInList("fullname",msg.dic,""));
         deviceInfo.setVersion(FindMsgStruct.GetMsgStringValueInList("version",msg.dic,""));
         String sd = FindMsgStruct.GetMsgStringValueInList("detail",msg.dic,"0x0");
         Long detail = Long.valueOf(sd.replace("0x","").replace("0X",""),16);
         deviceInfo.setDetail(detail);
+        deviceInfo.setAddStatus(FindMsgStruct.GetMsgIntValueInList("addStatus",msg.dic,0));
 
         return deviceInfo;
+    }
+
+    public int getAddStatus()
+    {
+        return iAddStatus;
+    }
+
+    public void setAddStatus(int iAddStatus)
+    {
+        if (iAddStatus >= 6) iAddStatus = 7;
+        this.iAddStatus = iAddStatus;
+    }
+
+    public String getDeviceTime()
+    {
+        return sDeviceTime;
+    }
+
+    public void setDeviceTime(String sDeviceTime)
+    {
+        this.sDeviceTime = sDeviceTime;
     }
 
     public Long getLastTime() {

@@ -73,6 +73,7 @@ public class CommunicationService extends Service {
     @Override
     public void onCreate() {
         Logs.d(TAG,"onCreate");
+
         //保存启动参数
         saveData();
 

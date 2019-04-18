@@ -3,6 +3,8 @@ package com.bravo.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -21,6 +23,7 @@ import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.data_ben.WaitDialogData;
+import com.bravo.fragments.SerializableHandler;
 import com.bravo.utils.Logs;
 import com.bravo.xml.HandleRecvXmlMsg;
 
@@ -28,7 +31,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.bravo.data_ben.WaitDialogData.RUSULT_OK;
 
@@ -39,6 +45,13 @@ import static com.bravo.data_ben.WaitDialogData.RUSULT_OK;
 public class WaitDialog extends Dialog {
     private final String TAG="WaitDialog";
     private AdapterReqList adapterReq;
+    private boolean isDataAlign = false;
+    private static boolean isTimeOut = false;
+    private static int checkNum = 0;
+
+    private static Timer timer=null;
+    private final int COMMAND_SEND_TIMEOUT = 0;
+    private final int COMMAND_SEND_CHECK = 1;
 
     private TextView progress_dialog_title ;
     private ListView listView;
@@ -124,8 +137,21 @@ public class WaitDialog extends Dialog {
         public void NotifyDataSetChanged (WaitDialogData wdd) {
             for (int i=0;i<dataList.size();i++) {
                 if (dataList.get(i).getId() == HandleRecvXmlMsg.AP_DATA_ALIGN_SET) { //为了匹配黑白名单设置，用sn作为主键
+                    if (!isDataAlign)
+                    {
+                        Logs.w(TAG,"该消息不是数据对齐消息，当前为黑白名单设置状态，不处理该消息",true,true);
+                        break;
+                    }
                     if (dataList.get(i).getTitle().equals(wdd.getTitle())) {
-                        dataList.get(i).setiRusult(wdd.getiRusult());
+                        if(dataList.get(i).getiRusult() < wdd.getiRusult()) {
+                            Logs.d(TAG,String.format("设备[%s]当前状态更改为[%d]。",
+                                    wdd.getTitle(),wdd.getiRusult()),true,true);
+                            dataList.get(i).setiRusult(wdd.getiRusult());
+                        } else {
+                            Logs.w(TAG,String.format("设备[%s]当前状态[%d]>=更改状态[%d],不做状态更改。",
+                                    wdd.getTitle(),dataList.get(i).getiRusult(),wdd.getiRusult()),true,true);
+                        }
+
                         if (wdd.getiRusult() == RUSULT_OK ) //保存发送成功的sn
                         {
                             if (isSendOkListener != null)
@@ -134,6 +160,11 @@ public class WaitDialog extends Dialog {
                         break;
                     }
                 } else {
+                    if (isDataAlign)
+                    {
+                        Logs.w(TAG,"该消息是数据对齐消息，当前不是黑白名单设置，不处理该消息",true,true);
+                        break;
+                    }
                     if (dataList.get(i).getId() == wdd.getId()) {
                         dataList.get(i).setiRusult(wdd.getiRusult());
                         break;
@@ -144,17 +175,94 @@ public class WaitDialog extends Dialog {
         }
     }
 
+    public void setDataAlignFlag(boolean isDataAlign)
+    {
+        this.isDataAlign = isDataAlign;
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         Logs.d(TAG, "onCreate", true);
 
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+
+        isTimeOut = false;
+        checkNum = 0;
+
+        timer = new Timer();
+        timer.schedule(new MyTimer(),1000, 1000);  //15秒未收到结果，认为命令发送失败
     }
+
+    class MyTimer extends TimerTask implements Serializable {
+        @Override
+        public void run() {
+            Message message = new Message();
+            checkNum++;
+            if (checkNum >= 15) {
+                //Logs.w(TAG,"接收消息已超时。",true,true);
+                message.what = COMMAND_SEND_TIMEOUT;
+            }
+            else
+            {
+                //Logs.w(TAG,"检测消息是否接收完成",true,true);
+                message.what = COMMAND_SEND_CHECK;
+            }
+            handler.sendMessage(message);
+        }
+    }
+
+    private Handler handler = new SerializableHandler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case COMMAND_SEND_TIMEOUT:
+                    isTimeOut = true;
+                    for (WaitDialogData wdd : adapterReq.dataList) {
+                        if (wdd.getiRusult() != WaitDialogData.RUSULT_OK) {
+                            wdd.setiRusult(WaitDialogData.RUSULT_FAIL);
+                            adapterReq.NotifyDataSetChanged(wdd);
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    progress_dialog_title.setText("任务全部完成");
+                    b_ok.setEnabled(true);
+                    b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
+                    break;
+                case COMMAND_SEND_CHECK:
+                    boolean allSend = true;
+                    for (int i=0;i<adapterReq.dataList.size();i++) {
+                        //Logs.w(TAG,String.format("[%d]当前状态=%d",i,adapterReq.dataList.get(i).getiRusult()),true,true);
+                        if (adapterReq.dataList.get(i).getiRusult() != WaitDialogData.RUSULT_OK &&
+                                adapterReq.dataList.get(i).getiRusult() != WaitDialogData.RUSULT_FAIL) {
+                            allSend = false;
+                            Logs.w(TAG,String.format("[%d]当前状态为接收未完成！",i),true,true);
+                            break;
+                        }
+                    }
+                    if (allSend) {
+                        progressBar.setVisibility(View.GONE);
+                        progress_dialog_title.setText("任务全部完成");
+                        b_ok.setEnabled(true);
+                        b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onStop() {
         Logs.d(TAG,"onStop",true);
+        isTimeOut = false;
+        checkNum = 0;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -236,20 +344,14 @@ public class WaitDialog extends Dialog {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ChangesSendStatus(WaitDialogData wdd) {
+        if (isTimeOut)
+        {
+            Logs.w(TAG,"接收到发送状态改变事件,但此时已超时，不作状态改变。",true,true);
+            return;
+        }
         if (adapterReq == null) return;
-        Logs.d(TAG,"接收到发送状态改变事件",true,true);
+        Logs.d(TAG,String.format("接收到[%s]发送状态改变事件=%d,状态=%d",
+                wdd.getTitle(),wdd.getId(),wdd.getiRusult()),true,true);
         adapterReq.NotifyDataSetChanged(wdd);
-        boolean allSend = true;
-        for (int i=0;i<adapterReq.dataList.size();i++) {
-            if (adapterReq.dataList.get(i).getiRusult() == WaitDialogData.WAIT_SEND) {
-                allSend = false;
-            }
-        }
-        if (allSend) {
-            progressBar.setVisibility(View.GONE);
-            progress_dialog_title.setText("任务全部完成");
-            b_ok.setEnabled(true);
-            b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
-        }
     }
 }

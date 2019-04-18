@@ -125,6 +125,7 @@ public class AdapeterDeviceList extends BaseAdapter {
             holder.FullName = (TextView) convertView.findViewById(R.id.fullname);
             holder.LastTime = (TextView) convertView.findViewById(R.id.LastTime);
             holder.Mode = (TextView) convertView.findViewById(R.id.mode);
+            holder.AddStatus = (TextView) convertView.findViewById(R.id.addStatus);
             holder.Ip = (TextView) convertView.findViewById(R.id.ip);
             holder.Port = (TextView) convertView.findViewById(R.id.port);
             convertView.setTag(holder);
@@ -136,6 +137,7 @@ public class AdapeterDeviceList extends BaseAdapter {
         holder.SN.setText(dds.getSN());
         holder.FullName.setText(dds.getFullName());
         holder.Mode.setText(dds.getMode());
+        holder.AddStatus.setText(DeviceDataStruct.sAddStatus[dds.getAddStatus()]);
         holder.LastTime.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(dds.getLastTime()));
         holder.Ip.setText(dds.getIp());
         holder.Port.setText(String.valueOf(dds.getPort()));
@@ -189,6 +191,7 @@ public class AdapeterDeviceList extends BaseAdapter {
         TextView FullName;
         TextView LastTime;
         TextView Mode;
+        TextView AddStatus;
         TextView Ip;
         TextView Port;
         LinearLayout fullname_layout;
