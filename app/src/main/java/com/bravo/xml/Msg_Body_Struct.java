@@ -46,6 +46,9 @@ public class Msg_Body_Struct
     public static final String set_redirection_req = "set_redirection_req";
     public static final String set_redirection_rsp = "set_redirection_rsp";
 
+    public static final String cell_info_request = "cell_info_request";
+    public static final String cell_info_result = "cell_info_result";
+
     public static final String set_work_mode = "set_work_mode";
     public static final String set_work_mode_reponse = "set_work_mode_reponse";
     public static final String set_son_earfcn = "set_son_earfcn";

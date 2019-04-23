@@ -166,7 +166,10 @@ public class AdapeterFind  extends BaseAdapter {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.addImage.setVisibility(View.GONE);
         }
-        return convertView;/* String mode = deviceDataStructs.get(position).getBootmode();
+
+        return convertView;
+
+        /* String mode = deviceDataStructs.get(position).getBootmode();
             if (mode.equalsIgnoreCase("LTE")) {
                 holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext.getApplicationContext(), R.drawable.icon_4g_default));
             } else if (mode.equalsIgnoreCase("WCDMA")) {

@@ -2,6 +2,7 @@ package com.bravo.FemtoController;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bravo.R;
+import com.bravo.config.Fragment_SystemConfig;
 import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
@@ -151,6 +153,8 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
+        SharedPreferences sp = mContext.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
+        Logs.setLEVEL(sp.getInt(Fragment_SystemConfig.tn_LogLevel,Logs.getLEVEL()));
         Logs.d(TAG,"initData");
     }
 

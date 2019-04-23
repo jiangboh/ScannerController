@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bravo.FemtoController.ProxyApplication;
 import com.bravo.R;
+import com.bravo.adapters.SimpleBaseAdapter;
 import com.bravo.custom_view.CustomToast;
 import com.bravo.custom_view.RecordOnItemClick;
 import com.bravo.custom_view.RecordOnItemLongClick;
@@ -22,7 +23,6 @@ import com.bravo.database.BlackWhiteImsiDao;
 import com.bravo.dialog.DialogAddImsi;
 import com.bravo.utils.Logs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,8 +35,7 @@ public class DialogScannerMenu extends Dialog {
 
     private TextView titleName;
     private ListView listview;
-    private ArrayAdapter<String> adapter;
-    private List<String> data;
+    private MyListArrayAdapter adapter;
 
     private BlackWhiteImsi sInfo_imsi;
 
@@ -44,6 +43,40 @@ public class DialogScannerMenu extends Dialog {
         super(context);
         this.context = context;
         this.sInfo_imsi = imsiInfo;
+    }
+
+    private class MyListArrayAdapter extends SimpleBaseAdapter<String> {
+        public List<String> data;
+        private Context context;
+
+        private class ViewHolder {
+            private TextView textid;
+        }
+
+        public MyListArrayAdapter(Context context) {
+            //this.context = context;
+            super(context);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView == null) {
+                holder = new ViewHolder();
+                convertView = inflater.inflate(R.layout.my_simple_list_item, null);
+                holder.textid = ((TextView) convertView.findViewById(R.id.str_text));
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            holder.textid.setText(lists.get(position));
+
+            //设置item的点击效果
+            convertView.setBackgroundResource(R.drawable.dialog_btn_bg_selector);
+
+            return convertView;
+        }
     }
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -63,14 +96,11 @@ public class DialogScannerMenu extends Dialog {
             cancel();
         }
 
-        data=new ArrayList<String>();
-        data.add(0,"添加到黑名单");
-        data.add(1,"添加到白名单");
         listview = (ListView) findViewById(R.id.menulist);
-        //设定列表项的选择模式为单选
-        adapter=new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, data);
-        listview.setChoiceMode(ListView.CHOICE_MODE_NONE);
+        adapter = new MyListArrayAdapter(context);
         listview.setAdapter(adapter);
+        adapter.addData("添加到黑名单");
+        adapter.addData("添加到白名单");
 
         try {
             listview.setOnItemLongClickListener(new RecordOnItemLongClick() {
@@ -82,7 +112,7 @@ public class DialogScannerMenu extends Dialog {
             listview.setOnItemClickListener(new RecordOnItemClick() {
                 @Override
                 public void recordOnItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3, String strMsg) {
-                    String str = adapter.getItem(arg2);
+                    String str = (String)adapter.getItem(arg2);
                     Logs.d(TAG,"点击：" + str,true);
                     if (str.equals("添加到白名单")) {
                         DialogAddImsi dialog = new DialogAddImsi(context,false,sInfo_imsi);
@@ -101,6 +131,8 @@ public class DialogScannerMenu extends Dialog {
                         dialog.show();
                         cancel();
                     } else if (str.equals("添加到黑名单")) {
+                        sInfo_imsi.setStartRb(3);
+                        sInfo_imsi.setStopRb(5);
                         DialogAddImsi dialog = new DialogAddImsi(context,true,sInfo_imsi);
                         dialog.setSaveListener(new DialogAddImsi.OnSaveData2Database() {
                             @Override

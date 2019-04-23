@@ -181,6 +181,9 @@ public class AdapeterDeviceList extends BaseAdapter {
         holder.imageView.setVisibility(View.VISIBLE);
         holder.addImage.setVisibility(View.GONE);
 
+        //设置item的点击效果
+        convertView.setBackgroundResource(R.drawable.dialog_btn_bg_selector);
+
         return convertView;
     }
 

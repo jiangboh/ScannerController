@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bravo.BuildConfig;
 import com.bravo.Find.FragmentFind;
 import com.bravo.Find.FragmentFindConfig;
+import com.bravo.Find.FragmentNeighborCell;
 import com.bravo.R;
 import com.bravo.config.FragmentBlackImsi;
 import com.bravo.config.FragmentRedirection;
@@ -571,16 +572,19 @@ public class FunActivity extends BaseActivity {
         Intent intent = new Intent(mContext,RevealAnimationActivity.class);
         ArrayList<String> menuList = new ArrayList<String>();
         menuList.add("设备搜索");
+        menuList.add("邻区信息");
         menuList.add("搜索配置");
         intent.putStringArrayListExtra(RevealAnimationActivity.MENU_LIST,menuList);
 
         ArrayList<RevealAnimationBaseFragment> fragments = new ArrayList<RevealAnimationBaseFragment>();
         fragments.add(new FragmentFind());
+        fragments.add(new FragmentNeighborCell());
         fragments.add(new FragmentFindConfig());
         intent.putExtra(RevealAnimationActivity.FRAGMENTS,(Serializable)fragments);
         //icon
         ArrayList<Integer> iconsResId = new ArrayList<Integer>();
         iconsResId.add(R.drawable.icon_scan_selector);
+        iconsResId.add(R.drawable.icon_remote_selector);
         iconsResId.add(R.drawable.icon_config_selector);
         intent.putExtra(RevealAnimationActivity.ICON_RES_LIST,iconsResId);
 

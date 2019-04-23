@@ -154,9 +154,7 @@ public class DialogDeviceInfo extends Dialog {
         sInfo_redio1 = (EditText) findViewById(R.id.sInfo_redio_1);
         s_gps = (EditText) findViewById(R.id.sInfo_gps);
         s_sctp = (EditText) findViewById(R.id.sInfo_sctp);
-        s_sctp.setVisibility(View.GONE);
         s_s1 = (EditText) findViewById(R.id.sInfo_s1);
-        s_s1.setVisibility(View.GONE);
         s_cell = (EditText) findViewById(R.id.sInfo_cell);
         s_sync = (EditText) findViewById(R.id.sInfo_sync);
         s_licenss = (EditText) findViewById(R.id.sInfo_licenss);
@@ -352,6 +350,9 @@ public class DialogDeviceInfo extends Dialog {
         sInfo_version.setText(String.valueOf(dds.getVersion()));
         sInfo_lastTime.setText(dds.getDeviceTime());
 
+        //捕号设备，暂不显示下面两种状态，以后有需求再添加
+        layout_sctp.setVisibility(View.GONE);
+        layout_s1.setVisibility(View.GONE);
     }
 
 

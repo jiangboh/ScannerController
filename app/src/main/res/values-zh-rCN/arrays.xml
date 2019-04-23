@@ -216,4 +216,11 @@
         <item>38.4M</item>
         <item>30.72M</item>
     </string-array>
+
+    <string-array name="log_lev">
+        <item>调试</item>
+        <item>正常</item>
+        <item>警告</item>
+        <item>错误</item>
+    </string-array>
 </resources>

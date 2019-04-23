@@ -278,7 +278,8 @@ public class AdapterScanner extends BaseAdapter {
             holder.textViewTmsi.setText(tmsi);
         }
         //imsi
-        holder.textViewImsi.setText(targetDataStructs.get(position).getImsi());
+        String strImsi = targetDataStructs.get(position).getImsi();
+        holder.textViewImsi.setText(strImsi);
         //imei
         String strImei = targetDataStructs.get(position).getImei();
         if (strImei == null || strImei.isEmpty()) {
@@ -300,14 +301,14 @@ public class AdapterScanner extends BaseAdapter {
 
             bwImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
                         where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.BLACK)).
-                        where(BlackWhiteImsiDao.Properties.Imsi.eq(imsi)).
+                        where(BlackWhiteImsiDao.Properties.Imsi.eq(strImsi)).
                         unique();
         }
         else if (iUserType == TargetDataStruct.WHITE_IMSI) {
             holder.iv_user_icon.setImageResource(R.mipmap.user_green_icon);
             bwImsi = ProxyApplication.getDaoSession().getBlackWhiteImsiDao().queryBuilder().
                     where(BlackWhiteImsiDao.Properties.Type.eq(BlackWhiteImsi.WHITE)).
-                    where(BlackWhiteImsiDao.Properties.Imsi.eq(imsi)).
+                    where(BlackWhiteImsiDao.Properties.Imsi.eq(strImsi)).
                     unique();
         }
         else if (iUserType == TargetDataStruct.OTHER_IMSI)

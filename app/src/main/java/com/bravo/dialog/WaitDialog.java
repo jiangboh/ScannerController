@@ -143,12 +143,12 @@ public class WaitDialog extends Dialog {
                         break;
                     }
                     if (dataList.get(i).getTitle().equals(wdd.getTitle())) {
-                        if(dataList.get(i).getiRusult() < wdd.getiRusult()) {
+                        if(dataList.get(i).getiRusult() <= wdd.getiRusult()) {
                             Logs.d(TAG,String.format("设备[%s]当前状态更改为[%d]。",
                                     wdd.getTitle(),wdd.getiRusult()),true,true);
                             dataList.get(i).setiRusult(wdd.getiRusult());
                         } else {
-                            Logs.w(TAG,String.format("设备[%s]当前状态[%d]>=更改状态[%d],不做状态更改。",
+                            Logs.w(TAG,String.format("设备[%s]当前状态[%d]>更改状态[%d],不做状态更改。",
                                     wdd.getTitle(),dataList.get(i).getiRusult(),wdd.getiRusult()),true,true);
                         }
 
@@ -229,6 +229,10 @@ public class WaitDialog extends Dialog {
                     progress_dialog_title.setText("任务全部完成");
                     b_ok.setEnabled(true);
                     b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
+                    }
                     break;
                 case COMMAND_SEND_CHECK:
                     boolean allSend = true;
@@ -237,7 +241,8 @@ public class WaitDialog extends Dialog {
                         if (adapterReq.dataList.get(i).getiRusult() != WaitDialogData.RUSULT_OK &&
                                 adapterReq.dataList.get(i).getiRusult() != WaitDialogData.RUSULT_FAIL) {
                             allSend = false;
-                            Logs.w(TAG,String.format("[%d]当前状态为接收未完成！",i),true,true);
+                            Logs.d(TAG,String.format("[%s]当前状态为接收未完成！",
+                                    adapterReq.dataList.get(i).getTitle()),true,true);
                             break;
                         }
                     }
@@ -246,6 +251,10 @@ public class WaitDialog extends Dialog {
                         progress_dialog_title.setText("任务全部完成");
                         b_ok.setEnabled(true);
                         b_ok.setTextColor(ContextCompat.getColor(mContext.getApplicationContext(),R.color.colorDialogOkEnable));
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
+                        }
                     }
                     break;
                 default:

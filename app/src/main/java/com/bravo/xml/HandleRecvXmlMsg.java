@@ -303,7 +303,7 @@ public class HandleRecvXmlMsg {
         return true;
     }
 
-    public boolean SetCnmSyncStatus(Boolean stopSync) {
+    public boolean SetCnmSyncStatus(boolean stopSync) {
         String ip = deviceDataStruct.getIp();
         int port = deviceDataStruct.getPort();
 
@@ -321,4 +321,25 @@ public class HandleRecvXmlMsg {
 
         return true;
     }
+
+    public boolean GetSonCellInfoRequest() {
+        String ip = deviceDataStruct.getIp();
+        int port = deviceDataStruct.getPort();
+
+        if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)) {
+            new LTE(mContext).SendGetNeighborCellInfo(ip,port);
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD) ||
+                deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            return true;
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2) ||
+                deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+            return true;
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+            return true;
+        }
+
+        return true;
+    }
+
+
 }

@@ -162,7 +162,7 @@ public class DeviceDataStruct {
         deviceInfo.setMode(String2Mode(mode));
         deviceInfo.setSN(sn);
         deviceInfo.setLastTime(System.currentTimeMillis());
-        deviceInfo.setDeviceTime(FindMsgStruct.GetMsgStringValueInList("timestamp",msg.dic,"1970-01-01 08:00:00"));
+        deviceInfo.setDeviceTime(FindMsgStruct.GetMsgStringValueInList("timestamp",msg.dic,""));
 
         deviceInfo.setFullName(FindMsgStruct.GetMsgStringValueInList("fullname",msg.dic,""));
         deviceInfo.setVersion(FindMsgStruct.GetMsgStringValueInList("version",msg.dic,""));

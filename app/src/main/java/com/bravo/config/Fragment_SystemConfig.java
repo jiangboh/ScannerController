@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bravo.FemtoController.RevealAnimationActivity;
@@ -18,7 +19,6 @@ import com.bravo.utils.Logs;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.bravo.R.drawable.btn_config_selector;
-import static com.bravo.R.id.tv_LisenPort;
 
 /**
  * Created by admin on 2018-10-16.
@@ -28,6 +28,7 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
     private final String TAG = "Fragment_SystemConfig";
 
     public static final String TABLE_NAME = "FragmentSystemConfig";
+    public static final String tn_LogLevel = "LogLevel";
     public static final String tn_MaxNum = "MaxNum";
     public static final String tn_LisenPort = "tn_ListenPort";
     public static final int DefultPort = 14721;
@@ -36,11 +37,13 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
     public static final int MaxNum = 600;
 
     private int iNum = 1000;
+    private int logLev = Logs.getLEVEL();
     private TextView tv_MaxNum;
     private SeekBar sb_MaxNum;
 
     private int PortText;
     private EditText tv_port;
+    private Spinner s_LogLev;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,8 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
     @Override
     public void initData(Bundle savedInstanceState) {
         Logs.d(TAG, "initData",true);
-        tv_port = (EditText) contentView.findViewById(tv_LisenPort);
+        s_LogLev = (Spinner) contentView.findViewById(R.id.log_lev);
+        tv_port = (EditText) contentView.findViewById(R.id.tv_LisenPort);
         tv_MaxNum = (TextView) contentView.findViewById(R.id.tx_MaxTime);
         sb_MaxNum = (SeekBar) contentView.findViewById(R.id.sb_MaxTime);
 
@@ -133,12 +137,16 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
             }
         });
     }
+
     private void loadData() {
         SharedPreferences sp = context.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
         iNum = sp.getInt(Fragment_SystemConfig.tn_MaxNum,Fragment_SystemConfig.DefultMaxNum);
-        Log.v("初始值：", String.valueOf(iNum));
+        Logs.d("初始值：", String.valueOf(iNum));
         sb_MaxNum.setProgress(iNum - Fragment_SystemConfig.MinNum);
         tv_MaxNum.setText(String.valueOf(iNum)+"秒");
+
+        logLev = sp.getInt(Fragment_SystemConfig.tn_LogLevel,Logs.getLEVEL());
+        s_LogLev.setSelection(logLev - 1);
 
         PortText = sp.getInt(Fragment_SystemConfig.tn_LisenPort,Fragment_SystemConfig.DefultPort);
         tv_port.setText(String.valueOf(PortText));
@@ -156,9 +164,12 @@ public class Fragment_SystemConfig extends RevealAnimationBaseFragment {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Fragment_SystemConfig.tn_MaxNum, iNum);
         editor.putInt(Fragment_SystemConfig.tn_LisenPort, port);
+        logLev = s_LogLev.getSelectedItemPosition() + 1;
+        editor.putInt(Fragment_SystemConfig.tn_LogLevel,logLev);
         Log.v("保存值：", String.valueOf(iNum));
         editor.commit();
 
+        Logs.setLEVEL(logLev);
         return true;
     }
 

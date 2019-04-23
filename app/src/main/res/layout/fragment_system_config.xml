@@ -8,6 +8,41 @@
     android:paddingLeft="2dp"
     android:paddingRight="2dp">
 
+    <!--Log级别-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_heigh"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_14"
+            android:paddingLeft="8dp"
+            android:text="Log打印级别:"
+            android:textColor="@color/colorItemText"
+            android:layout_gravity="center"
+            android:layout_weight="2.0"/>
+
+        <Spinner
+            android:id="@+id/log_lev"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.8"
+            android:entries="@array/log_lev"
+            android:overlapAnchor="false"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/colorHalfTransparent"
+            android:textSize="@dimen/font_size_12"></Spinner>
+
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"/>
+
     <!--监听端口-->
     <LinearLayout
         android:layout_width="match_parent"

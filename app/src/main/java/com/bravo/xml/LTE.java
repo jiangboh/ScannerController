@@ -212,14 +212,14 @@ public class LTE {
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_general_para_response)) {
             //回复数据对齐完成
             SendDataAlignOver(dds.getIp(), dds.getPort(),GetMsgIntValueInList("result", msg.dic, 0));
-            int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
+            /*int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_OK));
             } else {
                 EventBus.getDefault().post(new WaitDialogData(
                         HandleRecvXmlMsg.AP_DATA_ALIGN_SET, dds.getSN(), WaitDialogData.RUSULT_FAIL));
-            }
+            }*/
         }  else if (msg.type.equalsIgnoreCase(Msg_Body_Struct.set_configuration_result)) {
             int result = FindMsgStruct.GetMsgIntValueInList("result", msg.dic, 0);
             if (result == 0) {
@@ -644,6 +644,18 @@ public class LTE {
         msg.dic.put("RejectMethod",data.getRejectMethod());
         msg.dic.put("additionalFreq",data.getAddFreq());
 
+        String sendText = EncodeApXmlMessage(msg);
+
+        EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);
+        EventBus.getDefault().post(ebmsm);
+
+        return ;
+    }
+
+    public void SendGetNeighborCellInfo(String ip,int port) {
+        Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.cell_info_request);
+        msg.dic.put("searchMarcoCell",1);
+        msg.dic.put("timeout",0);
         String sendText = EncodeApXmlMessage(msg);
 
         EventBusMsgSendUDPMsg ebmsm = new EventBusMsgSendUDPMsg(ip,port,sendText);

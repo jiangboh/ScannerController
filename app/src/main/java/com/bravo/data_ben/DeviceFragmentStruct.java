@@ -206,6 +206,8 @@ public class DeviceFragmentStruct {
                 dList.add(deviceInfo);
             } else {
                 dList.get(index).setLastTime(System.currentTimeMillis());
+                dList.get(index).setDeviceTime(deviceInfo.getDeviceTime());
+                dList.get(index).setAddStatus(deviceInfo.getAddStatus());
                 dList.get(index).setDetail(deviceInfo.getDetail());
             }
             return isAdd;
