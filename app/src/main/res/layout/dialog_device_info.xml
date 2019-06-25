@@ -182,11 +182,23 @@
             android:id="@+id/sInfo_LastTime"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_weight="1.2"
             android:background="@android:color/transparent"
             android:focusable="false"
             android:textColor="@color/colordialogvalue"
             android:textSize="@dimen/font_size_14" />
+
+        <Button
+            android:id="@+id/bInfo_SetTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:layout_gravity="right"
+            android:paddingRight="3dp"
+            android:drawableRight="@mipmap/icon_set_time"
+            android:background="@android:color/transparent"
+            android:textSize="@dimen/font_size_12"
+            android:text=""/>
     </LinearLayout>
 
     <View

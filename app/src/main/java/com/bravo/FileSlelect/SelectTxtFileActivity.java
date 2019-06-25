@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bravo.R;
-import com.bravo.scanner.FragmentScannerConfig;
+import com.bravo.config.FragmentImportImsi;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class SelectFolderActivity extends Activity implements
+public class SelectTxtFileActivity extends Activity implements
         OnItemClickListener {
 
-    private String tableName = FragmentScannerConfig.TABLE_NAME;
-    private String keyName = FragmentScannerConfig.ImsiSavePath;
+    private String tableName = FragmentImportImsi.TABLE_NAME;
+    private String keyName = FragmentImportImsi.ImportPath;
 
     private ImageView ivBack;
     private TextView tvSettingTitle;
@@ -64,16 +64,28 @@ public class SelectFolderActivity extends Activity implements
         fullPath = (TextView) findViewById(R.id.tv_path_select);
         btnCancel = (Button) findViewById(R.id.btn_folder_cancel);
         btnComfirm = (Button) findViewById(R.id.btn_folder_comfirm);
-        tvSettingTitle.setText("选择存储目录");
+        tvSettingTitle.setText("请选择要导入的文件");
         ivBack.setOnClickListener(backListener);
         btnCancel.setOnClickListener(cancelListener);
+
+        btnComfirm.setVisibility(View.GONE);
         btnComfirm.setOnClickListener(comfirmListener);
+
         //Intent传递的路径
         SharedPreferences sp = getSharedPreferences(tableName, MODE_PRIVATE);
-        path = sp.getString(keyName,"");
-        if (path == null || path.trim().isEmpty())
+        String rPath = sp.getString(keyName,"");
+        if (rPath == null || rPath.trim().isEmpty())
         {
             path = defultPath;
+        } else {
+            //File file = new File(rPath);
+            //path = file.getAbsolutePath();
+            int lastDot = rPath.lastIndexOf("/");
+            if (lastDot >= 0) {
+                path = rPath.substring(0,lastDot);
+            } else {
+                path = defultPath;
+            }
         }
     }
 
@@ -85,21 +97,21 @@ public class SelectFolderActivity extends Activity implements
             editor.putString(keyName,(String) fullPath.getText());
             editor.commit();
 
-            SelectFolderActivity.this.finish();
+            SelectTxtFileActivity.this.finish();
         }
     };
 
     private OnClickListener cancelListener = new OnClickListener() {
         @Override
         public void onClick(View arg0) {
-            SelectFolderActivity.this.finish();
+            SelectTxtFileActivity.this.finish();
         }
     };
 
     private OnClickListener backListener = new OnClickListener() {
         @Override
         public void onClick(View arg0) {
-            SelectFolderActivity.this.finish();
+            SelectTxtFileActivity.this.finish();
         }
     };
 
@@ -108,7 +120,7 @@ public class SelectFolderActivity extends Activity implements
         fullPath.setText(path);
         folderlist = getFolderList(path);
         FolderAdapter folderAdapter = new FolderAdapter(folderlist,
-                SelectFolderActivity.this);
+                SelectTxtFileActivity.this);
         mlistview.setAdapter(folderAdapter);
         mlistview.setOnItemClickListener(this);
         mlistview.setSelection(0);
@@ -151,22 +163,10 @@ public class SelectFolderActivity extends Activity implements
                 fol.setFolderToTal(getSubfolder(file.getPath()));
                 list.add(fol);
             } else {
-                /*
-                //判断文件是否为图片
-                if (MediaFileUtil.isImageFileType(file.getPath())) {
+                //判断是否txt文件
+                if (checkTxtFile(file.getPath())) {
                     FolderInfo fol = new FolderInfo();
-                    fol.setFolderIcon(R.drawable.image_logo);
-                    fol.setFolderName(file.getName());
-                    fol.setFolderPath(file.getPath());
-                    fol.setFolderTime(longDateToString(file.lastModified()));
-                    fol.setFolderToTal("大小:" + file.length());
-                    // + FileSizeUtil.FormetFileSize(file.length()));
-                    list.add(fol);
-                }
-                //判断文件是否为视频文件
-                if (MediaFileUtil.isVideoFileType(file.getPath())) {
-                    FolderInfo fol = new FolderInfo();
-                    fol.setFolderIcon(R.drawable.video_logo);
+                    fol.setFolderIcon(R.drawable.txt_log);
                     fol.setFolderName(file.getName());
                     fol.setFolderPath(file.getPath());
                     fol.setFolderTime(longDateToString(file.lastModified()));
@@ -174,21 +174,6 @@ public class SelectFolderActivity extends Activity implements
                     //+ FileSizeUtil.FormetFileSize(file.length()));
                     list.add(fol);
                 }
-                //判断是否txt文件
-                String p = file.getPath();
-                int lastDot = p.lastIndexOf(".");
-                if (lastDot >= 0) {
-                    if ("TXT".equals(p.substring(lastDot + 1).toUpperCase())) {
-                        FolderInfo fol = new FolderInfo();
-                        fol.setFolderIcon(R.drawable.txt_log);
-                        fol.setFolderName(file.getName());
-                        fol.setFolderPath(file.getPath());
-                        fol.setFolderTime(longDateToString(file.lastModified()));
-                        fol.setFolderToTal("大小:"+ file.length());
-                        //+ FileSizeUtil.FormetFileSize(file.length()));
-                        list.add(fol);
-                    }
-                }*/
             }
         }
         return list;
@@ -200,7 +185,7 @@ public class SelectFolderActivity extends Activity implements
             File file = new File(path);
             File str_pa = file.getParentFile();
             if (str_pa.equals(rootDirectory)) {
-                Toast.makeText(SelectFolderActivity.this, "已经是根目录",
+                Toast.makeText(SelectTxtFileActivity.this, "已经是根目录",
                         Toast.LENGTH_SHORT).show();
                 refreshListItems(path);
             } else {
@@ -208,7 +193,7 @@ public class SelectFolderActivity extends Activity implements
                 refreshListItems(path);
             }
         } else {
-            Toast.makeText(SelectFolderActivity.this, "已经是根目录",
+            Toast.makeText(SelectTxtFileActivity.this, "已经是根目录",
                     Toast.LENGTH_SHORT).show();
             refreshListItems(path);
         }
@@ -248,9 +233,36 @@ public class SelectFolderActivity extends Activity implements
         else {
             path = folderlist.get(position).getFolderPath();
             File file = new File(path);
-            if (file.isDirectory())
+            if (file.isDirectory()) {
                 refreshListItems(path);
+            } else {
+                if (checkTxtFile(path)) {
+                    //refreshListItems(path);
+                    fullPath.setText(path);
+                    SaveSelectPath();
+                }
+            }
         }
+    }
+
+
+    public void SaveSelectPath() {
+        SharedPreferences preferences = getSharedPreferences(tableName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(keyName,(String) fullPath.getText());
+        editor.commit();
+
+        SelectTxtFileActivity.this.finish();
+    }
+
+    private boolean checkTxtFile(String file) {
+        int lastDot = file.lastIndexOf(".");
+        if (lastDot >= 0) {
+            if ("TXT".equals(file.substring(lastDot + 1).toUpperCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

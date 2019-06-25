@@ -90,7 +90,7 @@ public class HandleRecvXmlMsg {
         if (msg.type.equalsIgnoreCase(Msg_Body_Struct.status_response)) {
             DeviceDataStruct deviceInfo = DeviceDataStruct.xmlToBean(ip, port, msg);
             if (deviceInfo == null) {
-                Logs.e(TAG, String.format("设备%s[%s:%d]心跳消息中参数错误。", ip, port), true);
+                Logs.e(TAG, String.format("设备%s[%s:%d]心跳消息中参数错误。", deviceInfo.getSN(),ip, port), true);
                 return;
             }
 
@@ -114,6 +114,7 @@ public class HandleRecvXmlMsg {
                             deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
+                        Logs.d(TAG, String.format("向设备%s[%s:%d]发送心跳回复。",deviceInfo.getSN(),ip, port), true);
                         new LTE(mContext).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
@@ -121,6 +122,7 @@ public class HandleRecvXmlMsg {
                             GSM_ZYF.Sys1,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
+                        Logs.d(TAG, String.format("向设备%s[%s:%d]发送心跳回复。",deviceInfo.getSN(),ip, port), true);
                         new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM_V2)) {
@@ -130,6 +132,7 @@ public class HandleRecvXmlMsg {
                             GSM_ZYF.Sys2,deviceInfo.getIp(), deviceInfo.getPort(),deviceInfo.getSN());
                     if (deviceInfo.isStatus_offline()) {
                         //发送心跳回复
+                        Logs.d(TAG, String.format("向设备%s[%s:%d]发送心跳回复。",deviceInfo.getSN(),ip, port), true);
                         new GSM_ZYF(mContext,deviceInfo.getMode()).SendStatusRequest(deviceInfo.getIp(), deviceInfo.getPort());
                     }
                 } else if (deviceInfo.getMode().equals(DeviceDataStruct.MODE.GSM)) {
@@ -137,6 +140,12 @@ public class HandleRecvXmlMsg {
                 } else {
                     Logs.e(TAG, String.format("产品Mode为%s,目前不支持该类型!", deviceInfo.getMode()));
                 }
+            } else {
+               /* try {
+                    Long dTime = TimeConvert.stringToLong(deviceInfo.getDeviceTime(), "yyyy-MM-dd HH:mm:ss");
+                } catch (Exception e) {
+                    Logs.e(TAG, String.format("设备%s[%s:%d]心跳中时间错误。",deviceInfo.getSN(),ip, port), true);
+                }*/
             }
             return;
         }
@@ -165,6 +174,26 @@ public class HandleRecvXmlMsg {
                 Logs.e(TAG, String.format("设备类型(%s)为不支持的设备类型！", deviceDataStruct.getMode()), true);
             }
         }
+    }
+
+    public boolean SendStatusRequest() {
+        String ip = deviceDataStruct.getIp();
+        int port = deviceDataStruct.getPort();
+
+        if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_FDD)
+                || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.LTE_TDD)
+                || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.WCDMA)) {
+            Logs.d(TAG, String.format("向设备%s[%s:%d]发送心跳回复。",deviceDataStruct.getSN(),ip, port), true);
+            new LTE(mContext).SendStatusRequest(ip, port);
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM_V2)
+                || deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.CDMA)) {
+            Logs.d(TAG, String.format("向设备%s[%s:%d]发送心跳回复。",deviceDataStruct.getSN(),ip, port), true);
+            new GSM_ZYF(mContext,deviceDataStruct.getMode()).SendStatusRequest(ip,port);
+        } else if (deviceDataStruct.getMode().equals(DeviceDataStruct.MODE.GSM)) {
+
+        }
+
+        return true;
     }
 
     public boolean SetDeviceReboot() {

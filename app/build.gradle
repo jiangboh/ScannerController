@@ -28,8 +28,8 @@ android {
         applicationId "com.bravo.FemtoController"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
-        versionName "2.1"
+        versionCode 1
+        versionName "2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,6 +72,8 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
     private int AllFindTime ; //搜索时间
 
+    private int curItem = 0;
+
     @Override
     public void onResume() {
         Logs.d(TAG,"onResume",true);
@@ -85,6 +88,7 @@ public class FragmentFind extends RevealAnimationBaseFragment {
             @Override
             public void recordOnClick(View v, String strMsg) {
                 adapterFind.RemoveAll();
+                //addDevice(); //加虚拟设备，测试时用，正式版本不用
                 SwitchView(true);
             }
         });
@@ -120,6 +124,37 @@ public class FragmentFind extends RevealAnimationBaseFragment {
 
             }
         });
+
+        //记住上一次滚动时的位置信息
+        TargetListView.setOnScrollListener(new AbsListView.OnScrollListener(){
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //滚动时一直回调，直到停止滚动时才停止回调。单击时回调一次。
+                //firstVisibleItem：当前能看见的第一个列表项ID（从0开始）
+                //visibleItemCount：当前能看见的列表项个数（小半个也算）
+                //totalItemCount：列表项共数
+                curItem = firstVisibleItem;
+            }
+            @Override
+            public void onScrollStateChanged(AbsListView view , int scrollState){
+                //正在滚动时回调，回调2-3次，手指没抛则回调2次。scrollState = 2的这次不回调
+                //回调顺序如下
+                //第1次：scrollState = SCROLL_STATE_TOUCH_SCROLL(1) 正在滚动
+                //第2次：scrollState = SCROLL_STATE_FLING(2) 手指做了抛的动作（手指离开屏幕前，用力滑了一下）
+                //第3次：scrollState = SCROLL_STATE_IDLE(0) 停止滚动
+            }
+        });
+
+        TargetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                // 于对选中的项进行处理
+                //将上一次滚动时的第一条信息，重新展示为第一条信息，即：实现点击后点击条目的位置不变；
+                TargetListView.setSelection(curItem);
+            }
+        });
+
         residualTime = (TextView) contentView.findViewById(R.id.residualTime);
     }
 
@@ -190,6 +225,53 @@ public class FragmentFind extends RevealAnimationBaseFragment {
                 handler.sendMessage(message);
             }
         }
+    }
+
+    private void addDevice()
+    {
+        //虚拟添加设备
+        DeviceDataStruct dds = new DeviceDataStruct();
+        dds.setSN("EN1801S118220032");
+        dds.setIp("172.17.18.31");
+        dds.setPort(5001);
+        dds.setMode("LTE_FDD");
+        dds.setFullName("电信Band3");
+        adapterFind.DeviceListTarget(dds);
+        DeviceDataStruct dds1 = new DeviceDataStruct();
+        dds1.setSN("EN1801S118220033");
+        dds1.setIp("172.17.18.32");
+        dds1.setPort(5001);
+        dds1.setMode("LTE_FDD");
+        dds1.setFullName("联通Band1");
+        adapterFind.DeviceListTarget(dds1);
+        DeviceDataStruct dds2 = new DeviceDataStruct();
+        dds2.setSN("EN1801S118220085");
+        dds2.setIp("172.17.18.33");
+        dds2.setPort(5001);
+        dds2.setMode("LTE_FDD");
+        dds2.setFullName("电信Band5");
+        adapterFind.DeviceListTarget(dds2);
+        DeviceDataStruct dds3 = new DeviceDataStruct();
+        dds3.setSN("EN1801S118220096");
+        dds3.setIp("172.17.18.34");
+        dds3.setPort(5001);
+        dds3.setMode("LTE_TDD");
+        dds3.setFullName("移动Band8");
+        adapterFind.DeviceListTarget(dds3);
+        DeviceDataStruct dds4 = new DeviceDataStruct();
+        dds4.setSN("EN1801S118220089");
+        dds4.setIp("172.17.18.35");
+        dds4.setPort(5001);
+        dds4.setMode("LTE_TDD");
+        dds4.setFullName("移动Band39");
+        adapterFind.DeviceListTarget(dds4);
+        DeviceDataStruct dds5 = new DeviceDataStruct();
+        dds5.setSN("EN1801S118220091");
+        dds5.setIp("172.17.18.36");
+        dds5.setPort(5001);
+        dds5.setMode("LTE_TDD");
+        dds5.setFullName("移动Band41");
+        adapterFind.DeviceListTarget(dds5);
     }
 
     private void SwitchView(boolean bFind)

@@ -112,6 +112,7 @@ public class AdapeterFind  extends BaseAdapter {
             holder.FullName = (TextView) convertView.findViewById(R.id.fullname);
             holder.Mode = (TextView) convertView.findViewById(R.id.mode);
             holder.AddStatus = (TextView) convertView.findViewById(R.id.addStatus);
+            holder.viewS = (View) convertView.findViewById(R.id.viewStatus);
             holder.Name_AddStatus = (TextView) convertView.findViewById(R.id.name_addStatus);
             holder.Ip = (TextView) convertView.findViewById(R.id.ip);
             holder.Port = (TextView) convertView.findViewById(R.id.port);
@@ -128,8 +129,9 @@ public class AdapeterFind  extends BaseAdapter {
         holder.Ip.setText(deviceDataStructs.get(position).getIp());
         holder.Port.setText(String.valueOf(deviceDataStructs.get(position).getPort()));
 
-        holder.AddStatus.setVisibility(View.GONE);
-        holder.Name_AddStatus.setVisibility(View.GONE);
+        holder.AddStatus.setVisibility(View.INVISIBLE);
+        holder.Name_AddStatus.setVisibility(View.INVISIBLE);
+        holder.viewS.setVisibility(View.INVISIBLE);
 
         if (findList) {
             holder.imageView.setVisibility(View.GONE);
@@ -193,6 +195,7 @@ public class AdapeterFind  extends BaseAdapter {
         TextView Port;
         LinearLayout fullname_layout;
         LinearLayout lastTime;
+        View viewS;
     }
 
     public void DeviceListTarget(DeviceDataStruct deviceDataStruct) {

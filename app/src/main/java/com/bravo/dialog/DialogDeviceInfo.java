@@ -66,6 +66,7 @@ public class DialogDeviceInfo extends Dialog {
     private Button b_redio;
     private Button b_redio1;
     private Button b_fullname;
+    private Button b_SetTime;
 
     public DialogDeviceInfo(@NonNull Context context, DeviceDataStruct dds) {
         super(context);
@@ -202,6 +203,15 @@ public class DialogDeviceInfo extends Dialog {
         sInfo_devType = (EditText) findViewById(R.id.sInfo_devType);
         sInfo_version = (EditText) findViewById(R.id.sInfo_version);
         sInfo_lastTime = (EditText) findViewById(R.id.sInfo_LastTime);
+        b_SetTime =  (Button) findViewById(R.id.bInfo_SetTime);
+        b_SetTime.setOnClickListener(new RecordOnClick() {
+            @Override
+            public void recordOnClick(View v, String strMsg) {
+                new HandleRecvXmlMsg(context,dds).SendStatusRequest();
+                CustomToast.showToast(context, "已向AP发送【设置时间】命令");
+            }
+        });
+
 
         findViewById(R.id.sInfo_ok).setOnClickListener(new RecordOnClick() {
             @Override

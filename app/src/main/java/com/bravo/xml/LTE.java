@@ -461,7 +461,7 @@ public class LTE {
 
         Msg_Body_Struct msg = new Msg_Body_Struct(0,Msg_Body_Struct.status_request);
         msg.dic.put("timeout",0);
-        msg.dic.put("timestamp",dateString);
+        msg.dic.put("timestamp",dateString.replace("/","-"));
 
         String sendText = EncodeApXmlMessage(msg);
 
