@@ -7,6 +7,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.bravo.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lenovo on 2016/12/20.
@@ -42,6 +45,14 @@ public class LoginActivity extends BaseActivity {
 
 
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 2;
+    private static final int MY_PERMISSIONS_REQUEST_CODE = 1;
+    String[] permissions = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    // 声明一个集合，在后面的代码中用来存储用户拒绝授权的权
+    List<String> mPermissionList = new ArrayList<>();
 
     private Button btnLogin;
 
@@ -153,50 +164,47 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
+        Logs.d(TAG,"initData");
+
         SharedPreferences sp = mContext.getSharedPreferences(Fragment_SystemConfig.TABLE_NAME, MODE_PRIVATE);
         Logs.setLEVEL(sp.getInt(Fragment_SystemConfig.tn_LogLevel,Logs.getLEVEL()));
-        Logs.d(TAG,"initData");
     }
 
     private void requestPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            Logs.d(TAG,"申请各种权限");
+            mPermissionList.clear();
+            for (int i = 0; i < permissions.length; i++) {
+                if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                    mPermissionList.add(permissions[i]);
+                }
             }
-            if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
-            }
-            if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3);
+            if (!mPermissionList.isEmpty()) {//未授予的权限为空，表示都授予了
+                String[] permissions = mPermissionList.toArray(new String[mPermissionList.size()]);//将List转为数组
+                ActivityCompat.requestPermissions(this, permissions, MY_PERMISSIONS_REQUEST_CODE);
             }
         }
         //创建SDCard文件目录
-        new FileUtils(this).initPath();
+        //new FileUtils(this).initPath();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Logs.d(TAG,"onRequestPermissionsResult");
-        switch (requestCode) {
-            case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
-                //创建SDCard文件目录
-                new FileUtils(this).initPath();
-                /*// If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }*/
-                return;
+        //boolean hasPermissionDismiss = false;//有权限没有通过
+        if (requestCode == MY_PERMISSIONS_REQUEST_CODE){
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    //判断是否勾选禁止后不再询问
+                    boolean showRequestPermission = ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i]);
+                    if (showRequestPermission) {
+                        Logs.d(TAG,"权限未申请");
+                        requestPermission();
+                    }
+                }
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void onLogClicked() {
@@ -218,6 +226,14 @@ public class LoginActivity extends BaseActivity {
 
         intent.putExtra(RevealAnimationActivity.TITLE, "Log");
         startActivityWithAnimation(intent);
+    }
+
+    @Override
+    public void onPause() {
+        Logs.d(TAG,"onPause",true);
+        //创建SDCard文件目录
+        new FileUtils(this).initPath();
+        super.onPause();
     }
 
     @Override

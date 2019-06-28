@@ -234,6 +234,10 @@ public class FragmentScannerListen extends RevealAnimationBaseFragment {
     {
         SharedPreferences sp = context.getSharedPreferences(FragmentScannerConfig.TABLE_NAME, MODE_PRIVATE);
         String SaveImsiPath = sp.getString(FragmentScannerConfig.ImsiSavePath,"");
+        if (SaveImsiPath.length() <= 0) {
+            CustomToast.showToast(context, "保存路径为空。请到\"捕号配置\"窗口设置路径！");
+            return;
+        }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");// HH:mm:ss
         // 获取当前时间
         Date date = new Date(System.currentTimeMillis());

@@ -3,7 +3,6 @@ package com.bravo.log;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,18 +14,14 @@ import android.widget.TextView;
 import com.bravo.FemtoController.BaseActivity;
 import com.bravo.FemtoController.RevealAnimationActivity;
 import com.bravo.R;
-import com.bravo.custom_view.OpenOrDownLoadDialog;
 import com.bravo.custom_view.RecordOnClick;
 import com.bravo.custom_view.RecordOnItemClick;
-import com.bravo.custom_view.RecordOnItemLongClick;
 import com.bravo.fragments.RevealAnimationBaseFragment;
 import com.bravo.utils.FileUtils;
 import com.bravo.utils.Logs;
 import com.bravo.utils.SimpleDateUtils;
-import com.bravo.utils.ZipUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -90,6 +85,7 @@ public class Local_Fragment extends RevealAnimationBaseFragment {
                 super.recordOnItemClick(parent, view, position, id, "Local Log Item Click Event " + fileName);
             }
         });
+        /*
         lv.setOnItemLongClickListener(new RecordOnItemLongClick() {
             @Override
             public void recordOnItemLongClick(AdapterView<?> parent, View view, int position, long id, String strMsg) {
@@ -137,6 +133,7 @@ public class Local_Fragment extends RevealAnimationBaseFragment {
                 super.recordOnItemLongClick(parent, view, position, id, "Local Log Item Long Click Event");
             }
         });
+        */
     }
 
     @Override

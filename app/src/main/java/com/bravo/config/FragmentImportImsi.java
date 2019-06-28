@@ -91,7 +91,6 @@ public class FragmentImportImsi extends RevealAnimationBaseFragment {
         });
 
         tFilePath = (TextView) contentView.findViewById(R.id.filePath);
-        tFilePath.setText(this.SelectPath);
     }
 
     @Override
